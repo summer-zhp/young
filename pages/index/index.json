@@ -1,0 +1,8 @@
+{
+  "usingComponents": {
+    "t-icon": "tdesign-miniprogram/icon/icon"
+  },
+  "navigationBarTitleText": "摸鱼治愈所",
+  "navigationBarBackgroundColor": "#8EC5B9",
+  "navigationBarTextStyle": "white"
+}

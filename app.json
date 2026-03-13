@@ -1,0 +1,44 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/toolbox/toolbox",
+    "pages/focus/focus",
+    "pages/bubble/index",
+    "pages/profile/profile",
+    "pages/favorite/index"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#8EC5B9",
+    "navigationBarTitleText": "打工人治愈所",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#FAF9F7"
+  },
+  "tabBar": {
+    "color": "#9A9A9A",
+    "selectedColor": "#8EC5B9",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "治愈",
+        "iconPath": "images/tab-home.png",
+        "selectedIconPath": "images/tab-home-active.png"
+      },
+      {
+        "pagePath": "pages/toolbox/toolbox",
+        "text": "放松",
+        "iconPath": "images/tab-toys.png",
+        "selectedIconPath": "images/tab-toys-active.png"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的",
+        "iconPath": "images/tab-sounds.png",
+        "selectedIconPath": "images/tab-sounds-active.png"
+      }
+    ]
+  },
+  "sitemapLocation": "sitemap.json"
+}

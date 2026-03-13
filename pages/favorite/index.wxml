@@ -1,0 +1,51 @@
+<!--pages/favorite/index.wxml - 我的收藏-->
+<view class="page">
+  <view class="header">
+    <text class="header-title">我的收藏</text>
+    <text class="header-subtitle">珍藏的治愈内容</text>
+  </view>
+
+  <view class="main-content">
+    <!-- 加载状态 -->
+    <block wx:if="{{loading}}">
+      <view class="loading-container">
+        <view class="loading-spinner"></view>
+        <text class="loading-text">加载中...</text>
+      </view>
+    </block>
+
+    <!-- 空状态 -->
+    <block wx:elif="{{!loading && favorites.length === 0}}">
+      <view class="empty-state">
+        <text class="empty-icon">🤍</text>
+        <text class="empty-text">暂无收藏</text>
+        <text class="empty-desc">去首页收藏喜欢的内容吧</text>
+        <button class="btn btn-primary" bindtap="goToHome">去首页</button>
+      </view>
+    </block>
+
+    <!-- 收藏列表 -->
+    <block wx:else>
+      <view class="favorites-list">
+        <view class="favorite-item" wx:for="{{favorites}}" wx:key="_id">
+          <view class="favorite-content">
+            <text class="favorite-text">{{item.content_snapshot.content}}</text>
+            <text class="favorite-category" wx:if="{{item.content_snapshot.category}}">{{item.content_snapshot.category}}</text>
+          </view>
+          <view class="favorite-actions">
+            <text class="favorite-time">{{formatTime(item.created_at)}}</text>
+            <view class="delete-btn" catchtap="removeFavorite" data-id="{{item.content_id}}">
+              <t-icon name="delete" size="36rpx" color="#FF6B81"></t-icon>
+              <text>取消收藏</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 加载更多 -->
+      <view class="load-more" wx:if="{{favorites.length < total}}">
+        <button class="btn btn-ghost btn-load-more" bindtap="loadMore">加载更多</button>
+      </view>
+    </block>
+  </view>
+</view>

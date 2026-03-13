@@ -1,0 +1,8 @@
+{
+  "usingComponents": {
+    "t-icon": "tdesign-miniprogram/icon/icon"
+  },
+  "navigationBarTitleText": "泡泡纸",
+  "navigationBarBackgroundColor": "#8EC5B9",
+  "navigationBarTextStyle": "white"
+}

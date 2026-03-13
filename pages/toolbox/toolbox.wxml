@@ -1,0 +1,43 @@
+<!--pages/toolbox/toolbox.wxml - 工具箱页面重新设计-->
+<view class="page">
+  <!-- 装饰背景元素 -->
+  <view class="decoration decoration-1"></view>
+  <view class="decoration decoration-2"></view>
+
+  <!-- 头部区域 -->
+  <view class="header">
+    <view class="header-content">
+      <view class="title-wrapper">
+        <view class="title-icon-box">
+          <t-icon name="grid-view" size="40rpx" color="#8EC5B9"></t-icon>
+        </view>
+        <text class="header-title">放松室</text>
+      </view>
+      <text class="header-subtitle">选择一个小工具，开启治愈时光</text>
+    </view>
+  </view>
+
+  <!-- 工具列表 -->
+  <view class="tools-container">
+    <view class="tools-grid">
+      <view wx:for="{{tools}}" wx:key="id" class="tool-card" style="--card-delay: {{index * 100}}ms" bindtap="goToTool"
+        data-url="{{item.url}}">
+        <view class="tool-card-inner">
+          <view class="tool-icon-wrapper">
+            <view class="tool-icon-bg"></view>
+            <view class="tool-icon-tcb">
+              <t-icon name="{{item.icon}}" size="48rpx" color="#8EC5B9"></t-icon>
+            </view>
+          </view>
+          <view class="tool-info">
+            <text class="tool-name">{{item.name}}</text>
+            <text class="tool-desc">{{item.description}}</text>
+          </view>
+          <view class="tool-arrow">
+            <t-icon name="chevron-right" size="32rpx" color="#9A9A9A"></t-icon>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

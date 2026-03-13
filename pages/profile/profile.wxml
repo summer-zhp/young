@@ -1,0 +1,137 @@
+<!--pages/profile/profile.wxml - 个人中心页面重新设计-->
+<view class="page">
+  <!-- 装饰背景 -->
+  <view class="bg-decoration"></view>
+
+  <!-- 未登录状态 -->
+  <view wx:if="{{!hasUserInfo}}" class="login-section">
+    <view class="login-card">
+      <t-icon name="plant" size="80rpx" color="#8EC5B9"></t-icon>
+      <text class="login-title">欢迎来到</text>
+      <text class="login-title-highlight">打工人治愈所</text>
+      <text class="login-desc">登录获取你的专属身份编号</text>
+      <button class="login-btn" bindtap="handleLogin">
+        <text class="login-btn-text">立即登录</text>
+      </button>
+      <text class="login-tip">微信授权登录 · 安全便捷</text>
+    </view>
+  </view>
+
+  <!-- 已登录状态 -->
+  <view wx:else class="content-section">
+    <!-- 用户信息卡片 -->
+    <view class="user-card-wrapper">
+      <view class="user-card">
+        <view class="user-card-bg"></view>
+        <view class="user-card-content">
+          <view class="user-avatar">
+            <text wx:if="{{userInfo.avatarUrl}}">
+              <image class="avatar-img" src="{{userInfo.avatarUrl}}" mode="aspectFill" />
+            </text>
+            <t-icon wx:else name="user-circle" size="80rpx" color="#fff"></t-icon>
+          </view>
+          <view class="user-info">
+            <text class="user-nickname">{{userInfo.nickname}}</text>
+            <view class="user-meta">
+              <text class="user-days">已加入 {{userInfo.days || 0}} 天</text>
+              <text class="user-divider">·</text>
+              <text class="user-id">ID: {{userInfo.user_no}}</text>
+            </view>
+          </view>
+        </view>
+        <view class="logout-wrapper">
+          <view class="logout-btn" catchtap="handleLogout">
+            <text>退出</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 统计数据 -->
+    <view class="stats-section">
+      <view class="stats-grid">
+        <view class="stat-card">
+          <t-icon name="time" size="48rpx" color="#8EC5B9"></t-icon>
+          <text class="stat-value">{{totalFocusTime}}</text>
+          <text class="stat-label">累计专注 (分钟)</text>
+        </view>
+        <view class="stat-card">
+          <t-icon name="check-circle" size="48rpx" color="#8EC5B9"></t-icon>
+          <text class="stat-value">{{focusCount}}</text>
+          <text class="stat-label">专注次数</text>
+        </view>
+        <view class="stat-card" bindtap="goToFavorites">
+          <t-icon name="heart-filled" size="48rpx" color="#8EC5B9"></t-icon>
+          <text class="stat-value">{{favoritesCount}}</text>
+          <text class="stat-label">收藏文案</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 职位信息 -->
+    <view class="job-section">
+      <view class="section-header">
+      <view class="section-header-title">
+        <t-icon name="user-safety" size="36rpx" color="#8EC5B9"></t-icon>
+        <text class="section-title">我的职位</text>
+      </view>
+      </view>
+      <view class="job-card">
+        <view class="job-content">
+          <text class="job-text" wx:if="{{userJob}}">{{userJob}}</text>
+          <text class="job-empty" wx:else>暂无设置</text>
+        </view>
+        <view class="job-actions">
+          <view class="job-btn" bindtap="showJobInput">
+            <text>{{userJob ? '修改' : '设置'}}</text>
+          </view>
+          <view class="job-btn job-btn-outline" wx:if="{{userJob}}" bindtap="clearJob">
+            <text>清空</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 收藏列表 -->
+    <view class="favorites-section">
+      <view class="section-header">
+      <view class="section-header-title">
+        <t-icon name="heart" size="36rpx" color="#8EC5B9"></t-icon>
+        <text class="section-title">我的收藏</text>
+      </view>
+        <text class="section-more" bindtap="goToFavorites">查看全部 <t-icon name="chevron-right" size="28rpx" color="#9A9A9A"></t-icon></text>
+      </view>
+      <view class="favorites-list" wx:if="{{favorites.length > 0}}">
+        <view class="favorite-item" wx:for="{{favorites}}" wx:key="_id">
+          <text class="favorite-content">{{item.content_snapshot.content}}</text>
+        </view>
+      </view>
+      <view class="empty-favorites" wx:else>
+        <text class="empty-text">暂无收藏</text>
+      </view>
+    </view>
+
+    <!-- 客服按钮 -->
+    <view class="customer-service-section">
+      <button class="customer-service-btn" open-type="contact">
+        <t-icon name="chat-bubble-smile" size="40rpx" color="#8EC5B9"></t-icon>
+        <text class="cs-text">联系客服</text>
+      </button>
+    </view>
+
+    <!-- 职位输入弹窗 -->
+    <view class="modal-mask" wx:if="{{showJobInput}}" catchtap="hideJobInput"></view>
+    <view class="modal-content" wx:if="{{showJobInput}}">
+      <view class="modal-header">
+        <text class="modal-title">设置职位</text>
+        <t-icon name="close" size="40rpx" color="#9A9A9A" bindtap="hideJobInput"></t-icon>
+      </view>
+      <view class="modal-body">
+        <form bindsubmit="saveJob">
+          <input name="job" class="job-input" placeholder="请输入你的职位，例如：前端工程师" placeholder-class="input-placeholder" />
+          <button class="submit-btn" form-type="submit" type="button">保存</button>
+        </form>
+      </view>
+    </view>
+  </view>
+</view>

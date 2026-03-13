@@ -1,0 +1,81 @@
+<!--pages/bubble/index.wxml - 戳泡泡游戏重新设计-->
+<view class="page">
+  <!-- 装饰背景 -->
+  <view class="bg-decoration bg-deco-1"></view>
+  <view class="bg-decoration bg-deco-2"></view>
+
+  <!-- 头部 -->
+  <view class="header">
+    <view class="header-content">
+      <view class="game-title-badge">
+        <t-icon name="chat-bubble" size="40rpx" color="#FF9F8F"></t-icon>
+        <text class="title-text">戳泡泡</text>
+      </view>
+    </view>
+    <text class="header-subtitle">戳破泡泡，释放压力</text>
+  </view>
+
+  <!-- 游戏区域 -->
+  <view class="game-area">
+    <!-- 计分板 -->
+    <view class="score-board" wx:if="{{isPlaying}}">
+      <view class="score-wrapper">
+        <text class="score-label">本次得分</text>
+        <view class="score-value-wrapper">
+          <text class="score-value">{{score}}</text>
+          <text class="score-unit">分</text>
+        </view>
+      </view>
+      <view class="score-progress">
+        <view class="score-progress-bar" style="width: {{spawnedCount / maxBubbleCount * 100}}%"></view>
+      </view>
+    </view>
+
+    <!-- 泡泡容器 -->
+    <view class="bubble-wrapper">
+      <view wx:for="{{bubbles}}" wx:key="id" class="bubble"
+        style="left: {{item.left}}%; width: {{item.size}}rpx; height: {{item.size}}rpx; animation-duration: {{item.duration}}s;"
+        catchtap="popBubble" data-id="{{item.id}}">
+        <view class="bubble-shine"></view>
+        <view class="bubble-glow"></view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 控制按钮 -->
+  <view class="controls">
+    <view class="controls-wrapper">
+      <button wx:if="{{!isPlaying}}" class="btn-start" bindtap="startGame">
+        <view class="btn-start-text">开始游戏</view>
+      </button>
+      <button wx:else class="btn-stop" bindtap="stopGame">
+        <view class="btn-stop-text">停止游戏</view>
+      </button>
+      <text class="hint" wx:if="{{!isPlaying}}">戳破泡泡释放压力！</text>
+    </view>
+  </view>
+
+  <!-- 难度选择弹窗 -->
+  <view class="modal-overlay" wx:if="{{showDifficultyModal}}" catchtap="closeDifficultyModal">
+    <view class="modal-content" catchtap="stopPropagation">
+      <view class="modal-header">
+        <text class="modal-title">选择难度</text>
+      </view>
+      <view class="modal-body">
+        <view wx:for="{{difficulties}}" wx:key="value"
+          class="difficulty-item {{selectedDifficulty === item.value ? 'selected' : ''}}"
+          bindtap="selectDifficulty" data-value="{{item.value}}">
+          <view class="difficulty-header">
+            <text class="difficulty-label">{{item.label}}</text>
+            <t-icon wx:if="{{selectedDifficulty === item.value}}" name="check-circle-filled" size="32rpx" color="#8EC5B9"></t-icon>
+          </view>
+          <view class="difficulty-desc">
+            <text>泡泡数量：{{item.totalBubbles}} 个</text>
+            <text>同屏显示：{{item.maxBubbles}} 个</text>
+            <text>飘动速度：{{item.duration[0]}}-{{item.duration[1]}} 秒</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

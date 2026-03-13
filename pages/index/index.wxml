@@ -1,0 +1,112 @@
+<!--pages/index/index.wxml - 首页重新设计-->
+<view class="page">
+  <!-- 装饰背景 -->
+  <view class="bg-gradient"></view>
+  <view class="bg-decoration bg-deco-1"></view>
+  <view class="bg-decoration bg-deco-2"></view>
+
+  <!-- 头部 -->
+  <view class="header">
+    <view class="header-content">
+      <view class="brand-badge">
+        <t-icon name="lightbulb-circle" size="40rpx" color="#8EC5B9"></t-icon>
+        <text class="brand-title">打工人治愈所</text>
+      </view>
+    </view>
+    <text class="header-subtitle">给忙碌的你一份小确幸</text>
+  </view>
+
+  <!-- 主内容区域 -->
+  <view class="main-content">
+    <!-- 加载状态 -->
+    <block wx:if="{{loading}}">
+      <view class="loading-container">
+        <view class="loading-spinner-wrapper">
+          <view class="loading-spinner"></view>
+          <view class="loading-spinner-dot"></view>
+        </view>
+        <text class="loading-text">正在加载今日治愈...</text>
+      </view>
+    </block>
+
+    <!-- 错误状态 -->
+    <block wx:elif="{{error}}">
+      <view class="error-container">
+        <view class="error-icon-wrapper">
+          <t-icon name="error-circle" size="80rpx" color="#FF6B81"></t-icon>
+        </view>
+        <text class="error-text">加载失败，请稍后重试</text>
+        <button class="btn btn-primary" bindtap="loadDailyContent">重新加载</button>
+      </view>
+    </block>
+
+    <!-- 治愈卡片 -->
+    <block wx:else>
+      <view class="healing-card-wrapper">
+        <view class="healing-card">
+          <!-- 卡片顶部装饰 -->
+          <view class="card-top-decoration"></view>
+
+          <!-- 卡片头部 -->
+          <view class="card-header">
+            <view class="date-badge">
+              <t-icon name="calendar" size="32rpx" color="#8EC5B9"></t-icon>
+              <text class="date-text">{{todayDate}}</text>
+            </view>
+            <view class="healing-badge">
+              <text>今日治愈</text>
+            </view>
+          </view>
+
+          <!-- 卡片内容 -->
+          <view class="card-content">
+            <view class="quote-decoration">"</view>
+            <text class="healing-text">{{dailyContent.content}}</text>
+          </view>
+
+          <!-- 卡片底部 -->
+          <view class="card-footer">
+            <view class="category-tag">
+              <text>{{dailyContent.category || '治愈'}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 操作按钮 -->
+      <view class="action-buttons-wrapper">
+        <view class="action-buttons">
+          <view
+            class="action-btn {{isFavorited ? 'favorited' : ''}}"
+            bindtap="toggleFavorite"
+          >
+            <view class="action-icon-wrapper">
+              <t-icon name="{{isFavorited ? 'heart-filled' : 'heart'}}" size="40rpx" color="#8EC5B9"></t-icon>
+            </view>
+            <text class="action-text">{{isFavorited ? '已收藏' : '收藏'}}</text>
+          </view>
+
+          <view
+            class="action-btn"
+            bindtap="shareContent"
+          >
+            <view class="action-icon-wrapper">
+              <t-icon name="share" size="40rpx" color="#8EC5B9"></t-icon>
+            </view>
+            <text class="action-text">分享</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 换一换按钮 -->
+      <view class="refresh-section">
+        <view class="refresh-btn-wrapper">
+          <view class="btn btn-ghost refresh-btn" bindtap="loadNextContent">
+            <t-icon name="refresh" size="32rpx" color="#8EC5B9"></t-icon>
+            <text>换一换</text>
+          </view>
+        </view>
+      </view>
+    </block>
+  </view>
+</view>

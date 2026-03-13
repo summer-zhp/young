@@ -1,0 +1,151 @@
+<!--pages/focus/focus.wxml - 专注时钟重新设计-->
+<view class="page">
+  <!-- 装饰背景 -->
+  <view class="bg-decoration bg-deco-1"></view>
+  <view class="bg-decoration bg-deco-2"></view>
+
+  <!-- 头部 -->
+  <view class="header">
+    <view class="header-content">
+      <view class="brand-badge">
+        <t-icon name="time" size="40rpx" color="#8EC5B9"></t-icon>
+        <text class="brand-title">专注时钟</text>
+      </view>
+    </view>
+    <text class="header-subtitle">专注工作学习，提升效率</text>
+  </view>
+
+  <!-- 时长选择 -->
+  <view class="duration-selector">
+    <view class="duration-options">
+      <view
+        class="duration-option {{item.value === selectedDuration ? 'active' : ''}}"
+        wx:for="{{durations}}"
+        wx:key="value"
+        bindtap="selectDuration"
+        data-value="{{item.value}}"
+      >
+        <text class="option-label">{{item.label}}</text>
+        <text class="option-unit">{{item.unit}}</text>
+      </view>
+    </view>
+    <view class="custom-btn-wrapper">
+      <view class="custom-btn" bindtap="showCustomDuration">
+        <t-icon name="add-circle" size="32rpx" color="#8EC5B9"></t-icon>
+        <text>自定义</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 计时器 -->
+  <view class="timer-container">
+    <view class="timer-ring">
+      <svg class="timer-svg" width="320" height="320" viewBox="0 0 320 320">
+        <!-- 背景圆环 -->
+        <circle
+          class="ring-bg"
+          cx="160"
+          cy="160"
+          r="140"
+          fill="none"
+          stroke="#E8F5F3"
+          stroke-width="12"
+        />
+        <!-- 进度圆环 -->
+        <circle
+          class="ring-progress"
+          cx="160"
+          cy="160"
+          r="140"
+          fill="none"
+          stroke="url(#gradient)"
+          stroke-width="12"
+          stroke-linecap="round"
+          stroke-dasharray="{{2 * 3.14159 * 140}}"
+          stroke-dashoffset="{{ringOffset}}"
+          transform="rotate(-90 160 160)"
+        />
+        <!-- 渐变定义 -->
+        <defs>
+          <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#8EC5B9" />
+            <stop offset="100%" stop-color="#6FA99A" />
+          </linearGradient>
+        </defs>
+      </svg>
+      <view class="timer-content">
+        <text class="time">{{formattedTime}}</text>
+        <text class="timer-status" wx:if="{{isRunning}}">专注中</text>
+        <text class="timer-status" wx:elif="{{isPaused}}">已暂停</text>
+      </view>
+    </view>
+    <view class="timer-quote">
+      <text>{{quote}}</text>
+    </view>
+  </view>
+
+  <!-- 控制按钮 -->
+  <view class="controls">
+    <view class="controls-wrapper">
+      <view wx:if="{{!isRunning}}" class="btn-primary" bindtap="startFocus">
+        <t-icon name="play-circle-filled" size="40rpx" color="#FFFFFF"></t-icon>
+        <text>开始专注</text>
+      </view>
+      <view wx:elif="{{isPaused}}" class="btn-group">
+        <view class="btn-secondary" bindtap="stopFocus">
+          <t-icon name="stop-circle" size="40rpx" color="#FFFFFF"></t-icon>
+          <text>停止</text>
+        </view>
+        <view class="btn-primary" bindtap="resumeFocus">
+          <t-icon name="play-circle-filled" size="40rpx" color="#FFFFFF"></t-icon>
+          <text>继续</text>
+        </view>
+      </view>
+      <view wx:else class="btn-group">
+        <view class="btn-secondary" bindtap="stopFocus">
+          <t-icon name="stop-circle" size="40rpx" color="#FFFFFF"></t-icon>
+          <text>停止</text>
+        </view>
+        <view class="btn-pause" bindtap="pauseFocus">
+          <t-icon name="pause-circle-filled" size="40rpx" color="#FFFFFF"></t-icon>
+          <text>暂停</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 统计信息 -->
+  <view class="stats-section">
+    <view class="stats-card">
+      <view class="stat-item">
+        <t-icon name="time" size="40rpx" color="#8EC5B9"></t-icon>
+        <text class="stat-value">{{totalFocusTime}}</text>
+        <text class="stat-label">累计专注 (分钟)</text>
+      </view>
+      <view class="stat-divider"></view>
+      <view class="stat-item">
+        <t-icon name="check-circle" size="40rpx" color="#8EC5B9"></t-icon>
+        <text class="stat-value">{{focusCount}}</text>
+        <text class="stat-label">专注次数</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 自定义时长弹窗 -->
+  <view class="modal-mask" wx:if="{{showCustomModal}}" catchtap="hideCustomDuration"></view>
+  <view class="modal-content" wx:if="{{showCustomModal}}">
+    <view class="modal-header">
+      <text class="modal-title">自定义专注时长</text>
+      <t-icon name="close" size="40rpx" color="#9A9A9A" bindtap="hideCustomDuration"></t-icon>
+    </view>
+    <view class="modal-body">
+      <form bindsubmit="saveCustomDuration">
+        <view class="duration-input-wrapper">
+          <input name="minutes" class="duration-input" type="number" placeholder="请输入分钟数" placeholder-class="input-placeholder" value="{{customMinutes}}" />
+          <text class="duration-unit">分钟</text>
+        </view>
+        <button class="submit-btn" form-type="submit" type="button">确定</button>
+      </form>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,13 @@
+# 忽略文件
+node_modules/
+*.log
+.DS_Store
+dist/
+build/
+
+# 云开发配置（包含敏感信息）
+.cloudbaserc.json
+project.private.config.json
+
+# 上传时不需要的文件
+README.md

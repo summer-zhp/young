@@ -1,0 +1,8 @@
+{
+  "usingComponents": {
+    "t-icon": "tdesign-miniprogram/icon/icon"
+  },
+  "navigationBarTitleText": "我的收藏",
+  "navigationBarBackgroundColor": "#8EC5B9",
+  "navigationBarTextStyle": "white"
+}

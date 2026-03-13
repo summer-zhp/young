@@ -1,0 +1,14 @@
+{
+  "name": "young",
+  "version": "1.0.0",
+  "description": "> 一款专为打工人设计的轻量级治愈系小程序，提供**30 秒~3 分钟**的微放松体验",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "tdesign-miniprogram": "^1.12.3"
+  }
+}

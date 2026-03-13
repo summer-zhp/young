@@ -1,0 +1,506 @@
+/* pages/bubble/index.wxss - 戳泡泡游戏重新设计 */
+@import '../../styles/theme.wxss';
+
+.page {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #f5f7f8 0%, #e8f5f3 100%);
+  display: flex;
+  flex-direction: column;
+  padding-bottom: calc(120rpx + env(safe-area-inset-bottom));
+  position: relative;
+  overflow: hidden;
+}
+
+/* ===== 装饰背景 ===== */
+.bg-decoration {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.bg-deco-1 {
+  top: -100rpx;
+  right: -80rpx;
+  width: 280rpx;
+  height: 280rpx;
+  background: radial-gradient(circle, rgba(142, 197, 185, 0.1) 0%, transparent 70%);
+  animation: float 8s ease-in-out infinite;
+}
+
+.bg-deco-2 {
+  bottom: 40%;
+  left: -100rpx;
+  width: 240rpx;
+  height: 240rpx;
+  background: radial-gradient(circle, rgba(255, 181, 169, 0.08) 0%, transparent 70%);
+  animation: float 10s ease-in-out infinite reverse;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(20rpx, -20rpx) scale(1.05);
+  }
+  66% {
+    transform: translate(-15rpx, 15rpx) scale(0.95);
+  }
+}
+
+/* ===== 头部 - 全新设计 ===== */
+.header {
+  padding: 48rpx 40rpx 24rpx;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12rpx;
+}
+
+.game-title-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 12rpx;
+  background: linear-gradient(135deg, rgba(255, 181, 169, 0.15) 0%, rgba(255, 130, 100, 0.08) 100%);
+  padding: 14rpx 32rpx;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(255, 181, 169, 0.2);
+  box-shadow: 0 4rpx 20rpx rgba(255, 181, 169, 0.15);
+}
+
+.title-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.title-text {
+  font-size: 40rpx;
+  font-weight: 700;
+  background: linear-gradient(135deg, #ff9f8f 0%, #ff6b81 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: 1rpx;
+}
+
+.header-subtitle {
+  display: block;
+  font-size: 26rpx;
+  color: var(--text-tertiary);
+  font-weight: 400;
+}
+
+/* ===== 游戏区域 - 全新设计 ===== */
+.game-area {
+  flex: 1;
+  position: relative;
+  margin: 16rpx 24rpx;
+  min-height: 50vh;
+  z-index: 1;
+}
+
+/* 计分板 - 全新设计 */
+.score-board {
+  position: absolute;
+  top: 16rpx;
+  left: 16rpx;
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(12px);
+  border-radius: var(--radius-xl);
+  padding: 20rpx 24rpx;
+  box-shadow: 0 4rpx 24rpx rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(142, 197, 185, 0.15);
+  min-width: 140rpx;
+  animation: slideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-40rpx) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+.score-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.score-label {
+  font-size: 22rpx;
+  color: var(--text-tertiary);
+  font-weight: 500;
+}
+
+.score-value-wrapper {
+  display: flex;
+  align-items: baseline;
+  gap: 4rpx;
+}
+
+.score-value {
+  font-size: 48rpx;
+  font-weight: 700;
+  color: var(--primary-start);
+  font-feature-settings: 'tnum';
+  line-height: 1;
+}
+
+.score-unit {
+  font-size: 24rpx;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.score-progress {
+  margin-top: 12rpx;
+  height: 6rpx;
+  background: rgba(142, 197, 185, 0.2);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.score-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary-start) 0%, var(--primary-end) 100%);
+  border-radius: var(--radius-full);
+  transition: width 0.3s ease;
+}
+
+/* 泡泡容器 */
+.bubble-wrapper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  min-height: 450rpx;
+}
+
+/* 泡泡 - 全新设计 */
+.bubble {
+  position: absolute;
+  bottom: -100rpx;
+  left: 0;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 35% 35%,
+    rgba(255, 255, 255, 0.98) 0%,
+    rgba(255, 228, 225, 0.95) 25%,
+    rgba(255, 181, 169, 0.85) 55%,
+    rgba(255, 150, 130, 0.75) 100%
+  );
+  box-shadow: inset -12rpx -12rpx 20rpx rgba(0, 0, 0, 0.08), inset 12rpx 12rpx 20rpx rgba(255, 255, 255, 0.95),
+    inset -6rpx -6rpx 12rpx rgba(255, 181, 169, 0.25), 8rpx 12rpx 24rpx rgba(0, 0, 0, 0.1),
+    0 6rpx 12rpx rgba(255, 181, 169, 0.25);
+  animation: float-up linear forwards;
+  cursor: pointer;
+  overflow: visible;
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+/* 泡泡高光 */
+.bubble-shine {
+  position: absolute;
+  top: 18%;
+  left: 18%;
+  width: 28%;
+  height: 28%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.7) 40%, transparent 70%);
+  filter: blur(3rpx);
+}
+
+/* 泡泡外光晕 */
+.bubble-glow {
+  position: absolute;
+  inset: -10%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.5) 0%, transparent 50%);
+  border-radius: 50%;
+  opacity: 0.6;
+}
+
+.bubble.popped {
+  animation: pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* 戳破动画 */
+@keyframes pop {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  40% {
+    transform: scale(1.35);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(0);
+    opacity: 0;
+  }
+}
+
+/* 泡泡飘起动画 - 优化 */
+@keyframes float-up {
+  0% {
+    bottom: -100rpx;
+    transform: translateX(0) rotate(0deg);
+    opacity: 1;
+  }
+  15% {
+    transform: translateX(50rpx) rotate(8deg);
+  }
+  30% {
+    transform: translateX(-50rpx) rotate(-8deg);
+  }
+  45% {
+    transform: translateX(40rpx) rotate(6deg);
+  }
+  60% {
+    transform: translateX(-35rpx) rotate(-6deg);
+  }
+  75% {
+    transform: translateX(30rpx) rotate(4deg);
+  }
+  90% {
+    transform: translateX(-20rpx) rotate(-3deg);
+  }
+  100% {
+    bottom: 150%;
+    transform: translateX(-15rpx) rotate(-2deg);
+    opacity: 1;
+  }
+}
+
+/* ===== 控制区域 - 全新设计 ===== */
+.controls {
+  padding: 24rpx 32rpx 40rpx;
+  position: relative;
+  z-index: 2;
+}
+
+.controls-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.btn-start,
+.btn-stop {
+  padding: 36rpx 120rpx;
+  border-radius: var(--radius-full);
+  font-size: 32rpx;
+  font-weight: 700;
+  transition: all var(--transition-base);
+  border: none;
+  box-shadow: 0 6rpx 28rpx rgba(0, 0, 0, 0.12);
+}
+
+.btn-start::after,
+.btn-stop::after {
+  border: none;
+}
+
+.btn-start {
+  background: linear-gradient(135deg, var(--primary-start) 0%, var(--primary-end) 100%);
+  color: var(--surface-white);
+  box-shadow: var(--shadow-primary);
+}
+
+.btn-start:active {
+  transform: scale(0.96);
+  box-shadow: var(--shadow-primary-hover);
+}
+
+.btn-stop {
+  background: var(--surface-white);
+  color: var(--text-secondary);
+  border: 2rpx solid var(--border-light);
+}
+
+.btn-stop:active {
+  background: var(--surface-hover);
+  transform: scale(0.98);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-start-text,
+.btn-stop-text {
+  letter-spacing: 1rpx;
+  width: max-content;
+}
+
+.hint {
+  font-size: 26rpx;
+  color: var(--text-tertiary);
+  font-weight: 400;
+  text-align: center;
+}
+
+/* ===== 游戏结束动画 - 移除页面抖动，只保留游戏区域动画 ===== */
+.game-area.game-over {
+  animation: gameOver 0.4s ease-out;
+}
+
+@keyframes gameOver {
+  0% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(1.02);
+  }
+  50% {
+    transform: scale(0.98);
+  }
+  75% {
+    transform: scale(1.01);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* ===== 响应式适配 ===== */
+@media (min-width: 768px) {
+  .game-area {
+    max-width: 600rpx;
+    margin: 16rpx auto;
+  }
+
+  .title-text {
+    font-size: 48rpx;
+  }
+}
+
+/* ===== 难度选择弹窗 ===== */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(8rpx);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal-content {
+  background: #ffffff;
+  border-radius: var(--radius-xl);
+  width: 85%;
+  max-width: 600rpx;
+  overflow: hidden;
+  animation: slideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(100rpx) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.modal-header {
+  padding: 32rpx 24rpx 16rpx;
+  text-align: center;
+  border-bottom: 1rpx solid rgba(142, 197, 185, 0.15);
+}
+
+.modal-title {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #1a1a1a;
+  letter-spacing: 1rpx;
+}
+
+.modal-body {
+  padding: 16rpx;
+}
+
+.difficulty-item {
+  background: linear-gradient(135deg, #f8f9fa 0%, #f0f2f1 100%);
+  border-radius: var(--radius-lg);
+  padding: 24rpx;
+  margin-bottom: 16rpx;
+  border: 2rpx solid transparent;
+  transition: all 0.2s ease;
+}
+
+.difficulty-item:last-child {
+  margin-bottom: 0;
+}
+
+.difficulty-item:active {
+  transform: scale(0.98);
+}
+
+.difficulty-item.selected {
+  background: linear-gradient(135deg, rgba(142, 197, 185, 0.15) 0%, rgba(111, 169, 154, 0.1) 100%);
+  border-color: var(--primary-start);
+}
+
+.difficulty-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12rpx;
+}
+
+.difficulty-label {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.difficulty-item.selected .difficulty-label {
+  color: var(--primary-start);
+}
+
+.difficulty-desc {
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+}
+
+.difficulty-desc text {
+  font-size: 24rpx;
+  color: var(--text-tertiary);
+  line-height: 1.4;
+}
+
+.difficulty-desc text:first-child {
+  font-weight: 500;
+  color: var(--text-secondary);
+}
