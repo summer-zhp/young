@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "朋友圈配图",
+  "navigationBarBackgroundColor": "#8EC5B9",
+  "navigationBarTextStyle": "white",
+  "usingComponents": {
+    "t-icon": "tdesign-miniprogram/icon/icon"
+  }
+}

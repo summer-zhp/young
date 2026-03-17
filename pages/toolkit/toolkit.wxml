@@ -1,0 +1,56 @@
+<!--pages/toolkit/toolkit.wxml-->
+<view class="page">
+  <!-- 装饰背景 -->
+  <view class="bg-decoration"></view>
+
+  <!-- 头部 -->
+  <view class="header">
+    <view class="header-content">
+      <!-- <text class="header-title">工具箱</text> -->
+      <text class="header-subtitle">打工必备，让我们的工作更高效、更轻松～</text>
+    </view>
+  </view>
+
+  <!-- 工具列表 -->
+  <view class="tools-container">
+    <view class="tools-grid">
+      <!-- 朋友圈配图 -->
+      <view class="tool-card" bindtap="goToCaptionImage">
+        <view class="tool-card-inner">
+          <view class="tool-icon-wrapper">
+            <view class="tool-icon-bg"></view>
+            <view class="tool-icon-tcb">
+              <t-icon name="image" size="48rpx" color="#8EC5B9"></t-icon>
+            </view>
+          </view>
+          <view class="tool-info">
+            <text class="tool-name">朋友圈配图</text>
+            <text class="tool-desc">一键生成朋友圈文案场景图</text>
+          </view>
+          <view class="tool-arrow">
+            <t-icon name="chevron-right" size="32rpx" color="#9A9A9A"></t-icon>
+          </view>
+        </view>
+      </view>
+
+      <!-- 图片转 PDF -->
+      <view class="tool-card" bindtap="goToImage2Pdf">
+        <view class="tool-card-inner">
+          <view class="tool-icon-wrapper">
+            <view class="tool-icon-bg"></view>
+            <view class="tool-icon-tcb">
+              <t-icon name="file-image" size="48rpx" color="#8EC5B9"></t-icon>
+            </view>
+          </view>
+          <view class="tool-info">
+            <text class="tool-name">图片转 PDF</text>
+            <text class="tool-desc">将图片快速转换为 PDF 文档</text>
+          </view>
+          <view class="tool-arrow">
+            <t-icon name="chevron-right" size="32rpx" color="#9A9A9A"></t-icon>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

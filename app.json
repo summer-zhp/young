@@ -6,7 +6,10 @@
     "pages/bubble/index",
     "pages/treeHole/treeHole",
     "pages/profile/profile",
-    "pages/favorite/index"
+    "pages/favorite/index",
+    "pages/toolkit/toolkit",
+    "pages/toolkit/image2pdf/image2pdf",
+    "pages/toolkit/caption-image/caption-image"
   ],
   "window": {
     "backgroundTextStyle": "light",
@@ -32,6 +35,12 @@
         "text": "放松",
         "iconPath": "images/tab-toys.png",
         "selectedIconPath": "images/tab-toys-active.png"
+      },
+      {
+        "pagePath": "pages/toolkit/toolkit",
+        "text": "工具箱",
+        "iconPath": "images/tool.png",
+        "selectedIconPath": "images/tool-active.png"
       },
       {
         "pagePath": "pages/profile/profile",

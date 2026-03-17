@@ -1,0 +1,58 @@
+<!--pages/toolkit/caption-image/caption-image.wxml-->
+<view class="page">
+  <!-- 装饰背景 -->
+  <view class="bg-decoration"></view>
+
+  <!-- 头部 -->
+  <view class="header">
+    <view class="header-content">
+      <text class="header-title">朋友圈文案配图</text>
+      <text class="header-subtitle">输入文案，一键生成匹配场景图</text>
+    </view>
+  </view>
+
+  <!-- 输入区域 -->
+  <view class="input-section">
+    <view class="input-card">
+      <view class="input-label">
+        <t-icon name="edit-1" size="32rpx" color="#8EC5B9"></t-icon>
+        <text class="label-text">朋友圈文案</text>
+      </view>
+      <textarea class="caption-input" placeholder="请输入朋友圈文案，例如：今天的夕阳真美，加班到深夜终于完成了项目..." maxlength="500"
+        value="{{caption}}" bindinput="onInput" auto-height />
+      <view class="char-count">{{captionLength}}/500</view>
+    </view>
+  </view>
+
+  <!-- 生成按钮 -->
+  <view class="generate-section">
+    <button class="generate-btn" bindtap="generateImage" disabled="{{isGenerating}}">
+      <t-icon name="magic" size="36rpx" color="#ffffff"></t-icon>
+      <text class="generate-btn-text">{{isGenerating ? '绘制中...' : '生成配图'}}</text>
+    </button>
+  </view>
+
+  <!-- 结果展示 -->
+  <view class="result-section" wx:if="{{generatedImage}}">
+    <view class="result-card">
+      <view class="result-header">
+        <view class="result-title">
+          <t-icon name="check-circle" size="32rpx" color="#52c41a"></t-icon>
+          <text>生成成功</text>
+        </view>
+        <view class="result-actions">
+          <view class="action-btn" bindtap="saveImage">
+            <t-icon name="download" size="28rpx" color="#8EC5B9"></t-icon>
+            <text>保存</text>
+          </view>
+          <view class="action-btn" bindtap="previewImage">
+            <t-icon name="image-1" size="28rpx" color="#8EC5B9"></t-icon>
+            <text>预览</text>
+          </view>
+        </view>
+      </view>
+      <image class="generated-image" src="{{generatedImage}}" mode="aspectFit" />
+      <view class="image-caption">{{caption}}</view>
+    </view>
+  </view>
+</view>

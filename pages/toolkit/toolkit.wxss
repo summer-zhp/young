@@ -1,0 +1,183 @@
+/* pages/toolkit/toolkit.wxss */
+@import '../../styles/theme.wxss';
+
+.page {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #f5f7f8 0%, #e8f5f3 100%);
+  display: flex;
+  flex-direction: column;
+  padding-bottom: calc(120rpx + env(safe-area-inset-bottom));
+  position: relative;
+  overflow: hidden;
+}
+
+/* ===== 装饰背景 ===== */
+.bg-decoration {
+  position: absolute;
+  top: -150rpx;
+  right: -150rpx;
+  width: 400rpx;
+  height: 400rpx;
+  background: radial-gradient(circle, rgba(142, 197, 185, 0.12) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ===== 头部 ===== */
+.header {
+  padding: 32rpx 40rpx 20rpx;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.header-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.header-title {
+  font-size: 40rpx;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: 2rpx;
+  background: linear-gradient(135deg, var(--primary-start) 0%, var(--primary-dark) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.header-subtitle {
+  font-size: 28rpx;
+  color: var(--text-tertiary);
+  font-weight: 400;
+  margin-top: 8rpx;
+}
+
+/* ===== 工具容器 ===== */
+.tools-container {
+  flex: 1;
+  padding: 24rpx 32rpx 48rpx;
+  position: relative;
+  z-index: 1;
+}
+
+.tools-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+/* ===== 工具卡片 ===== */
+.tool-card {
+  opacity: 0;
+  animation: cardSlideIn 0.5s ease-out forwards;
+}
+
+@keyframes cardSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-40rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.tool-card-inner {
+  display: flex;
+  align-items: center;
+  padding: 40rpx 36rpx;
+  background: var(--surface-white);
+  border-radius: var(--radius-2xl);
+  box-shadow: 0 4rpx 24rpx rgba(0, 0, 0, 0.04);
+  transition: all var(--transition-base);
+  border: 1px solid rgba(142, 197, 185, 0.08);
+  gap: 28rpx;
+}
+
+.tool-card:active .tool-card-inner {
+  transform: scale(0.98);
+  box-shadow: 0 2rpx 16rpx rgba(0, 0, 0, 0.06);
+  border-color: rgba(142, 197, 185, 0.2);
+}
+
+/* 图标区域 */
+.tool-icon-wrapper {
+  position: relative;
+  width: 120rpx;
+  height: 120rpx;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tool-icon-bg {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(142, 197, 185, 0.2) 0%, rgba(111, 169, 154, 0.1) 100%);
+  border-radius: 36rpx;
+  transform: rotate(12deg);
+  transition: all var(--transition-base);
+}
+
+.tool-card:active .tool-icon-bg {
+  transform: rotate(0deg) scale(0.95);
+}
+
+.tool-icon-tcb {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 信息区域 */
+.tool-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+  min-width: 0;
+}
+
+.tool-name {
+  font-size: 34rpx;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: 1rpx;
+}
+
+.tool-desc {
+  font-size: 26rpx;
+  color: var(--text-tertiary);
+  font-weight: 400;
+}
+
+/* 箭头指示 */
+.tool-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56rpx;
+  height: 56rpx;
+  flex-shrink: 0;
+}
+
+.tool-arrow text {
+  font-size: 48rpx;
+  color: var(--primary-start);
+  transition: all var(--transition-base);
+  line-height: 1;
+}
+
+.tool-card:active .tool-arrow text {
+  transform: translateX(-8rpx);
+  color: var(--primary-dark);
+}

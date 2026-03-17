@@ -1,0 +1,88 @@
+<!--pages/toolkit/image2pdf/image2pdf.wxml-->
+<view class="page">
+  <!-- 装饰背景 -->
+  <view class="bg-decoration"></view>
+
+  <view class="content">
+    <!-- 头部说明 -->
+    <view class="header-section">
+      <view class="header-content">
+        <t-icon name="file-image" size="48rpx" color="#8EC5B9"></t-icon>
+        <text class="header-title">图片转 PDF</text>
+        <text class="header-desc">选择图片，快速转换为 PDF 文档</text>
+      </view>
+    </view>
+
+    <!-- 图片选择区域 -->
+    <view class="upload-section">
+      <view class="upload-area" bindtap="chooseImages">
+        <view class="upload-icon">
+          <t-icon name="plus" size="48rpx" color="#8EC5B9"></t-icon>
+        </view>
+        <text class="upload-text">选择图片</text>
+        <text class="upload-hint">最多可选择 10 张图片</text>
+      </view>
+
+      <!-- 已选择的图片列表 -->
+      <view class="image-list" wx:if="{{imageList.length > 0}}">
+        <view class="image-grid">
+          <view
+            wx:for="{{imageList}}"
+            wx:key="index"
+            class="image-item"
+          >
+            <image class="image-thumb" src="{{item}}" mode="aspectFill" />
+            <view class="image-delete" bindtap="removeImage" data-index="{{index}}">
+              <t-icon name="close-circle" size="40rpx" color="#fff"></t-icon>
+            </view>
+            <view class="image-index">{{index + 1}}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 转换按钮 -->
+    <view class="convert-section" wx:if="{{imageList.length > 0}}">
+      <button
+        class="convert-btn"
+        bindtap="convertToPdf"
+        disabled="{{isConverting}}"
+      >
+        <text wx:if="{{!isConverting}}">转换为 PDF</text>
+        <text wx:else>转换中...</text>
+      </button>
+    </view>
+
+    <!-- 转换结果 -->
+    <view class="result-section" wx:if="{{pdfResult}}">
+      <view class="result-card">
+        <view class="result-header">
+          <view class="result-header-title">
+            <t-icon name="file-pdf" size="36rpx" color="#ff6b6b"></t-icon>
+            <text class="result-title">转换成功</text>
+          </view>
+          <view class="result-actions">
+            <view class="result-btn" bindtap="downloadPdf">
+              <t-icon name="download" size="32rpx" color="#8EC5B9"></t-icon>
+              <text>保存</text>
+            </view>
+            <view class="result-btn" bindtap="copyLink">
+              <t-icon name="link-1" size="32rpx" color="#8EC5B9"></t-icon>
+              <text>复制链接</text>
+            </view>
+          </view>
+        </view>
+        <view class="result-info">
+          <text class="result-text">图片数量：{{pdfResult.imageCount}} 张</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view wx:if="{{!imageList.length && !pdfResult}}" class="empty-state">
+    <t-icon name="file-image" size="100rpx" color="#CCCCCC"></t-icon>
+    <text class="empty-text">暂无转换记录</text>
+    <text class="empty-desc">选择图片开始转换吧</text>
+  </view>
+</view>

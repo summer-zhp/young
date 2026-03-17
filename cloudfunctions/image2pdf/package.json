@@ -1,0 +1,11 @@
+{
+  "name": "image2pdf",
+  "version": "1.0.0",
+  "description": "图片转 PDF 云函数",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3",
+    "axios": "^1.6.0",
+    "pdfkit": "^0.14.0"
+  }
+}
