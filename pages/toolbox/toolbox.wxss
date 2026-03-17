@@ -3,7 +3,7 @@
 
 .page {
   min-height: 100vh;
-  background: linear-gradient(180deg, #F5F7F8 0%, #E8F5F3 100%);
+  background: linear-gradient(180deg, #f5f7f8 0%, #e8f5f3 100%);
   display: flex;
   flex-direction: column;
   padding-bottom: calc(120rpx + env(safe-area-inset-bottom));
@@ -38,14 +38,21 @@
 }
 
 @keyframes float {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  33% { transform: translate(30rpx, -30rpx) scale(1.05); }
-  66% { transform: translate(-20rpx, 20rpx) scale(0.95); }
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(30rpx, -30rpx) scale(1.05);
+  }
+  66% {
+    transform: translate(-20rpx, 20rpx) scale(0.95);
+  }
 }
 
 /* ===== 头部区域 - 全新设计 ===== */
 .header {
-  padding: 96rpx 40rpx 48rpx;
+  padding: 32rpx 40rpx 20rpx 48rpx;
   text-align: center;
   position: relative;
   z-index: 1;
@@ -114,6 +121,26 @@
   animation-delay: var(--card-delay, 0ms);
 }
 
+.tool-card.highlight {
+  transform: scale(1.02);
+}
+
+.tool-card.highlight .tool-card-inner {
+  background: linear-gradient(135deg, rgba(142, 197, 185, 0.05) 0%, rgba(111, 169, 154, 0.02) 100%);
+  border-color: rgba(142, 197, 185, 0.2);
+}
+
+.tool-card.highlight .tool-icon-bg {
+  background: linear-gradient(135deg, #8ec5b9 0%, #6f9a8e 100%);
+}
+
+.tool-card.highlight .tool-name {
+  background: linear-gradient(135deg, #6f9a8e 0%, #8ec5b9 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
 @keyframes cardSlideIn {
   from {
     opacity: 0;
@@ -163,6 +190,10 @@
   transition: all var(--transition-base);
 }
 
+.tool-card.highlight .tool-icon-bg {
+  transform: rotate(0deg);
+}
+
 .tool-card:active .tool-icon-bg {
   transform: rotate(0deg) scale(0.95);
 }
@@ -173,6 +204,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.tool-card.highlight .tool-icon-tcb {
+  transform: scale(1.1);
 }
 
 /* 信息区域 */
@@ -189,6 +224,7 @@
   font-weight: 600;
   color: var(--text-primary);
   letter-spacing: 1rpx;
+  transition: all var(--transition-base);
 }
 
 .tool-desc {
@@ -228,5 +264,30 @@
 
   .header-title {
     font-size: 60rpx;
+  }
+}
+
+/* ===== 新消息提示 ===== */
+.new-badge {
+  position: absolute;
+  top: -8rpx;
+  right: -8rpx;
+  background: linear-gradient(135deg, #ff6b6b 0%, #ff5252 100%);
+  color: #ffffff;
+  font-size: 20rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 20rpx;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
   }
 }

@@ -1,0 +1,102 @@
+<!--pages/treeHole/treeHole.wxml - 陪伴者倾诉页面-->
+<view class="page">
+  <!-- 头部导航 - 使用原生导航栏 -->
+
+  <!-- 装饰背景 - 柔和的光晕效果 -->
+  <view class="decoration decoration-1"></view>
+  <view class="decoration decoration-2"></view>
+  <view class="decoration decoration-3"></view>
+
+  <!-- 聊天记录区域 -->
+  <scroll-view class="chat-container" scroll-y scroll-into-view="{{scrollToView}}" scroll-with-animation="true"
+    enhanced="true" show-scrollbar="{{false}}" bounces="true">
+    <view class="chat-list">
+      <!-- 初始欢迎消息 -->
+      <view class="welcome-card" wx:if="{{messages.length === 0}}">
+        <view class="welcome-avatar">
+          <t-icon name="chat-bubble" size="40rpx" color="#FFFFFF"></t-icon>
+        </view>
+        <view class="welcome-content">
+          <view class="welcome-bubble">
+            <text class="welcome-text">你好呀，我是小树洞 🌿</text>
+          </view>
+          <view class="welcome-bubble">
+            <text class="welcome-text">有什么想说的都可以和我说</text>
+          </view>
+          <view class="welcome-bubble">
+            <text class="welcome-text">开心的、难过的、烦恼的... 我在这里陪着你</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 聊天消息列表 -->
+      <block wx:for="{{messages}}" wx:key="id">
+        <!-- 机器人消息 - 头像在左，气泡在右 -->
+        <view class="message message-bot" wx:if="{{item.role === 'bot'}}" id="msg-{{item.id}}">
+          <view class="avatar avatar-bot">
+            <view class="avatar-inner bot-gradient">
+              <t-icon name="chat-bubble" size="28rpx" color="#FFFFFF"></t-icon>
+            </view>
+          </view>
+          <view class="message-content">
+            <view class="message-bubble message-bubble-bot">
+              <text class="bubble-text">{{item.content}}</text>
+            </view>
+            <text class="bubble-time">{{item.time}}</text>
+          </view>
+        </view>
+
+        <!-- 用户消息 - 气泡在左，头像在右 -->
+        <view class="message message-user" wx:if="{{item.role === 'user'}}" id="msg-{{item.id}}">
+          <view class="avatar avatar-user">
+            <view class="avatar-inner user-gradient" wx:if="{{!userAvatar}}">
+              <t-icon name="user" size="28rpx" color="#FFFFFF"></t-icon>
+            </view>
+            <image wx:else class="avatar-img" src="{{userAvatar}}" mode="aspectFill" />
+          </view>
+          <view class="message-content">
+            <view class="message-bubble message-bubble-user">
+              <text class="bubble-text">{{item.content}}</text>
+            </view>
+            <text class="bubble-time">{{item.time}}</text>
+          </view>
+        </view>
+      </block>
+
+      <!-- 加载中 -->
+      <view class="message message-bot" wx:if="{{isLoading}}">
+        <view class="avatar avatar-bot">
+          <view class="avatar-inner bot-gradient">
+            <t-icon name="chat-bubble" size="28rpx" color="#FFFFFF"></t-icon>
+          </view>
+        </view>
+        <view class="message-content">
+          <view class="message-bubble message-bubble-bot loading">
+            <view class="typing-indicator">
+              <view class="typing-dot typing-dot-1"></view>
+              <view class="typing-dot typing-dot-2"></view>
+              <view class="typing-dot typing-dot-3"></view>
+            </view>
+          </view>
+          <text class="bubble-time">正在输入...</text>
+        </view>
+      </view>
+
+      <!-- 底部占位 -->
+      <view class="bottom-spacer" id="bottomSpacer"></view>
+    </view>
+  </scroll-view>
+
+  <!-- 输入区域 -->
+  <view class="input-bar">
+    <view class="input-wrapper">
+      <textarea class="chat-input" placeholder="想说什么呢？我在听..." placeholder-class="input-placeholder"
+        value="{{inputValue}}" bindinput="onInput" bindconfirm="sendMessage" maxlength="500" auto-height fixed-height
+        cursor-spacing="20" disable-default-padding confirm-type="send" />
+      <view class="send-btn {{inputValue.trim() ? 'active' : ''}}" bindtap="sendMessage" hover-class="send-btn-hover"
+        hover-start-time="0" hover-stay-time="100">
+        <t-icon name="send-filled" size="40rpx" color="{{inputValue.trim() ? '#FFFFFF' : '#CCCCCC'}}"></t-icon>
+      </view>
+    </view>
+  </view>
+</view>

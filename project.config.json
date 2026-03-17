@@ -14,7 +14,12 @@
     "minified": true,
     "enhance": true,
     "showShadowRootInWxmlPanel": true,
-    "packNpmRelationList": [],
+    "packNpmRelationList": [
+      {
+        "packageJsonPath": "/node_modules/tdesign-miniprogram/package.json",
+        "miniprogramNpmDistDir": "/miniprogram/node_modules/tdesign-miniprogram"
+      }
+    ],
     "babelSetting": {
       "ignore": [],
       "disablePlugins": [],

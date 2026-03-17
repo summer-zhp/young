@@ -24,10 +24,10 @@
       <view class="user-card">
         <view class="user-card-bg"></view>
         <view class="user-card-content">
-          <view class="user-avatar">
-            <text wx:if="{{userInfo.avatarUrl}}">
+          <view class="user-avatar" bindtap="onAvatarClick">
+            <view wx:if="{{userInfo.avatarUrl}}" style="height: 100%">
               <image class="avatar-img" src="{{userInfo.avatarUrl}}" mode="aspectFill" />
-            </text>
+            </view>
             <t-icon wx:else name="user-circle" size="80rpx" color="#fff"></t-icon>
           </view>
           <view class="user-info">
@@ -71,10 +71,10 @@
     <!-- 职位信息 -->
     <view class="job-section">
       <view class="section-header">
-      <view class="section-header-title">
-        <t-icon name="user-safety" size="36rpx" color="#8EC5B9"></t-icon>
-        <text class="section-title">我的职位</text>
-      </view>
+        <view class="section-header-title">
+          <t-icon name="user-safety" size="36rpx" color="#8EC5B9"></t-icon>
+          <text class="section-title">我的职位</text>
+        </view>
       </view>
       <view class="job-card">
         <view class="job-content">
@@ -95,11 +95,12 @@
     <!-- 收藏列表 -->
     <view class="favorites-section">
       <view class="section-header">
-      <view class="section-header-title">
-        <t-icon name="heart" size="36rpx" color="#8EC5B9"></t-icon>
-        <text class="section-title">我的收藏</text>
-      </view>
-        <text class="section-more" bindtap="goToFavorites">查看全部 <t-icon name="chevron-right" size="28rpx" color="#9A9A9A"></t-icon></text>
+        <view class="section-header-title">
+          <t-icon name="heart" size="36rpx" color="#8EC5B9"></t-icon>
+          <text class="section-title">我的收藏</text>
+        </view>
+        <text class="section-more" bindtap="goToFavorites">查看全部 <t-icon name="chevron-right" size="28rpx"
+            color="#9A9A9A"></t-icon></text>
       </view>
       <view class="favorites-list" wx:if="{{favorites.length > 0}}">
         <view class="favorite-item" wx:for="{{favorites}}" wx:key="_id">

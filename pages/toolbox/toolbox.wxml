@@ -7,13 +7,13 @@
   <!-- 头部区域 -->
   <view class="header">
     <view class="header-content">
-      <view class="title-wrapper">
+      <!-- <view class="title-wrapper">
         <view class="title-icon-box">
           <t-icon name="grid-view" size="40rpx" color="#8EC5B9"></t-icon>
         </view>
         <text class="header-title">放松室</text>
-      </view>
-      <text class="header-subtitle">选择一个小工具，开启治愈时光</text>
+      </view> -->
+      <text class="header-subtitle">选择一种方式，开启治愈我们的时光~</text>
     </view>
   </view>
 

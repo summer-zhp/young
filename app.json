@@ -4,6 +4,7 @@
     "pages/toolbox/toolbox",
     "pages/focus/focus",
     "pages/bubble/index",
+    "pages/treeHole/treeHole",
     "pages/profile/profile",
     "pages/favorite/index"
   ],

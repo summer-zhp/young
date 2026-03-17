@@ -4,13 +4,21 @@ Page({
     tools: [
       {
         id: 1,
+        name: '树洞',
+        icon: 'heart',
+        description: '心里的话，有人听',
+        url: '/pages/treeHole/treeHole',
+        highlight: true
+      },
+      {
+        id: 2,
         name: '专注时钟',
         icon: 'time',
         description: '专注工作学习',
         url: '/pages/focus/focus'
       },
       {
-        id: 2,
+        id: 3,
         name: '戳泡泡',
         icon: 'chat-bubble',
         description: '解压小游戏',

@@ -1,0 +1,11 @@
+{
+  "navigationStyle": "default",
+  "navigationBarTitleText": "树洞",
+  "navigationBarBackgroundColor": "#8EC5B9",
+  "navigationBarTextStyle": "white",
+  "backgroundColor": "#F5F7F8",
+  "disableScroll": false,
+  "usingComponents": {
+    "t-icon": "tdesign-miniprogram/icon/icon"
+  }
+}

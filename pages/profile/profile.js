@@ -362,6 +362,99 @@ Page({
     })
   },
 
+  // 点击头像上传头像
+  async onAvatarClick() {
+    // 检查是否已登录
+    if (!this.data.hasUserInfo) {
+      wx.showToast({
+        title: '请先登录',
+        icon: 'none'
+      })
+      return
+    }
+
+    // 选择图片
+    wx.chooseMedia({
+      count: 1,
+      mediaType: ['image'],
+      sourceType: ['album', 'camera'],
+      sizeType: ['compressed'],
+      camera: 'back',
+      success: async (res) => {
+        const tempFilePath = res.tempFiles[0].tempFilePath
+        console.log('选择的图片路径:', tempFilePath)
+
+        // 显示上传提示
+        wx.showLoading({
+          title: '上传中...',
+          mask: true
+        })
+
+        try {
+          // 上传到云存储
+          const uploadResult = await wx.cloud.uploadFile({
+            cloudPath: `avatar/${this.data.userInfo.user_no}_${Date.now()}.png`,
+            filePath: tempFilePath
+          })
+
+          console.log('上传成功，fileID:', uploadResult.fileID)
+
+          // 获取临时访问链接
+          const urlResult = await wx.cloud.getTempFileURL({
+            fileList: [uploadResult.fileID]
+          })
+
+          const avatarUrl = urlResult.fileList[0].tempFileURL
+          console.log('头像 URL:', avatarUrl)
+
+          // 更新本地缓存
+          const userInfo = { ...this.data.userInfo, avatarUrl }
+          wx.setStorageSync('userInfo', userInfo)
+
+          // 更新页面显示
+          this.setData({
+            userInfo
+          })
+
+          // 同步到云数据库
+          const updateResult = await wx.cloud.callFunction({
+            name: 'updateUserAvatar',
+            data: {
+              avatarUrl
+            }
+          })
+
+          wx.hideLoading()
+
+          if (updateResult.result && updateResult.result.success) {
+            wx.showToast({
+              title: '头像更新成功',
+              icon: 'success'
+            })
+          } else {
+            throw new Error('同步到云端失败')
+          }
+        } catch (err) {
+          wx.hideLoading()
+          console.error('上传头像失败:', err)
+          wx.showToast({
+            title: '上传失败，请重试',
+            icon: 'error'
+          })
+        }
+      },
+      fail: (err) => {
+        if (err.errMsg !== 'chooseMedia:fail cancel') {
+          console.error('选择图片失败:', err)
+          wx.showToast({
+            title: '选择失败，请重试',
+            icon: 'error'
+          })
+        }
+      }
+    })
+  },
+
   onShareAppMessage() {
     const { userInfo } = this.data
     return {
