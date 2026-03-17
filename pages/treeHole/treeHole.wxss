@@ -11,7 +11,22 @@
   display: flex;
   flex-direction: column;
   position: relative;
-  overflow: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  box-sizing: border-box;
+  padding-bottom: 120rpx;
+}
+
+/* ===== 聊天容器 ===== */
+.chat-container {
+  flex: 1;
+  box-sizing: border-box;
+}
+
+.chat-list {
+  display: flex;
+  flex-direction: column;
+  padding: 24rpx 24rpx 120rpx 24rpx;
   box-sizing: border-box;
 }
 
@@ -69,22 +84,6 @@
     transform: translate(-15rpx, 15rpx) scale(0.97);
     box-sizing: border-box;
   }
-}
-
-/* ===== 聊天容器 ===== */
-.chat-container {
-  flex: 1;
-  padding: 24rpx 24rpx 200rpx 24rpx;
-  z-index: 1;
-  position: relative;
-  overflow: visible !important;
-  box-sizing: border-box;
-}
-
-.chat-list {
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
 }
 
 /* ===== 欢迎卡片 ===== */
@@ -381,7 +380,7 @@
   right: 0;
   padding: 16rpx 24rpx;
   padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
-  background: transparent;
+  background: linear-gradient(to top, rgba(240, 244, 243, 0.95) 0%, transparent 100%);
   z-index: 100;
   box-sizing: border-box;
 }

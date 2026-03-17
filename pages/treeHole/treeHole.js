@@ -22,7 +22,6 @@ Page({
   data: {
     inputValue: '',
     isLoading: false,
-    scrollToView: '',
     messages: [],
     userAvatar: ''
   },
@@ -33,11 +32,6 @@ Page({
   onLoad() {
     // 页面加载时获取用户头像
     this.loadUserAvatar();
-
-    // 页面加载时滚动到底部
-    wx.nextTick(() => {
-      this.scrollToBottom();
-    });
   },
 
   // 加载用户头像
@@ -102,14 +96,12 @@ Page({
       time: this.formatTime(new Date())
     };
 
+    // 先设置消息，然后等待渲染完成再滚动
     this.setData({
       messages: [...this.data.messages, userMessage],
       inputValue: '',
       isLoading: true
-    });
-
-    // 滚动到底部
-    wx.nextTick(() => {
+    }, () => {
       this.scrollToBottom();
     });
 
@@ -128,6 +120,8 @@ Page({
       this.setData({
         messages: [...this.data.messages, botMessage],
         isLoading: false
+      }, () => {
+        this.scrollToBottom();
       });
 
     } catch (error) {
@@ -144,13 +138,10 @@ Page({
       this.setData({
         messages: [...this.data.messages, errorMessage],
         isLoading: false
+      }, () => {
+        this.scrollToBottom();
       });
     }
-
-    // 滚动到底部
-    wx.nextTick(() => {
-      this.scrollToBottom();
-    });
   },
 
   // 调用微信云开发 AI 模型 - 使用 createModel 和 streamText 方法
@@ -187,7 +178,6 @@ Page({
 
       // 循环接收完整的响应文本
       for await (let str of res.textStream) {
-        console.log('stream chunk:', str);
         fullContent += str;
       }
 
@@ -206,11 +196,34 @@ Page({
     }
   },
 
-  // 滚动到底部
+  // 滚动到底部 - 使用页面滚动
   scrollToBottom() {
-    this.setData({
-      scrollToView: 'bottomSpacer'
-    });
+    const that = this;
+
+    console.log('=== scrollToBottom 开始 ===');
+
+    // 等待 DOM 渲染完成
+    setTimeout(function() {
+      // 获取聊天列表的高度
+      wx.createSelectorQuery().in(that)
+        .select('.chat-list')
+        .boundingClientRect()
+        .exec(function(res) {
+          if (!res || !res[0]) {
+            console.error('获取列表失败');
+            return;
+          }
+
+          const listRect = res[0];
+          console.log('列表高度:', listRect.height);
+
+          // 使用页面滚动到底部
+          wx.pageScrollTo({
+            scrollTop: listRect.height,
+            duration: 100
+          });
+        });
+    }, 150);
   },
 
   // 格式化时间
