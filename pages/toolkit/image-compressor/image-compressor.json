@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "图片压缩",
+  "usingComponents": {
+    "t-icon": "tdesign-miniprogram/icon/icon"
+  }
+}

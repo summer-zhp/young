@@ -1,0 +1,180 @@
+<!--pages/toolkit/image-compressor/image-compressor.wxml-->
+<view class="page">
+  <!-- 装饰背景 -->
+  <view class="decoration decoration-1"></view>
+  <view class="decoration decoration-2"></view>
+  <view class="decoration decoration-3"></view>
+
+  <!-- 头部区域 -->
+  <view class="header">
+    <view class="header-content">
+      <view class="title-badge">
+        <t-icon name="image" size="40rpx" color="#6f9a8e"></t-icon>
+        <text class="title-text">图片压缩</text>
+      </view>
+      <text class="header-subtitle">智能压缩，保持清晰</text>
+    </view>
+  </view>
+
+  <!-- 主内容区域 -->
+  <view class="main-content">
+    <!-- 选择图片卡片 -->
+    <view class="select-card">
+      <view class="select-header">
+        <t-icon name="gallery" size="32rpx" color="#8EC5B9"></t-icon>
+        <text class="select-label">选择图片</text>
+      </view>
+
+      <view class="upload-area" bindtap="chooseImage">
+        <image wx:if="{{originalImage}}" class="preview-image" src="{{originalImage}}" mode="aspectFit" />
+        <view wx:else class="upload-placeholder">
+          <t-icon name="add" size="64rpx" color="#cccccc"></t-icon>
+          <text class="upload-text">点击选择图片</text>
+          <text class="upload-hint">支持 JPG、PNG 格式</text>
+        </view>
+      </view>
+
+      <view wx:if="{{originalImage}}" class="image-info">
+        <view class="info-item">
+          <text class="info-label">原图大小</text>
+          <text class="info-value">{{originalSize}}</text>
+        </view>
+        <view class="info-item">
+          <text class="info-label">尺寸</text>
+          <text class="info-value">{{imageDimensions}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 压缩设置卡片 -->
+    <view class="settings-card" wx:if="{{originalImage}}">
+      <view class="settings-header">
+        <t-icon name="setting" size="32rpx" color="#8EC5B9"></t-icon>
+        <text class="settings-label">压缩设置</text>
+      </view>
+
+      <!-- 压缩质量 -->
+      <view class="setting-item">
+        <view class="setting-header-row">
+          <text class="setting-title">压缩质量</text>
+          <text class="setting-value">{{quality}}%</text>
+        </view>
+        <slider
+          class="quality-slider"
+          min="10"
+          max="100"
+          value="{{quality}}"
+          activeColor="#8EC5B9"
+          backgroundColor="#e5e5e5"
+          block-size="20"
+          block-color="#ffffff"
+          bindchange="onQualityChange"
+        />
+        <view class="quality-tips">
+          <text class="tip-label">低</text>
+          <text class="tip-label" style="color: #8EC5B9; font-weight: 600;">{{quality}}%</text>
+          <text class="tip-label">高</text>
+        </view>
+      </view>
+
+      <!-- 压缩尺寸 -->
+      <view class="setting-item">
+        <view class="setting-header-row">
+          <text class="setting-title">目标尺寸</text>
+          <text class="setting-value">{{sizeOption === 'original' ? '原尺寸' : sizeOption === '750' ? '750px' : '500px'}}</text>
+        </view>
+        <view class="size-options">
+          <view
+            class="size-option {{sizeOption === 'original' ? 'active' : ''}}"
+            data-option="original"
+            bindtap="onSizeOptionChange"
+          >
+            <text class="size-option-text">原尺寸</text>
+          </view>
+          <view
+            class="size-option {{sizeOption === '750' ? 'active' : ''}}"
+            data-option="750"
+            bindtap="onSizeOptionChange"
+          >
+            <text class="size-option-text">750px</text>
+          </view>
+          <view
+            class="size-option {{sizeOption === '500' ? 'active' : ''}}"
+            data-option="500"
+            bindtap="onSizeOptionChange"
+          >
+            <text class="size-option-text">500px</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 压缩按钮 -->
+    <view class="compress-section" wx:if="{{originalImage}}">
+      <button
+        class="compress-btn {{canCompress ? 'active' : ''}}"
+        bindtap="compressImage"
+        disabled="{{!canCompress}}"
+      >
+        <t-icon name="shrink" size="40rpx" color="#FFFFFF"></t-icon>
+        <text class="compress-btn-text">{{isCompressing ? '压缩中...' : '开始压缩'}}</text>
+      </button>
+    </view>
+
+    <!-- 压缩结果 -->
+    <view class="result-card" wx:if="{{compressedImage}}">
+      <view class="result-header">
+        <view class="result-title">
+          <t-icon name="check-circle" size="36rpx" color="#52c41a"></t-icon>
+          <text>压缩成功</text>
+        </view>
+      </view>
+
+      <!-- 对比信息 -->
+      <view class="comparison">
+        <view class="comparison-item">
+          <text class="comparison-label">压缩前</text>
+          <text class="comparison-size before">{{originalSize}}</text>
+        </view>
+        <view class="comparison-arrow">
+          <t-icon name="arrow-right" size="24rpx" color="#999999"></t-icon>
+        </view>
+        <view class="comparison-item">
+          <text class="comparison-label">压缩后</text>
+          <text class="comparison-size after">{{compressedSize}}</text>
+        </view>
+        <view class="comparison-arrow">
+          <t-icon name="arrow-right" size="24rpx" color="#999999"></t-icon>
+        </view>
+        <view class="comparison-item">
+          <text class="comparison-label">节省</text>
+          <text class="comparison-rate">{{saveRate}}%</text>
+        </view>
+      </view>
+
+      <!-- 预览图片 -->
+      <view class="image-preview-wrapper">
+        <image class="compressed-image" src="{{compressedImage}}" mode="aspectFit" />
+      </view>
+
+      <!-- 操作按钮 -->
+      <view class="result-actions">
+        <view class="action-btn" bindtap="previewImage">
+          <t-icon name="image-1" size="32rpx" color="#8EC5B9"></t-icon>
+          <text>预览</text>
+        </view>
+        <view class="action-btn" bindtap="saveImage">
+          <t-icon name="download" size="32rpx" color="#8EC5B9"></t-icon>
+          <text>保存</text>
+        </view>
+        <view class="action-btn" bindtap="reCompress">
+          <t-icon name="refresh" size="32rpx" color="#8EC5B9"></t-icon>
+          <text>重新压缩</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 隐藏的 Canvas 用于图片压缩 -->
+  <canvas type="2d" id="compressCanvas" class="hidden-canvas" />
+</view>

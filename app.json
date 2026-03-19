@@ -10,7 +10,8 @@
     "pages/toolkit/toolkit",
     "pages/toolkit/image2pdf/image2pdf",
     "pages/toolkit/caption-image/caption-image",
-    "pages/toolkit/qrcode-generator/qrcode-generator"
+    "pages/toolkit/qrcode-generator/qrcode-generator",
+    "pages/toolkit/image-compressor/image-compressor"
   ],
   "window": {
     "backgroundTextStyle": "light",

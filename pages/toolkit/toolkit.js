@@ -45,5 +45,12 @@ Page({
     wx.navigateTo({
       url: '/pages/toolkit/image2pdf/image2pdf'
     })
+  },
+
+  // 跳转到图片压缩页面
+  goToImageCompressor() {
+    wx.navigateTo({
+      url: '/pages/toolkit/image-compressor/image-compressor'
+    })
   }
 })

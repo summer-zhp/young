@@ -70,6 +70,25 @@
           </view>
         </view>
       </view>
+
+      <!-- 图片压缩 -->
+      <view class="tool-card" bindtap="goToImageCompressor">
+        <view class="tool-card-inner">
+          <view class="tool-icon-wrapper">
+            <view class="tool-icon-bg"></view>
+            <view class="tool-icon-tcb">
+              <t-icon name="image-off" size="48rpx" color="#8EC5B9"></t-icon>
+            </view>
+          </view>
+          <view class="tool-info">
+            <text class="tool-name">图片压缩</text>
+            <text class="tool-desc">智能压缩图片大小，保持清晰度</text>
+          </view>
+          <view class="tool-arrow">
+            <t-icon name="chevron-right" size="32rpx" color="#9A9A9A"></t-icon>
+          </view>
+        </view>
+      </view>
     </view>
   </view>
 </view>
