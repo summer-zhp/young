@@ -9,7 +9,8 @@
     "pages/favorite/index",
     "pages/toolkit/toolkit",
     "pages/toolkit/image2pdf/image2pdf",
-    "pages/toolkit/caption-image/caption-image"
+    "pages/toolkit/caption-image/caption-image",
+    "pages/toolkit/qrcode-generator/qrcode-generator"
   ],
   "window": {
     "backgroundTextStyle": "light",

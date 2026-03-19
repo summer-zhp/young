@@ -33,6 +33,13 @@ Page({
     })
   },
 
+  // 跳转到二维码生成页面
+  goToQRCode() {
+    wx.navigateTo({
+      url: '/pages/toolkit/qrcode-generator/qrcode-generator'
+    })
+  },
+
   // 跳转到图片转 PDF 页面
   goToImage2Pdf() {
     wx.navigateTo({

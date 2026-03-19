@@ -1,0 +1,9 @@
+{
+  "usingComponents": {
+    "t-icon": "tdesign-miniprogram/icon/icon",
+    "t-button": "tdesign-miniprogram/button/button"
+  },
+  "navigationBarTitleText": "二维码生成器",
+  "navigationBarBackgroundColor": "#8EC5B9",
+  "navigationBarTextStyle": "white"
+}

@@ -33,6 +33,25 @@
         </view>
       </view>
 
+      <!-- 二维码生成 -->
+      <view class="tool-card" bindtap="goToQRCode">
+        <view class="tool-card-inner">
+          <view class="tool-icon-wrapper">
+            <view class="tool-icon-bg"></view>
+            <view class="tool-icon-tcb">
+              <t-icon name="scan" size="48rpx" color="#8EC5B9"></t-icon>
+            </view>
+          </view>
+          <view class="tool-info">
+            <text class="tool-name">二维码生成</text>
+            <text class="tool-desc">文本内容一键生成二维码</text>
+          </view>
+          <view class="tool-arrow">
+            <t-icon name="chevron-right" size="32rpx" color="#9A9A9A"></t-icon>
+          </view>
+        </view>
+      </view>
+
       <!-- 图片转 PDF -->
       <view class="tool-card" bindtap="goToImage2Pdf">
         <view class="tool-card-inner">
