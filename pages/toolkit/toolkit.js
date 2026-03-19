@@ -1,25 +1,29 @@
 // pages/toolkit/toolkit.js
+const app = getApp()
+
 Page({
   data: {
-    tools: [
-      {
-        id: 1,
-        name: '朋友圈配图',
-        icon: 'image',
-        description: 'AI 智能生成朋友圈文案场景图',
-        url: '/pages/toolkit/caption-image/caption-image'
-      },
-      {
-        id: 2,
-        name: '图片转 PDF',
-        icon: 'file-image',
-        description: '将图片快速转换为 PDF 文档',
-        url: '/pages/toolkit/image2pdf/image2pdf'
-      }
-    ]
+    showCaptionImage: true
   },
 
   onLoad() {
+    this.checkCaptionImageVisible()
+  },
+
+  // 检查朋友圈配图功能是否显示
+  checkCaptionImageVisible() {
+    const appConfig = app.globalData.appConfig
+
+    // 如果配置还未加载，等待一下
+    if (!appConfig) {
+      setTimeout(() => this.checkCaptionImageVisible(), 100)
+      return
+    }
+
+    // 根据环境变量控制是否显示
+    this.setData({
+      showCaptionImage: appConfig.captionImageEnabled !== false
+    })
   },
 
   // 跳转到朋友圈配图页面

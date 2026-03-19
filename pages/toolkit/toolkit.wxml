@@ -15,7 +15,7 @@
   <view class="tools-container">
     <view class="tools-grid">
       <!-- 朋友圈配图 -->
-      <view class="tool-card" bindtap="goToCaptionImage">
+      <view class="tool-card" wx:if="{{showCaptionImage}}" bindtap="goToCaptionImage">
         <view class="tool-card-inner">
           <view class="tool-icon-wrapper">
             <view class="tool-icon-bg"></view>

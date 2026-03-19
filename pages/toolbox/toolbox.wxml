@@ -20,7 +20,7 @@
   <!-- 工具列表 -->
   <view class="tools-container">
     <view class="tools-grid">
-      <view wx:for="{{tools}}" wx:key="id" class="tool-card" style="--card-delay: {{index * 100}}ms" bindtap="goToTool"
+      <view wx:for="{{filteredTools}}" wx:key="id" class="tool-card" style="--card-delay: {{index * 100}}ms" bindtap="goToTool"
         data-url="{{item.url}}">
         <view class="tool-card-inner">
           <view class="tool-icon-wrapper">

@@ -20,9 +20,32 @@ App({
       })
     }
 
+    // 加载应用配置（控制功能显示和隐藏）
+    this.loadAppConfig()
+
     this.globalData = {}
   },
   globalData: {
-    userInfo: null
+    userInfo: null,
+    appConfig: null
+  },
+  // 加载应用配置
+  async loadAppConfig() {
+    try {
+      const result = await wx.cloud.callFunction({
+        name: 'getAppConfig'
+      })
+      if (result && result.result && result.result.success) {
+        this.globalData.appConfig = result.result.config
+        console.log('应用配置加载成功:', result.result.config)
+      }
+    } catch (error) {
+      console.error('加载应用配置失败:', error)
+      // 失败时使用默认配置（全部开启）
+      this.globalData.appConfig = {
+        treeHoleEnabled: true,
+        captionImageEnabled: true
+      }
+    }
   }
 })
