@@ -1,6 +1,8 @@
 // app.js
 App({
-  onLaunch: function () {
+  async onLaunch() {
+    await this.updateManager()
+
     if (!wx.cloud) {
       console.error('请使用 2.2.3 或以上的基础库以使用云能力')
     } else {
@@ -20,32 +22,103 @@ App({
       })
     }
 
-    // 加载应用配置（控制功能显示和隐藏）
-    this.loadAppConfig()
+    // 判断应用版本（控制功能显示和隐藏）
+    await this.checkAppVersion()
 
-    this.globalData = {}
+    // 获取用户登录状态
+    this.checkLoginStatus()
   },
   globalData: {
     userInfo: null,
-    appConfig: null
+    isReleaseVersion: false
   },
-  // 加载应用配置
-  async loadAppConfig() {
-    try {
-      const result = await wx.cloud.callFunction({
-        name: 'getAppConfig'
+  // 检查是否更新
+  updateManager() {
+    const updateManager = wx.getUpdateManager()
+
+    updateManager.onCheckForUpdate((res) => {
+      console.log(res.hasUpdate, "是否有更新")
+    })
+
+    updateManager.onUpdateReady(function () {
+      wx.showModal({
+        title: '更新提示',
+        content: '新版本已经准备好，是否重启应用？',
+        success(res) {
+          if (res.confirm) {
+            updateManager.applyUpdate()
+          }
+        }
       })
-      if (result && result.result && result.result.success) {
-        this.globalData.appConfig = result.result.config
-        console.log('应用配置加载成功:', result.result.config)
-      }
+    })
+
+    updateManager.onUpdateFailed(function () {
+      wx.showModal({
+        title: '更新提示',
+        content: '新版本下载失败',
+        showCancel: false
+      })
+    })
+  },
+  // 判断是否为正式版
+  checkAppVersion() {
+    try {
+      const accountInfo = wx.getAccountInfoSync()
+      console.log(accountInfo);
+      // miniProgram 字段在开发版/体验版中为 undefined 或空对象
+      // 在正式版中会包含完整的小程序信息
+      // 获取小程序的当前环境版本：develop（开发版）、trial（体验版）、release（正式版）
+      const { envVersion } = accountInfo.miniProgram
+      this.globalData.isReleaseVersion = envVersion === 'release'
     } catch (error) {
-      console.error('加载应用配置失败:', error)
-      // 失败时使用默认配置（全部开启）
-      this.globalData.appConfig = {
-        treeHoleEnabled: true,
-        captionImageEnabled: true
-      }
+      console.error('获取版本信息失败:', error)
+      // 失败时默认为非正式版
+      this.globalData.isReleaseVersion = false
     }
+  },
+
+  // 检查用户登录状态
+  checkLoginStatus() {
+    const userInfo = wx.getStorageSync('userInfo')
+    if (userInfo && userInfo.openid) {
+      // 已登录，从本地缓存获取用户信息
+      this.globalData.userInfo = userInfo
+    }
+  },
+
+  // 检查是否已登录，返回布尔值
+  isLogged() {
+    return !!(this.globalData.userInfo && this.globalData.userInfo.openid)
+  },
+
+  // 需要登录时提示并跳转
+  requireLogin() {
+    if (this.isLogged()) {
+      return true
+    }
+
+    // 检查本地缓存是否有 userInfo
+    const userInfo = wx.getStorageSync('userInfo')
+    if (userInfo && userInfo.openid) {
+      // 本地有但 globalData 没有，同步一下
+      this.globalData.userInfo = userInfo
+      return true
+    }
+
+    wx.showModal({
+      title: '提示',
+      content: '请先登录',
+      confirmText: '去登录',
+      confirmColor: '#8EC5B9',
+      success: (res) => {
+        if (res.confirm) {
+          wx.switchTab({
+            url: '/pages/profile/profile'
+          })
+        }
+      }
+    })
+
+    return false
   }
 })

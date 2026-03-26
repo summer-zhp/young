@@ -1,0 +1,218 @@
+<!--pages/led/led.wxml - LED 手持弹幕-->
+<view class="page">
+  <!-- 自定义导航栏 -->
+  <view class="custom-navbar">
+    <view class="navbar-inner">
+      <view class="navbar-back" bindtap="goBack">
+        <t-icon name="chevron-left" size="48rpx" color="#ffffff"></t-icon>
+      </view>
+      <text class="navbar-title">LED 手持弹幕</text>
+    </view>
+  </view>
+
+  <!-- 编辑模式 -->
+  <view class="edit-mode {{isDisplaying ? 'hide' : ''}}">
+    <!-- 预览区域 -->
+    <view class="preview-section">
+        <view class="preview-card">
+          <view class="preview-header">
+            <t-icon name="play-circle" size="40rpx" color="#8EC5B9"></t-icon>
+            <text class="preview-title">实时预览</text>
+          </view>
+          <view class="preview-screen" style="background-color: {{backgroundColor}};">
+            <view class="preview-marquee">
+              <view class="preview-text-wrapper" style="color: {{textColor}};">
+                {{inputText || '请输入文字内容'}}
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+    <!-- 设置区域 -->
+    <view class="settings-section">
+        <!-- 文字输入 -->
+        <view class="setting-card">
+          <view class="card-header">
+            <view class="header-left">
+              <view class="icon-box primary">
+                <t-icon name="edit-1" size="36rpx" color="#ffffff"></t-icon>
+              </view>
+              <text class="card-title">显示文字</text>
+            </view>
+            <text class="char-count">{{inputText.length}} / 50</text>
+          </view>
+          <textarea
+            class="text-input"
+            placeholder="输入弹幕内容，如：欢迎回家、我爱你、演唱会加油"
+            value="{{inputText}}"
+            maxlength="50"
+            bindinput="onInputText"
+            auto-height
+          />
+        </view>
+
+        <!-- 文字颜色 -->
+        <view class="setting-card">
+          <view class="card-header">
+            <view class="header-left">
+              <view class="icon-box danger">
+                <t-icon name="palette" size="36rpx" color="#ffffff"></t-icon>
+              </view>
+              <text class="card-title">文字颜色</text>
+            </view>
+          </view>
+          <view class="color-grid">
+            <view
+              wx:for="{{textColors}}"
+              wx:key="*this"
+              class="color-btn {{textColor === item ? 'active' : ''}}"
+              style="background-color: {{item}};"
+              bindtap="onSelectTextColor"
+              data-color="{{item}}"
+            >
+              <t-icon wx:if="{{textColor === item}}" name="check" size="32rpx" color="#ffffff"></t-icon>
+            </view>
+          </view>
+          <view class="color-custom">
+            <text class="custom-label">自定义：</text>
+            <input
+              class="color-input"
+              type="text"
+              placeholder="#FF0000"
+              value="{{textColor}}"
+              bindinput="onCustomTextColor"
+              maxlength="7"
+            />
+          </view>
+        </view>
+
+        <!-- 背景颜色 -->
+        <view class="setting-card">
+          <view class="card-header">
+            <view class="header-left">
+              <view class="icon-box dark">
+                <t-icon name="image" size="36rpx" color="#ffffff"></t-icon>
+              </view>
+              <text class="card-title">背景颜色</text>
+            </view>
+          </view>
+          <view class="color-grid">
+            <view
+              wx:for="{{bgColors}}"
+              wx:key="*this"
+              class="color-btn {{backgroundColor === item ? 'active' : ''}}"
+              style="background-color: {{item}};"
+              bindtap="onSelectBgColor"
+              data-color="{{item}}"
+            >
+              <t-icon wx:if="{{backgroundColor === item}}" name="check" size="32rpx" color="#ffffff"></t-icon>
+            </view>
+          </view>
+          <view class="color-custom">
+            <text class="custom-label">自定义：</text>
+            <input
+              class="color-input"
+              type="text"
+              placeholder="#000000"
+              value="{{backgroundColor}}"
+              bindinput="onCustomBgColor"
+              maxlength="7"
+            />
+          </view>
+        </view>
+
+        <!-- 滚动速度 -->
+        <view class="setting-card">
+          <view class="card-header">
+            <view class="header-left">
+              <view class="icon-box warning">
+                <t-icon name="rocket" size="36rpx" color="#ffffff"></t-icon>
+              </view>
+              <text class="card-title">滚动速度</text>
+            </view>
+          </view>
+          <view class="speed-options">
+            <view
+              class="speed-btn {{scrollSpeed === 'slow' ? 'active' : ''}}"
+              bindtap="onSelectSpeed"
+              data-speed="slow"
+            >
+              <t-icon name="git-commit-1" size="40rpx"></t-icon>
+              <text>慢速</text>
+            </view>
+            <view
+              class="speed-btn {{scrollSpeed === 'medium' ? 'active' : ''}}"
+              bindtap="onSelectSpeed"
+              data-speed="medium"
+            >
+              <t-icon name="palette-1" size="40rpx"></t-icon>
+              <text>中速</text>
+            </view>
+            <view
+              class="speed-btn {{scrollSpeed === 'fast' ? 'active' : ''}}"
+              bindtap="onSelectSpeed"
+              data-speed="fast"
+            >
+              <t-icon name="mirror" size="40rpx"></t-icon>
+              <text>快速</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 字体大小 -->
+        <view class="setting-card">
+          <view class="card-header">
+            <view class="header-left">
+              <view class="icon-box primary">
+                <t-icon name="text" size="36rpx" color="#ffffff"></t-icon>
+              </view>
+              <text class="card-title">字体大小</text>
+            </view>
+          </view>
+          <view class="speed-options font-size-options">
+            <view
+              wx:for="{{fontSizeOptions}}"
+              wx:key="*this"
+              class="speed-btn font-size-btn {{fontSize === item ? 'active' : ''}}"
+              bindtap="onSelectFontSize"
+              data-size="{{item}}"
+            >
+              <text>{{item}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+    <!-- 底部固定按钮 -->
+    <view class="bottom-actions">
+      <button class="btn btn-reset" bindtap="onReset">
+        <t-icon name="refresh" size="36rpx"></t-icon>
+        <text>重置</text>
+      </button>
+      <button class="btn btn-primary" bindtap="onStartDisplay">
+        <t-icon name="play" size="36rpx"></t-icon>
+        <text>开始显示</text>
+      </button>
+    </view>
+  </view>
+
+  <!-- 全屏显示模式 -->
+  <view class="display-mode {{isDisplaying ? '' : 'hide'}}">
+    <view class="display-screen" style="background-color: {{backgroundColor}};">
+      <!-- 滚动文字 -->
+      <view class="marquee-container">
+        <view class="marquee-wrapper" style="animation-duration: {{scrollDuration}}ms;">
+          <view class="marquee-text" id="marqueeText" style="color: {{textColor}}; font-size: {{fontSize}}rpx;">
+            {{inputText}}
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 退出按钮 -->
+    <view class="exit-btn" bindtap="onExitDisplay">
+      <t-icon name="close" size="44rpx" color="#ffffff"></t-icon>
+    </view>
+  </view>
+</view>

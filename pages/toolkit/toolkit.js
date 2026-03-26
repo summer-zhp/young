@@ -3,26 +3,20 @@ const app = getApp()
 
 Page({
   data: {
-    showCaptionImage: true
+    showCaptionImage: false
   },
 
   onLoad() {
-    this.checkCaptionImageVisible()
+    // this.checkCaptionImageVisible()
   },
 
-  // 检查朋友圈配图功能是否显示
+  // 检查朋友圈配图功能是否显示（只在正式版显示）
   checkCaptionImageVisible() {
-    const appConfig = app.globalData.appConfig
+    const isReleaseVersion = app.globalData.isReleaseVersion
 
-    // 如果配置还未加载，等待一下
-    if (!appConfig) {
-      setTimeout(() => this.checkCaptionImageVisible(), 100)
-      return
-    }
-
-    // 根据环境变量控制是否显示
+    // 只在正式版显示朋友圈配图功能
     this.setData({
-      showCaptionImage: appConfig.captionImageEnabled !== false
+      showCaptionImage: isReleaseVersion
     })
   },
 
@@ -51,6 +45,20 @@ Page({
   goToImageCompressor() {
     wx.navigateTo({
       url: '/pages/toolkit/image-compressor/image-compressor'
+    })
+  },
+
+  // 跳转到 LED 手持弹幕页面
+  goToLedDisplay() {
+    wx.navigateTo({
+      url: '/pages/led/led'
+    })
+  },
+
+  // 跳转到决策转盘页面
+  goToDecision() {
+    wx.navigateTo({
+      url: '/pages/decision/decision'
     })
   }
 })

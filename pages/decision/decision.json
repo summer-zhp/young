@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "决策转盘",
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "t-icon": "tdesign-miniprogram/icon/icon"
+  }
+}

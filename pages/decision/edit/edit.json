@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "编辑转盘",
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "t-icon": "tdesign-miniprogram/icon/icon"
+  }
+}

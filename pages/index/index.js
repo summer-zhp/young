@@ -204,20 +204,8 @@ Page({
    */
   async toggleFavorite() {
     // 检查是否已登录
-    const userInfo = wx.getStorageSync('userInfo')
-    if (!userInfo) {
-      wx.showModal({
-        title: '提示',
-        content: '收藏功能需要登录，请先登录',
-        confirmText: '去登录',
-        success: (res) => {
-          if (res.confirm) {
-            wx.switchTab({
-              url: '/pages/profile/profile'
-            })
-          }
-        }
-      })
+    const app = getApp()
+    if (!app.requireLogin()) {
       return
     }
 

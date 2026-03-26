@@ -1,9 +1,0 @@
-{
-  "name": "get-app-config",
-  "version": "1.0.0",
-  "description": "获取应用配置",
-  "main": "index.js",
-  "dependencies": {
-    "@cloudbase/node-sdk": "^2.9.1"
-  }
-}

@@ -1,0 +1,431 @@
+/* pages/led/led.wxss - LED 手持弹幕样式 */
+@import '../../styles/theme.wxss';
+
+.page {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #f0f5f4 0%, #e8f2f0 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+/* ===== 自定义导航栏 - 兼容 iOS 和安卓 ===== */
+.custom-navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 88px;
+  padding-top: var(--status-bar-height, 20px);
+  background-color: #8EC5B9;
+  z-index: 999;
+  display: flex;
+  align-items: flex-end;
+  padding-bottom: 0;
+}
+
+.navbar-inner {
+  width: 100%;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.navbar-back {
+  position: absolute;
+  left: 16rpx;
+  display: flex;
+  align-items: center;
+  padding: 8rpx;
+  z-index: 10;
+}
+
+.navbar-title {
+  font-size: 34rpx;
+  font-weight: 600;
+  color: #ffffff;
+  letter-spacing: 1rpx;
+}
+
+/* ===== 编辑模式 ===== */
+.edit-mode {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding-top: 88px;
+  padding-bottom: calc(160rpx + env(safe-area-inset-bottom));
+}
+
+.edit-mode.hide {
+  display: none;
+}
+
+/* ===== 预览区域 ===== */
+.preview-section {
+  padding: 24rpx 32rpx 0;
+}
+
+.preview-card {
+  background: #ffffff;
+  border-radius: 24rpx;
+  padding: 32rpx;
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(142, 197, 185, 0.1);
+}
+
+.preview-header {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-bottom: 24rpx;
+}
+
+.preview-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #1a1a2e;
+}
+
+.preview-screen {
+  height: 240rpx;
+  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: #000000;
+  box-shadow: inset 0 2rpx 8rpx rgba(0, 0, 0, 0.2);
+}
+
+.preview-marquee {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.preview-text-wrapper {
+  font-size: 48rpx;
+  font-weight: 700;
+  white-space: nowrap;
+  padding: 0 32rpx;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  animation: scrollPreview 8s linear infinite;
+}
+
+@keyframes scrollPreview {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+
+/* ===== 设置区域 ===== */
+.settings-section {
+  padding: 24rpx 32rpx;
+}
+
+.setting-card {
+  background: #ffffff;
+  border-radius: 20rpx;
+  padding: 28rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(142, 197, 185, 0.08);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24rpx;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.icon-box {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 14rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.15);
+}
+
+.icon-box.primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+.icon-box.danger { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+.icon-box.dark { background: linear-gradient(135deg, #434343 0%, #2c3e50 100%); }
+.icon-box.warning { background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); }
+.icon-box.success { background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%); }
+
+.card-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #1a1a2e;
+}
+
+.char-count {
+  font-size: 24rpx;
+  color: #9a9a9a;
+}
+
+/* 文字输入框 */
+.text-input {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 140rpx;
+  padding: 20rpx 24rpx;
+  font-size: 30rpx;
+  color: #1a1a2e;
+  background: #f8f9fa;
+  border-radius: 12rpx;
+  line-height: 1.6;
+}
+
+/* 颜色选择器 */
+.color-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+  margin-bottom: 20rpx;
+}
+
+.color-btn {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 4rpx solid transparent;
+  transition: all 0.2s ease;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.15);
+}
+
+.color-btn.active {
+  transform: scale(1.12);
+  border-color: #ffffff;
+  box-shadow: 0 0 0 3rpx rgba(142, 197, 185, 0.5), 0 6rpx 16rpx rgba(0, 0, 0, 0.2);
+}
+
+.color-custom {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  padding-top: 16rpx;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.custom-label {
+  font-size: 26rpx;
+  color: #666;
+}
+
+.color-input {
+  flex: 1;
+  height: 72rpx;
+  padding: 0 24rpx;
+  font-size: 28rpx;
+  color: #1a1a2e;
+  background: #f8f9fa;
+  border-radius: 12rpx;
+  text-align: center;
+}
+
+/* 速度选项 */
+.speed-options {
+  display: flex;
+  gap: 16rpx;
+}
+
+.speed-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  padding: 24rpx 16rpx;
+  background: #f8f9fa;
+  border-radius: 16rpx;
+  border: 2rpx solid transparent;
+  transition: all 0.2s ease;
+}
+
+.speed-btn text {
+  font-size: 26rpx;
+  color: #666;
+}
+
+.speed-btn.active {
+  background: linear-gradient(135deg, rgba(142, 197, 185, 0.15) 0%, rgba(111, 169, 154, 0.08) 100%);
+  border-color: rgba(142, 197, 185, 0.3);
+}
+
+.speed-btn.active text {
+  color: #6f9a8e;
+  font-weight: 600;
+}
+
+.speed-btn.small {
+  padding: 16rpx;
+}
+
+.speed-btn.small text {
+  font-size: 24rpx;
+}
+
+/* 闪烁速度区域 */
+.flash-speed {
+  margin-top: 20rpx;
+  padding-top: 20rpx;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.flash-speed.hide {
+  display: none;
+}
+
+/* ===== 底部按钮 ===== */
+.bottom-actions {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  gap: 20rpx;
+  padding: 20rpx 32rpx;
+  padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.95) 100%);
+  backdrop-filter: blur(20rpx);
+  z-index: 50;
+}
+
+.btn {
+  flex: 1;
+  height: 96rpx;
+  border-radius: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.btn text {
+  display: flex;
+  align-items: center;
+}
+
+.btn-reset {
+  background: #f8f9fa;
+  color: #666;
+}
+
+.btn-reset:active {
+  background: #e9ecef;
+  transform: scale(0.98);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #8ec5b9 0%, #6f9a8e 100%);
+  color: #ffffff;
+  box-shadow: 0 6rpx 24rpx rgba(142, 197, 185, 0.45);
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+  box-shadow: 0 4rpx 16rpx rgba(142, 197, 185, 0.35);
+}
+
+/* ===== 全屏显示模式 ===== */
+.display-mode {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background-color: #000000;
+}
+
+.display-mode.hide {
+  display: none;
+}
+
+.display-screen {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* 滚动容器 - 旋转 90 度 */
+.marquee-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* 顺时针旋转 90 度 */
+  transform: rotate(90deg);
+}
+
+.marquee-wrapper {
+  display: flex;
+  white-space: nowrap;
+  animation: marqueeScroll linear infinite;
+}
+
+.marquee-text {
+  flex-shrink: 0;
+  white-space: nowrap;
+  font-weight: 700;
+  padding: 0 50rpx;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+}
+
+/* 滚动动画 - 从右向左完整滚动（单段文字） */
+@keyframes marqueeScroll {
+  0% {
+    transform: translateX(100vw);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+/* 退出按钮 */
+.exit-btn {
+  position: absolute;
+  bottom: calc(80rpx + env(safe-area-inset-bottom));
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100rpx;
+  height: 100rpx;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10rpx);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2rpx solid rgba(255, 255, 255, 0.3);
+  transition: all 0.2s ease;
+  z-index: 100;
+}
+
+.exit-btn:active {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateX(-50%) scale(0.95);
+}

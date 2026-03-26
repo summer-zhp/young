@@ -4,14 +4,15 @@
     "pages/toolbox/toolbox",
     "pages/focus/focus",
     "pages/bubble/index",
-    "pages/treeHole/treeHole",
     "pages/profile/profile",
     "pages/favorite/index",
     "pages/toolkit/toolkit",
     "pages/toolkit/image2pdf/image2pdf",
-    "pages/toolkit/caption-image/caption-image",
     "pages/toolkit/qrcode-generator/qrcode-generator",
-    "pages/toolkit/image-compressor/image-compressor"
+    "pages/toolkit/image-compressor/image-compressor",
+    "pages/led/led",
+    "pages/decision/decision",
+    "pages/decision/edit/edit"
   ],
   "window": {
     "backgroundTextStyle": "light",

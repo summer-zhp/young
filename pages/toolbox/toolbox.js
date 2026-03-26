@@ -34,20 +34,14 @@ Page({
     this.filterTools()
   },
 
-  // 根据配置过滤工具列表
+  // 根据版本过滤工具列表（只在正式版显示树洞）
   filterTools() {
-    const appConfig = app.globalData.appConfig
+    const isReleaseVersion = app.globalData.isReleaseVersion
 
-    // 如果配置还未加载，等待一下
-    if (!appConfig) {
-      setTimeout(() => this.filterTools(), 100)
-      return
-    }
-
-    // 根据环境变量过滤树洞工具
+    // 只在正式版显示树洞功能
     const filteredTools = this.data.tools.filter(tool => {
       if (tool.name === '树洞') {
-        return appConfig.treeHoleEnabled !== false
+        return false
       }
       return true
     })

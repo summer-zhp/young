@@ -140,8 +140,8 @@ Page({
 
   async recordFocus() {
     // 检查是否已登录
-    const userInfo = wx.getStorageSync('userInfo')
-    if (!userInfo) {
+    const app = getApp()
+    if (!app.isLogged()) {
       // 未登录时不记录，但不影响用户体验
       console.log('未登录，跳过专注记录')
       wx.showToast({
@@ -194,8 +194,8 @@ Page({
 
   async loadStats() {
     // 检查是否已登录
-    const userInfo = wx.getStorageSync('userInfo')
-    if (!userInfo) {
+    const app = getApp()
+    if (!app.isLogged()) {
       // 未登录时不加载统计
       return
     }

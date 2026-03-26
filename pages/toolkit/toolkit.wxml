@@ -89,6 +89,44 @@
           </view>
         </view>
       </view>
+
+      <!-- LED 手持弹幕 -->
+      <view class="tool-card" bindtap="goToLedDisplay">
+        <view class="tool-card-inner">
+          <view class="tool-icon-wrapper">
+            <view class="tool-icon-bg"></view>
+            <view class="tool-icon-tcb">
+              <t-icon name="browse-off" size="48rpx" color="#8EC5B9"></t-icon>
+            </view>
+          </view>
+          <view class="tool-info">
+            <text class="tool-name">LED 手持弹幕</text>
+            <text class="tool-desc">演唱会应援/机场接机/活动氛围</text>
+          </view>
+          <view class="tool-arrow">
+            <t-icon name="chevron-right" size="32rpx" color="#9A9A9A"></t-icon>
+          </view>
+        </view>
+      </view>
+
+      <!-- 决策转盘 -->
+      <view class="tool-card" bindtap="goToDecision">
+        <view class="tool-card-inner">
+          <view class="tool-icon-wrapper">
+            <view class="tool-icon-bg"></view>
+            <view class="tool-icon-tcb">
+              <t-icon name="play-circle" size="48rpx" color="#8EC5B9"></t-icon>
+            </view>
+          </view>
+          <view class="tool-info">
+            <text class="tool-name">决策转盘</text>
+            <text class="tool-desc">选择困难症/聚会游戏/课堂提问</text>
+          </view>
+          <view class="tool-arrow">
+            <t-icon name="chevron-right" size="32rpx" color="#9A9A9A"></t-icon>
+          </view>
+        </view>
+      </view>
     </view>
   </view>
 </view>

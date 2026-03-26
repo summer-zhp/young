@@ -1,0 +1,24 @@
+/* utils.wxs - 工具函数 */
+
+function formatDate(dateString) {
+  if (!dateString) return ''
+
+  var date = getDate(dateString)
+  var now = getDate()
+  var diff = now.getTime() - date.getTime()
+
+  var day = 24 * 60 * 60 * 1000
+  if (diff < day) {
+    return '今天'
+  } else if (diff < 2 * day) {
+    return '昨天'
+  } else if (diff < 7 * day) {
+    return getDate(diff / day) + '天前'
+  } else {
+    return (date.getMonth() + 1) + '月' + date.getDate() + '日'
+  }
+}
+
+module.exports = {
+  formatDate: formatDate
+}

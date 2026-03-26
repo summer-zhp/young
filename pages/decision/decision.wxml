@@ -1,0 +1,129 @@
+<!--pages/decision/decision - 决策转盘-->
+<wxs module="utils" src="../../utils/utils.wxs"></wxs>
+
+<view class="page">
+  <!-- 自定义导航栏 -->
+  <view class="custom-navbar">
+    <view class="navbar-inner">
+      <view class="navbar-back" bindtap="goBack">
+        <t-icon name="chevron-left" size="48rpx" color="#ffffff"></t-icon>
+      </view>
+      <text class="navbar-title">决策转盘</text>
+    </view>
+  </view>
+
+  <!-- 内容区域 - 使用 scroll-view -->
+  <scroll-view class="content-scroll" scroll-y enhanced show-scrollbar="{{false}}">
+    <!-- 头部区域 -->
+    <view class="header-section">
+      <view class="header-content">
+        <text class="header-title">今天要做决定了吗？</text>
+        <text class="header-subtitle">把选择交给运气，让自己更轻松～</text>
+      </view>
+    </view>
+
+    <!-- 转盘展示区域 -->
+    <view class="turntable-section">
+      <view class="turntable-card">
+        <!-- 指针 -->
+        <view class="pointer-wrapper">
+          <view class="pointer"></view>
+        </view>
+        <!-- 转盘 - 纯 CSS 实现 -->
+        <view class="turntable-wrapper">
+          <view class="turntable-body" style="transform: rotate({{currentAngle}}deg); transition: {{spinDuration}}s cubic-bezier(0.17, 0.885, 0.32, 1.275);">
+            <!-- 扇形背景 - 使用 conic-gradient -->
+            <view class="turntable-segments" style="background: {{segmentBackground}};">
+            </view>
+            <!-- 中心圆 -->
+            <view class="turntable-center"></view>
+          </view>
+        </view>
+
+        <view class="turntable-info">
+          <text class="turntable-name">{{currentTurntable.name || '未选择转盘'}}</text>
+          <text class="turntable-count">{{currentTurntable.options.length || 0}} 个选项</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 我的转盘列表 -->
+    <view class="list-section">
+      <view class="section-header">
+        <view class="header-left">
+          <view class="icon-box">
+            <t-icon name="circle" size="32rpx" color="#ffffff"></t-icon>
+          </view>
+          <text class="section-title">我的转盘</text>
+        </view>
+        <text class="section-count">{{turntableList.length}} 个</text>
+      </view>
+
+      <view class="turntable-list">
+        <view
+          wx:for="{{turntableList}}"
+          wx:key="id"
+          class="turntable-item {{currentTurntable.id === item.id ? 'active' : ''}}"
+        >
+          <view class="item-main" bindtap="selectTurntable" data-item="{{item}}">
+            <view class="item-icon">
+              <t-icon name="circle" size="40rpx" color="{{item.id === currentTurntable.id ? '#8EC5B9' : '#ddd'}}"></t-icon>
+            </view>
+            <view class="item-content">
+              <text class="item-name">{{item.name}}</text>
+              <view class="item-tags">
+                <text class="item-tag">{{item.options.length}} 个选项</text>
+                <text class="item-tag">{{utils.formatDate(item.updateTime || item.createTime)}}</text>
+              </view>
+            </view>
+          </view>
+          <view class="item-actions">
+            <view class="icon-btn" catchtap="goToEdit" data-item="{{item}}">
+              <t-icon name="edit-1" size="36rpx" color="#667eea"></t-icon>
+            </view>
+            <view class="icon-btn delete" catchtap="deleteTurntable" data-id="{{item.id}}">
+              <t-icon name="delete" size="36rpx" color="#f5576c"></t-icon>
+            </view>
+          </view>
+        </view>
+
+        <view wx:if="{{turntableList.length === 0}}" class="empty-state">
+          <view class="empty-icon">
+            <t-icon name="inbox" size="96rpx" color="#e0e0e0"></t-icon>
+          </view>
+          <text class="empty-text">暂无转盘</text>
+          <text class="empty-hint">点击右上角新建一个转盘吧</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="spacer"></view>
+  </scroll-view>
+
+  <!-- 底部操作栏 -->
+  <view class="bottom-bar">
+    <button class="bar-btn" bindtap="goToCreate">
+      <t-icon name="add" size="40rpx"></t-icon>
+      <text>新建</text>
+    </button>
+    <button class="bar-btn {{!canSpin ? 'disabled' : ''}}" bindtap="startSpin" disabled="{{!canSpin}}">
+      <t-icon name="play" size="40rpx"></t-icon>
+      <text>旋转</text>
+    </button>
+  </view>
+
+  <!-- 旋转结果弹窗 - 放在所有固定元素外部，确保层级最高 -->
+  <view class="result-modal {{showResult ? '' : 'hide'}}">
+    <view class="result-overlay" bindtap="hideResult"></view>
+    <view class="result-content">
+      <view class="result-animate">
+        <view class="result-icon-box">
+          <t-icon name="check-circle" size="100rpx" color="#8EC5B9"></t-icon>
+        </view>
+        <text class="result-label">决定了！</text>
+        <text class="result-text">{{resultText}}</text>
+      </view>
+      <button class="result-btn" bindtap="hideResult">好的</button>
+    </view>
+  </view>
+</view>

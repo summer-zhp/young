@@ -35,6 +35,7 @@ exports.main = async (event, context) => {
         success: true,
         data: {
           _id: user._id,
+          openid: OPENID,
           nickname: user.nickname,
           user_no: user.user_no,
           avatar_url: user.avatar_url || user.avatar,
@@ -100,6 +101,7 @@ exports.main = async (event, context) => {
       success: true,
       data: {
         _id: createUserResult._id,
+        openid: OPENID,
         nickname,
         user_no: userNo,
         avatar_url: '',

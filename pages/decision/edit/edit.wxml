@@ -1,0 +1,124 @@
+<!--pages/decision/edit/edit - 编辑转盘-->
+<view class="page">
+  <!-- 自定义导航栏 -->
+  <view class="custom-navbar">
+    <view class="navbar-inner">
+      <view class="navbar-back" bindtap="goBack">
+        <t-icon name="chevron-left" size="48rpx" color="#ffffff"></t-icon>
+      </view>
+      <text class="navbar-title">{{isEdit ? '编辑转盘' : '新建转盘'}}</text>
+    </view>
+  </view>
+
+  <scroll-view class="content-scroll" scroll-y enhanced show-scrollbar="{{false}}">
+    <!-- 名称输入 -->
+    <view class="input-section">
+      <view class="section-title">
+        <view class="title-icon">
+          <t-icon name="edit-1" size="32rpx" color="#ffffff"></t-icon>
+        </view>
+        <text>转盘名称</text>
+      </view>
+      <input
+        class="name-input"
+        value="{{turntableName}}"
+        bindinput="onNameInput"
+        placeholder="给转盘起个名字，如：今天吃什么"
+        maxlength="20"
+      />
+    </view>
+
+    <!-- 选项列表 -->
+    <view class="options-section">
+      <view class="section-header">
+        <view class="section-title">
+          <view class="title-icon">
+            <t-icon name="list" size="32rpx" color="#ffffff"></t-icon>
+          </view>
+          <text>选项内容</text>
+        </view>
+      </view>
+
+      <view class="options-list">
+        <view
+          wx:for="{{options}}"
+          wx:key="id"
+          class="option-item {{item.isEmpty ? 'empty' : ''}}"
+        >
+          <view class="option-number">{{index + 1}}</view>
+          <input
+            class="option-input"
+            value="{{item.content}}"
+            bindinput="onOptionInput"
+            data-index="{{index}}"
+            placeholder="输入选项内容"
+            maxlength="20"
+          />
+          <view class="option-actions">
+            <view class="option-btn" bindtap="moveUp" data-index="{{index}}" wx:if="{{index > 0}}">
+              <t-icon name="arrow-up" size="32rpx" color="#999"></t-icon>
+            </view>
+            <view class="option-btn" bindtap="moveDown" data-index="{{index}}" wx:if="{{index < options.length - 1}}">
+              <t-icon name="arrow-down" size="32rpx" color="#999"></t-icon>
+            </view>
+            <view class="option-btn delete" bindtap="deleteOption" data-index="{{index}}">
+              <t-icon name="delete" size="32rpx" color="#f5576c"></t-icon>
+            </view>
+          </view>
+        </view>
+
+        <view wx:if="{{options.length === 0}}" class="empty-options">
+          <t-icon name="inbox" size="80rpx" color="#e0e0e0"></t-icon>
+          <text class="empty-hint">暂无选项，请添加</text>
+        </view>
+      </view>
+
+      <view class="add-option-wrapper">
+        <view class="add-btn" bindtap="addOption">
+          <t-icon name="add" size="32rpx" color="#ffffff"></t-icon>
+          <text>添加选项</text>
+        </view>
+      </view>
+
+      <view wx:if="{{options.length < 2}}" class="warning-hint">
+        <t-icon name="info-circle" size="32rpx" color="#ffa000"></t-icon>
+        <text>至少需要 2 个选项才能开始旋转</text>
+      </view>
+    </view>
+
+    <!-- 预览区域 -->
+    <view wx:if="{{options.length >= 2}}" class="preview-section">
+      <view class="section-title">
+        <view class="title-icon">
+          <t-icon name="play-circle" size="32rpx" color="#ffffff"></t-icon>
+        </view>
+        <text>预览效果</text>
+      </view>
+      <view class="preview-tags">
+        <view
+          wx:for="{{options}}"
+          wx:key="id"
+          wx:if="{{item.content}}"
+          class="preview-tag"
+          style="background-color: {{colors[index % colors.length]}};"
+        >
+          {{item.content}}
+        </view>
+      </view>
+    </view>
+
+    <view class="bottom-spacer"></view>
+  </scroll-view>
+
+  <!-- 底部保存按钮 -->
+  <view class="bottom-bar">
+    <view class="bar-info">
+      <text class="bar-text">{{options.length}} 个选项</text>
+      <text class="bar-text {{options.length >= 2 ? 'valid' : 'invalid'}}">{{options.length >= 2 ? '可以保存' : '需至少 2 个选项'}}</text>
+    </view>
+    <button class="save-btn {{options.length < 2 ? 'disabled' : ''}}" bindtap="saveTurntable" disabled="{{options.length < 2}}">
+      <t-icon name="check" size="36rpx"></t-icon>
+      <text>保存</text>
+    </button>
+  </view>
+</view>

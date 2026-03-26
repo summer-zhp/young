@@ -11,10 +11,20 @@ Page({
   },
 
   onLoad() {
+    // 检查登录状态
+    const app = getApp()
+    if (!app.requireLogin()) {
+      return
+    }
     this.loadFavorites()
   },
 
   onShow() {
+    // 检查登录状态
+    const app = getApp()
+    if (!app.isLogged()) {
+      return
+    }
     this.loadFavorites()
   },
 
