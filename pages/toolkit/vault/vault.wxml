@@ -1,0 +1,188 @@
+<!--pages/toolkit/vault/vault - 绝密保险箱-->
+<view class="page">
+  <!-- 自定义导航栏 -->
+  <view class="custom-navbar">
+    <view class="navbar-inner">
+      <view class="navbar-back" bindtap="goBack">
+        <t-icon name="chevron-left" size="48rpx" color="#ffffff"></t-icon>
+      </view>
+      <text class="navbar-title">绝密保险箱</text>
+    </view>
+  </view>
+
+  <scroll-view class="content-scroll" scroll-y enhanced show-scrollbar="{{false}}">
+    <!-- Tab 切换 -->
+    <view class="tab-bar">
+      <view class="tab-item {{activeTab === 0 ? 'active' : ''}}" bindtap="switchTab" data-tab="0">
+        <t-icon name="lock-on" size="32rpx"></t-icon>
+        <text>我的密件</text>
+      </view>
+      <view class="tab-item {{activeTab === 1 ? 'active' : ''}}" bindtap="switchTab" data-tab="1">
+        <t-icon name="lock-off" size="32rpx"></t-icon>
+        <text>解密</text>
+      </view>
+    </view>
+
+    <!-- Tab 0: 我的密件 -->
+    <view class="tab-content" wx:if="{{activeTab === 0}}">
+      <!-- 密件列表 -->
+      <view class="secret-list" wx:if="{{secretList.length > 0}}">
+        <view class="secret-card" wx:for="{{secretList}}" wx:key="id">
+          <view class="secret-main" bindtap="viewSecret" data-index="{{index}}">
+            <view class="secret-icon">
+              <t-icon name="lock-on" size="40rpx" color="#8EC5B9"></t-icon>
+            </view>
+            <view class="secret-info">
+              <text class="secret-title">{{item.title}}</text>
+              <text class="secret-time">{{item.formattedTime}}</text>
+            </view>
+            <t-icon name="chevron-right" size="32rpx" color="#ccc"></t-icon>
+          </view>
+          <view class="secret-actions">
+            <view class="action-btn copy-btn" catchtap="copyCiphertext" data-index="{{index}}">
+              <t-icon name="file-copy" size="30rpx" color="#8EC5B9"></t-icon>
+              <text>复制密文</text>
+            </view>
+            <view class="action-btn delete-btn" catchtap="deleteSecret" data-id="{{item.id}}">
+              <t-icon name="delete" size="30rpx" color="#f5576c"></t-icon>
+              <text>删除</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 空状态 -->
+      <view class="empty-state" wx:if="{{secretList.length === 0}}">
+        <t-icon name="lock-on" size="96rpx" color="#e0e0e0"></t-icon>
+        <text class="empty-text">暂无密件</text>
+        <text class="empty-hint">点击下方按钮新建一条密件吧</text>
+      </view>
+    </view>
+
+    <!-- Tab 1: 解密 -->
+    <view class="tab-content" wx:if="{{activeTab === 1}}">
+      <view class="decrypt-section">
+        <view class="section-card">
+          <view class="card-label">
+            <t-icon name="file-copy" size="32rpx" color="#8EC5B9"></t-icon>
+            <text>粘贴密文</text>
+          </view>
+          <textarea
+            class="decrypt-textarea"
+            placeholder="粘贴收到的密文内容..."
+            value="{{decryptCiphertext}}"
+            bindinput="onDecryptCiphertextInput"
+            maxlength="-1"
+            auto-height
+          />
+        </view>
+
+        <view class="section-card">
+          <view class="card-label">
+            <t-icon name="lock-on" size="32rpx" color="#8EC5B9"></t-icon>
+            <text>输入密钥</text>
+          </view>
+          <input
+            class="key-input"
+            placeholder="输入加密时设置的密钥"
+            value="{{decryptKey}}"
+            bindinput="onDecryptKeyInput"
+            password="{{!showDecryptKey}}"
+          />
+          <view class="key-toggle" bindtap="toggleDecryptKey">
+            <t-icon name="{{showDecryptKey ? 'browse' : 'browse-off'}}" size="36rpx" color="#999"></t-icon>
+          </view>
+        </view>
+
+        <button class="decrypt-btn" bindtap="doDecrypt" disabled="{{!decryptCiphertext || !decryptKey}}">
+          <t-icon name="lock-off" size="36rpx" color="#fff"></t-icon>
+          <text>解密</text>
+        </button>
+      </view>
+    </view>
+
+    <view class="spacer"></view>
+  </scroll-view>
+
+  <!-- 新建密件按钮 (Tab 0) -->
+  <view class="fab-btn" wx:if="{{activeTab === 0}}" bindtap="showCreateModal">
+    <t-icon name="add" size="48rpx" color="#fff"></t-icon>
+  </view>
+
+  <!-- ===== 弹窗：新建密件 ===== -->
+  <view class="modal {{showCreate ? '' : 'hide'}}">
+    <view class="modal-overlay" bindtap="hideCreateModal"></view>
+    <view class="modal-content create-modal">
+      <view class="modal-header">
+        <text class="modal-title">新建密件</text>
+        <view class="modal-close" bindtap="hideCreateModal">
+          <t-icon name="close" size="36rpx" color="#999"></t-icon>
+        </view>
+      </view>
+
+      <view class="form-group">
+        <text class="form-label">标题</text>
+        <input class="form-input" placeholder="给密件起个名字" value="{{createTitle}}" bindinput="onCreateTitleInput" maxlength="30" />
+      </view>
+
+      <view class="form-group">
+        <text class="form-label">机密内容</text>
+        <textarea class="form-textarea" placeholder="输入需要加密保存的内容" value="{{createContent}}" bindinput="onCreateContentInput" maxlength="-1" auto-height />
+      </view>
+
+      <view class="form-group">
+        <text class="form-label">加密密钥</text>
+        <view class="key-row">
+          <input class="form-input key-form-input" placeholder="设置一个密钥（请牢记）" value="{{createKey}}" bindinput="onCreateKeyInput" password="{{!showCreateKey}}" />
+          <view class="key-toggle" bindtap="toggleCreateKey">
+            <t-icon name="{{showCreateKey ? 'browse' : 'browse-off'}}" size="36rpx" color="#999"></t-icon>
+          </view>
+        </view>
+      </view>
+
+      <button class="modal-btn" bindtap="createSecret" disabled="{{!createTitle || !createContent || !createKey}}" loading="{{creating}}">
+        加密保存
+      </button>
+    </view>
+  </view>
+
+  <!-- ===== 弹窗：查看密件内容 ===== -->
+  <view class="modal {{showView ? '' : 'hide'}}">
+    <view class="modal-overlay" bindtap="hideViewModal"></view>
+    <view class="modal-content view-modal">
+      <view class="modal-header">
+        <text class="modal-title">{{viewTitle}}</text>
+        <view class="modal-close" bindtap="hideViewModal">
+          <t-icon name="close" size="36rpx" color="#999"></t-icon>
+        </view>
+      </view>
+      <scroll-view class="view-content" scroll-y>
+        <text class="view-text">{{viewContent}}</text>
+      </scroll-view>
+      <button class="modal-btn" bindtap="copyViewContent">
+        <t-icon name="file-copy" size="32rpx" color="#fff"></t-icon>
+        <text>复制内容</text>
+      </button>
+    </view>
+  </view>
+
+  <!-- ===== 弹窗：解密结果 ===== -->
+  <view class="modal {{showDecryptResult ? '' : 'hide'}}">
+    <view class="modal-overlay" bindtap="hideDecryptResult"></view>
+    <view class="modal-content decrypt-modal">
+      <view class="modal-header">
+        <text class="modal-title">解密成功</text>
+        <view class="modal-close" bindtap="hideDecryptResult">
+          <t-icon name="close" size="36rpx" color="#999"></t-icon>
+        </view>
+      </view>
+      <scroll-view class="view-content" scroll-y>
+        <text class="view-text">{{decryptResult}}</text>
+      </scroll-view>
+      <button class="modal-btn" bindtap="copyDecryptResult">
+        <t-icon name="file-copy" size="32rpx" color="#fff"></t-icon>
+        <text>复制内容</text>
+      </button>
+    </view>
+  </view>
+</view>

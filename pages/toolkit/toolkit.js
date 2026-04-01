@@ -68,5 +68,12 @@ Page({
     wx.navigateTo({
       url: '/pages/toolkit/signature/signature'
     })
+  },
+
+  // 跳转到绝密保险箱页面
+  goToVault() {
+    wx.navigateTo({
+      url: '/pages/toolkit/vault/vault'
+    })
   }
 })

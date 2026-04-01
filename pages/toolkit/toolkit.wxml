@@ -2,150 +2,98 @@
 <view class="page">
   <!-- 装饰背景 -->
   <view class="bg-decoration"></view>
+  <view class="bg-decoration-2"></view>
 
   <!-- 头部 -->
   <view class="header">
-    <view class="header-content">
-      <!-- <text class="header-title">工具箱</text> -->
-      <text class="header-subtitle">打工必备，让我们的工作更高效、更轻松～</text>
-    </view>
+    <text class="header-subtitle">打工必备，让工作更高效、更轻松～</text>
   </view>
 
   <!-- 工具列表 -->
   <view class="tools-container">
-    <view class="tools-grid">
-      <!-- 朋友圈配图 -->
-      <!-- <view class="tool-card" bindtap="goToCaptionImage">
-        <view class="tool-card-inner">
-          <view class="tool-icon-wrapper">
-            <view class="tool-icon-bg"></view>
-            <view class="tool-icon-tcb">
-              <t-icon name="image" size="48rpx" color="#8EC5B9"></t-icon>
-            </view>
-          </view>
-          <view class="tool-info">
-            <text class="tool-name">朋友圈配图</text>
-            <text class="tool-desc">一键生成朋友圈文案场景图</text>
-          </view>
-          <view class="tool-arrow">
-            <t-icon name="chevron-right" size="32rpx" color="#9A9A9A"></t-icon>
-          </view>
-        </view>
-      </view> -->
 
-      <!-- 二维码生成 -->
-      <view class="tool-card" bindtap="goToQRCode">
-        <view class="tool-card-inner">
-          <view class="tool-icon-wrapper">
-            <view class="tool-icon-bg"></view>
-            <view class="tool-icon-tcb">
-              <t-icon name="scan" size="48rpx" color="#8EC5B9"></t-icon>
-            </view>
+    <!-- 效率工具 -->
+    <view class="section">
+      <view class="section-header">
+        <view class="section-dot"></view>
+        <text class="section-label">效率工具</text>
+      </view>
+      <view class="bento-row">
+        <view class="bento-card" bindtap="goToQRCode" style="animation-delay: 0.05s">
+          <view class="bento-icon bg-mint">
+            <t-icon name="scan" size="40rpx" color="#fff"></t-icon>
           </view>
-          <view class="tool-info">
-            <text class="tool-name">二维码生成</text>
-            <text class="tool-desc">文本内容一键生成二维码</text>
+          <text class="bento-name">二维码生成</text>
+          <text class="bento-desc">文本生成二维码</text>
+        </view>
+        <view class="bento-card" bindtap="goToImage2Pdf" style="animation-delay: 0.1s">
+          <view class="bento-icon bg-sage">
+            <t-icon name="file-image" size="40rpx" color="#fff"></t-icon>
           </view>
-          <view class="tool-arrow">
-            <t-icon name="chevron-right" size="32rpx" color="#9A9A9A"></t-icon>
-          </view>
+          <text class="bento-name">图片转 PDF</text>
+          <text class="bento-desc">快速转换文档</text>
         </view>
       </view>
-
-      <!-- 图片转 PDF -->
-      <view class="tool-card" bindtap="goToImage2Pdf">
-        <view class="tool-card-inner">
-          <view class="tool-icon-wrapper">
-            <view class="tool-icon-bg"></view>
-            <view class="tool-icon-tcb">
-              <t-icon name="file-image" size="48rpx" color="#8EC5B9"></t-icon>
-            </view>
-          </view>
-          <view class="tool-info">
-            <text class="tool-name">图片转 PDF</text>
-            <text class="tool-desc">将图片快速转换为 PDF 文档</text>
-          </view>
-          <view class="tool-arrow">
-            <t-icon name="chevron-right" size="32rpx" color="#9A9A9A"></t-icon>
-          </view>
+      <view class="bento-wide" bindtap="goToImageCompressor" style="animation-delay: 0.15s">
+        <view class="bento-icon bg-teal">
+          <t-icon name="image-off" size="36rpx" color="#fff"></t-icon>
         </view>
-      </view>
-
-      <!-- 图片压缩 -->
-      <view class="tool-card" bindtap="goToImageCompressor">
-        <view class="tool-card-inner">
-          <view class="tool-icon-wrapper">
-            <view class="tool-icon-bg"></view>
-            <view class="tool-icon-tcb">
-              <t-icon name="image-off" size="48rpx" color="#8EC5B9"></t-icon>
-            </view>
-          </view>
-          <view class="tool-info">
-            <text class="tool-name">图片压缩</text>
-            <text class="tool-desc">智能压缩图片大小，保持清晰度</text>
-          </view>
-          <view class="tool-arrow">
-            <t-icon name="chevron-right" size="32rpx" color="#9A9A9A"></t-icon>
-          </view>
+        <view class="bento-info">
+          <text class="bento-name">图片压缩</text>
+          <text class="bento-desc">智能压缩，保持清晰度</text>
         </view>
+        <t-icon name="chevron-right" size="28rpx" color="#ccc"></t-icon>
       </view>
+    </view>
 
-      <!-- LED 手持弹幕 -->
-      <view class="tool-card" bindtap="goToLedDisplay">
-        <view class="tool-card-inner">
-          <view class="tool-icon-wrapper">
-            <view class="tool-icon-bg"></view>
-            <view class="tool-icon-tcb">
-              <t-icon name="browse-off" size="48rpx" color="#8EC5B9"></t-icon>
-            </view>
+    <!-- 趣味互动 -->
+    <view class="section">
+      <view class="section-header">
+        <view class="section-dot dot-amber"></view>
+        <text class="section-label">趣味互动</text>
+      </view>
+      <view class="bento-row">
+        <view class="bento-card" bindtap="goToLedDisplay" style="animation-delay: 0.2s">
+          <view class="bento-icon bg-violet">
+            <t-icon name="browse-off" size="40rpx" color="#fff"></t-icon>
           </view>
-          <view class="tool-info">
-            <text class="tool-name">LED 手持弹幕</text>
-            <text class="tool-desc">演唱会应援/机场接机/活动氛围</text>
-          </view>
-          <view class="tool-arrow">
-            <t-icon name="chevron-right" size="32rpx" color="#9A9A9A"></t-icon>
-          </view>
+          <text class="bento-name">LED 弹幕</text>
+          <text class="bento-desc">演唱会应援</text>
         </view>
-      </view>
-
-      <!-- 电子签名 -->
-      <view class="tool-card" bindtap="goToSignature" style="animation-delay: 0.3s">
-        <view class="tool-card-inner">
-          <view class="tool-icon-wrapper">
-            <view class="tool-icon-bg"></view>
-            <view class="tool-icon-tcb">
-              <t-icon name="edit-1" size="48rpx" color="#8EC5B9"></t-icon>
-            </view>
+        <view class="bento-card" bindtap="goToDecision" style="animation-delay: 0.25s">
+          <view class="bento-icon bg-amber">
+            <t-icon name="play-circle" size="40rpx" color="#fff"></t-icon>
           </view>
-          <view class="tool-info">
-            <text class="tool-name">电子签名</text>
-            <text class="tool-desc">手写签名保存到相册</text>
-          </view>
-          <view class="tool-arrow">
-            <t-icon name="chevron-right" size="32rpx" color="#9A9A9A"></t-icon>
-          </view>
-        </view>
-      </view>
-
-      <!-- 决策转盘 -->
-      <view class="tool-card" bindtap="goToDecision">
-        <view class="tool-card-inner">
-          <view class="tool-icon-wrapper">
-            <view class="tool-icon-bg"></view>
-            <view class="tool-icon-tcb">
-              <t-icon name="play-circle" size="48rpx" color="#8EC5B9"></t-icon>
-            </view>
-          </view>
-          <view class="tool-info">
-            <text class="tool-name">决策转盘</text>
-            <text class="tool-desc">选择困难症/聚会游戏/课堂提问</text>
-          </view>
-          <view class="tool-arrow">
-            <t-icon name="chevron-right" size="32rpx" color="#9A9A9A"></t-icon>
-          </view>
+          <text class="bento-name">决策转盘</text>
+          <text class="bento-desc">聚会游戏</text>
         </view>
       </view>
     </view>
+
+    <!-- 签名安全 -->
+    <view class="section">
+      <view class="section-header">
+        <view class="section-dot dot-rose"></view>
+        <text class="section-label">签名安全</text>
+      </view>
+      <view class="bento-row">
+        <view class="bento-card" bindtap="goToVault" style="animation-delay: 0.3s">
+          <view class="bento-icon bg-rose">
+            <t-icon name="lock-on" size="40rpx" color="#fff"></t-icon>
+          </view>
+          <text class="bento-name">绝密保险箱</text>
+          <text class="bento-desc">加密安全分享</text>
+        </view>
+        <view class="bento-card" bindtap="goToSignature" style="animation-delay: 0.35s">
+          <view class="card-badge">NEW</view>
+          <view class="bento-icon bg-sky">
+            <t-icon name="edit-1" size="40rpx" color="#fff"></t-icon>
+          </view>
+          <text class="bento-name">电子签名</text>
+          <text class="bento-desc">手写签名保存</text>
+        </view>
+      </view>
+    </view>
+
   </view>
 </view>

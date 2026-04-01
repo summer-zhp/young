@@ -1,0 +1,9 @@
+{
+  "name": "encryptSecret",
+  "version": "1.0.0",
+  "description": "AES-256-CBC 加密内容",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

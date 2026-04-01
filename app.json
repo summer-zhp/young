@@ -13,7 +13,8 @@
     "pages/led/led",
     "pages/decision/decision",
     "pages/decision/edit/edit",
-    "pages/toolkit/signature/signature"
+    "pages/toolkit/signature/signature",
+    "pages/toolkit/vault/vault"
   ],
   "window": {
     "backgroundTextStyle": "light",
