@@ -1,6 +1,4 @@
 <!--pages/decision/decision - 决策转盘-->
-<wxs module="utils" src="../../utils/utils.wxs"></wxs>
-
 <view class="page">
   <!-- 自定义导航栏 -->
   <view class="custom-navbar">
@@ -73,7 +71,7 @@
               <text class="item-name">{{item.name}}</text>
               <view class="item-tags">
                 <text class="item-tag">{{item.options.length}} 个选项</text>
-                <text class="item-tag">{{utils.formatDate(item.updateTime || item.createTime)}}</text>
+                <text class="item-tag">{{item.formattedTime}}</text>
               </view>
             </view>
           </view>

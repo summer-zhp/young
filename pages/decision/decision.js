@@ -84,7 +84,8 @@ Page({
         if (res.result && res.result.data) {
           const turntableList = res.result.data.map(item => ({
             ...item,
-            id: item._id
+            id: item._id,
+            formattedTime: this.formatDate(item.updateTime || item.createTime)
           }))
           this.setData({ turntableList })
 
@@ -237,8 +238,8 @@ Page({
     if (normalizedAngle < 0) normalizedAngle += 360
 
     // 指针在顶部（0 度位置是 12 点钟方向）
-    // 转盘顺时针旋转，所以指针指向的选项是 (360 - normalizedAngle) / anglePerOption
-    const pointerAngle = (360 - normalizedAngle + 90) % 360
+    // 转盘顺时针旋转，指针指向的原始位置为 (360 - normalizedAngle)
+    const pointerAngle = (360 - normalizedAngle) % 360
     const selectedIndex = Math.floor(pointerAngle / anglePerOption) % options.length
 
     this.setData({

@@ -15,7 +15,7 @@
   <view class="tools-container">
     <view class="tools-grid">
       <!-- 朋友圈配图 -->
-      <view class="tool-card" wx:if="{{showCaptionImage}}" bindtap="goToCaptionImage">
+      <!-- <view class="tool-card" bindtap="goToCaptionImage">
         <view class="tool-card-inner">
           <view class="tool-icon-wrapper">
             <view class="tool-icon-bg"></view>
@@ -31,7 +31,7 @@
             <t-icon name="chevron-right" size="32rpx" color="#9A9A9A"></t-icon>
           </view>
         </view>
-      </view>
+      </view> -->
 
       <!-- 二维码生成 -->
       <view class="tool-card" bindtap="goToQRCode">
@@ -102,6 +102,25 @@
           <view class="tool-info">
             <text class="tool-name">LED 手持弹幕</text>
             <text class="tool-desc">演唱会应援/机场接机/活动氛围</text>
+          </view>
+          <view class="tool-arrow">
+            <t-icon name="chevron-right" size="32rpx" color="#9A9A9A"></t-icon>
+          </view>
+        </view>
+      </view>
+
+      <!-- 电子签名 -->
+      <view class="tool-card" bindtap="goToSignature" style="animation-delay: 0.3s">
+        <view class="tool-card-inner">
+          <view class="tool-icon-wrapper">
+            <view class="tool-icon-bg"></view>
+            <view class="tool-icon-tcb">
+              <t-icon name="edit-1" size="48rpx" color="#8EC5B9"></t-icon>
+            </view>
+          </view>
+          <view class="tool-info">
+            <text class="tool-name">电子签名</text>
+            <text class="tool-desc">手写签名保存到相册</text>
           </view>
           <view class="tool-arrow">
             <t-icon name="chevron-right" size="32rpx" color="#9A9A9A"></t-icon>

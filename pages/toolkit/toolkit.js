@@ -7,12 +7,13 @@ Page({
   },
 
   onLoad() {
-    // this.checkCaptionImageVisible()
+    this.checkCaptionImageVisible()
   },
 
   // 检查朋友圈配图功能是否显示（只在正式版显示）
   checkCaptionImageVisible() {
     const isReleaseVersion = app.globalData.isReleaseVersion
+    console.log(isReleaseVersion);
 
     // 只在正式版显示朋友圈配图功能
     this.setData({
@@ -59,6 +60,13 @@ Page({
   goToDecision() {
     wx.navigateTo({
       url: '/pages/decision/decision'
+    })
+  },
+
+  // 跳转到电子签名页面
+  goToSignature() {
+    wx.navigateTo({
+      url: '/pages/toolkit/signature/signature'
     })
   }
 })

@@ -69,7 +69,7 @@ App({
       // 在正式版中会包含完整的小程序信息
       // 获取小程序的当前环境版本：develop（开发版）、trial（体验版）、release（正式版）
       const { envVersion } = accountInfo.miniProgram
-      this.globalData.isReleaseVersion = envVersion === 'release'
+      this.globalData.isReleaseVersion = envVersion === 'trial'
     } catch (error) {
       console.error('获取版本信息失败:', error)
       // 失败时默认为非正式版

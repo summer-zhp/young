@@ -1,7 +1,6 @@
 {
-  "navigationBarTitleText": "LED 手持弹幕",
   "navigationStyle": "custom",
-  "navigationBarTextStyle": "black",
+  "pageOrientation": "landscape",
   "usingComponents": {
     "t-icon": "tdesign-miniprogram/icon/icon"
   }

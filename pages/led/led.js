@@ -168,6 +168,7 @@ Page({
   // 退出显示
   onExitDisplay() {
     wx.setKeepScreenOn({ keepScreenOn: false })
+
     this.setData({ isDisplaying: false })
   }
 })

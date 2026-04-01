@@ -1,0 +1,95 @@
+<!--pages/toolkit/signature/signature - 电子签名-->
+<view class="page">
+  <!-- 顶部工具栏 -->
+  <view class="top-bar">
+    <view class="btn-icon" bindtap="goBack">
+      <t-icon name="close" size="22rpx" color="#666"></t-icon>
+    </view>
+    <text class="page-title">电子签名</text>
+
+    <view class="divider"></view>
+
+    <!-- 颜色选择 -->
+    <view class="tool-group">
+      <view
+        class="color-item {{penColor === '#1A1A1A' ? 'active' : ''}}"
+        bindtap="setColor" data-color="#1A1A1A"
+      >
+        <view class="color-dot" style="background:#1A1A1A;"></view>
+      </view>
+      <view
+        class="color-item {{penColor === '#1565C0' ? 'active' : ''}}"
+        bindtap="setColor" data-color="#1565C0"
+      >
+        <view class="color-dot" style="background:#1565C0;"></view>
+      </view>
+      <view
+        class="color-item {{penColor === '#C62828' ? 'active' : ''}}"
+        bindtap="setColor" data-color="#C62828"
+      >
+        <view class="color-dot" style="background:#C62828;"></view>
+      </view>
+    </view>
+
+    <view class="divider"></view>
+
+    <!-- 粗细选择 -->
+    <view class="tool-group">
+      <view
+        class="width-item {{lineWidth === 2 ? 'active' : ''}}"
+        bindtap="setWidth" data-width="2"
+      >
+        <view class="width-dot s"></view>
+      </view>
+      <view
+        class="width-item {{lineWidth === 4 ? 'active' : ''}}"
+        bindtap="setWidth" data-width="4"
+      >
+        <view class="width-dot m"></view>
+      </view>
+      <view
+        class="width-item {{lineWidth === 7 ? 'active' : ''}}"
+        bindtap="setWidth" data-width="7"
+      >
+        <view class="width-dot l"></view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 画布区域 -->
+  <view class="canvas-wrapper">
+    <canvas
+      type="2d"
+      id="signatureCanvas"
+      style="width:{{canvasStyleWidth}}px;height:{{canvasStyleHeight}}px;"
+      catchtouchstart="onTouchStart"
+      catchtouchmove="onTouchMove"
+      catchtouchend="onTouchEnd"
+    ></canvas>
+    <!-- 空态提示 -->
+    <view class="canvas-hint" wx:if="{{isEmpty}}">
+      <t-icon name="edit-1" size="24rpx" color="#d0d0d0"></t-icon>
+      <text class="hint-text">在此处签名</text>
+    </view>
+  </view>
+
+  <!-- 底部操作栏 -->
+  <view class="bottom-bar">
+    <view class="bar-left">
+      <view class="action-btn" bindtap="undo">
+        <t-icon name="rollback" size="22rpx" color="#666"></t-icon>
+        <text>撤销</text>
+      </view>
+      <view class="action-btn" bindtap="clearCanvas">
+        <t-icon name="delete" size="22rpx" color="#666"></t-icon>
+        <text>清除</text>
+      </view>
+    </view>
+    <view class="bar-right">
+      <view class="save-btn" bindtap="saveSignature">
+        <t-icon name="download" size="22rpx" color="#fff"></t-icon>
+        <text>保存签名</text>
+      </view>
+    </view>
+  </view>
+</view>

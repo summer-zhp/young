@@ -12,7 +12,8 @@
     "pages/toolkit/image-compressor/image-compressor",
     "pages/led/led",
     "pages/decision/decision",
-    "pages/decision/edit/edit"
+    "pages/decision/edit/edit",
+    "pages/toolkit/signature/signature"
   ],
   "window": {
     "backgroundTextStyle": "light",
