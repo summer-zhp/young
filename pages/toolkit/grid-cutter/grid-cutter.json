@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "九宫格切图",
+  "usingComponents": {
+    "t-icon": "tdesign-miniprogram/icon/icon"
+  }
+}

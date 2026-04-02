@@ -167,6 +167,7 @@
 .bg-amber { background: linear-gradient(135deg, #E5B87A, #D4A76A); }
 .bg-sky { background: linear-gradient(135deg, #7BBFC5, #6AAEB4); }
 .bg-rose { background: linear-gradient(135deg, #D4899A, #C37888); }
+.bg-orange { background: linear-gradient(135deg, #E5A07B, #D49068); }
 
 /* ===== 文字 ===== */
 .bento-name {

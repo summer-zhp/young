@@ -14,7 +14,8 @@
     "pages/decision/decision",
     "pages/decision/edit/edit",
     "pages/toolkit/signature/signature",
-    "pages/toolkit/vault/vault"
+    "pages/toolkit/vault/vault",
+    "pages/toolkit/grid-cutter/grid-cutter"
   ],
   "window": {
     "backgroundTextStyle": "light",

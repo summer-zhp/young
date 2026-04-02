@@ -75,5 +75,12 @@ Page({
     wx.navigateTo({
       url: '/pages/toolkit/vault/vault'
     })
+  },
+
+  // 跳转到九宫格切图页面
+  goToGridCutter() {
+    wx.navigateTo({
+      url: '/pages/toolkit/grid-cutter/grid-cutter'
+    })
   }
 })

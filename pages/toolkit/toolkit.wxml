@@ -34,15 +34,22 @@
           <text class="bento-desc">快速转换文档</text>
         </view>
       </view>
-      <view class="bento-wide" bindtap="goToImageCompressor" style="animation-delay: 0.15s">
-        <view class="bento-icon bg-teal">
-          <t-icon name="image-off" size="36rpx" color="#fff"></t-icon>
-        </view>
-        <view class="bento-info">
+      <view class="bento-row" style="margin-top: 16rpx">
+        <view class="bento-card" bindtap="goToImageCompressor" style="animation-delay: 0.15s">
+          <view class="bento-icon bg-teal">
+            <t-icon name="image-off" size="40rpx" color="#fff"></t-icon>
+          </view>
           <text class="bento-name">图片压缩</text>
-          <text class="bento-desc">智能压缩，保持清晰度</text>
+          <text class="bento-desc">智能压缩保持清晰</text>
         </view>
-        <t-icon name="chevron-right" size="28rpx" color="#ccc"></t-icon>
+        <view class="bento-card" bindtap="goToGridCutter" style="animation-delay: 0.2s">
+          <view class="card-badge">NEW</view>
+          <view class="bento-icon bg-orange">
+            <t-icon name="component-grid-filled" size="40rpx" color="#fff"></t-icon>
+          </view>
+          <text class="bento-name">九宫格切图</text>
+          <text class="bento-desc">朋友圈九宫格</text>
+        </view>
       </view>
     </view>
 

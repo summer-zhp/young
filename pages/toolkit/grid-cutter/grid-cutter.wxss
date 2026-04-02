@@ -1,0 +1,223 @@
+/* pages/toolkit/grid-cutter/grid-cutter.wxss - 九宫格切图 */
+@import '../../../styles/theme.wxss';
+
+.page {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #f5f7f8 0%, #e8f5f3 100%);
+}
+
+.content {
+  padding: 32rpx;
+}
+
+/* ===== 选图区域 ===== */
+.pick-area {
+  margin-top: 80rpx;
+}
+
+.pick-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20rpx;
+  height: 500rpx;
+  background: #ffffff;
+  border-radius: 24rpx;
+  border: 2rpx dashed rgba(142, 197, 185, 0.4);
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.04);
+}
+
+.pick-text {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.pick-hint {
+  font-size: 24rpx;
+  color: var(--text-tertiary);
+}
+
+/* ===== 预览区域 ===== */
+.preview-section {
+  animation: fadeIn 0.3s ease;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20rpx;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.change-btn {
+  font-size: 26rpx;
+  color: #8EC5B9;
+  font-weight: 500;
+}
+
+.preview-wrapper {
+  position: relative;
+  width: 100%;
+  padding-top: 100%;
+  border-radius: 20rpx;
+  overflow: hidden;
+  background: #f0f0f0;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
+}
+
+.preview-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* 网格线 */
+.grid-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.grid-line {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.grid-h1 { left: 0; right: 0; top: 33.33%; height: 2rpx; }
+.grid-h2 { left: 0; right: 0; top: 66.66%; height: 2rpx; }
+.grid-v1 { top: 0; bottom: 0; left: 33.33%; width: 2rpx; }
+.grid-v2 { top: 0; bottom: 0; left: 66.66%; width: 2rpx; }
+
+/* 裁剪提示 */
+.crop-info {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  margin-top: 16rpx;
+  padding: 12rpx 16rpx;
+  background: rgba(142, 197, 185, 0.08);
+  border-radius: 12rpx;
+}
+
+.crop-info text {
+  font-size: 24rpx;
+  color: var(--text-tertiary);
+}
+
+/* 切图按钮 */
+.cut-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10rpx;
+  width: 100%;
+  height: 96rpx;
+  margin-top: 32rpx;
+  border-radius: 48rpx;
+  background: linear-gradient(135deg, #8EC5B9 0%, #6f9a8e 100%);
+  color: #ffffff;
+  font-size: 32rpx;
+  font-weight: 600;
+  border: none;
+  box-shadow: 0 8rpx 32rpx rgba(142, 197, 185, 0.35);
+}
+
+.cut-btn::after { border: none; }
+
+.cut-btn:active {
+  transform: scale(0.98);
+}
+
+.cut-btn[disabled] {
+  opacity: 0.4;
+}
+
+/* ===== 结果区域 ===== */
+.result-section {
+  animation: fadeIn 0.3s ease;
+}
+
+.result-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8rpx;
+  border-radius: 20rpx;
+  overflow: hidden;
+  background: #ffffff;
+  padding: 8rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
+}
+
+.result-cell {
+  width: calc((100% - 16rpx) / 3);
+  aspect-ratio: 1;
+  border-radius: 12rpx;
+  overflow: hidden;
+}
+
+.result-image {
+  width: 100%;
+  height: 100%;
+}
+
+/* 保存按钮 */
+.save-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10rpx;
+  width: 100%;
+  height: 96rpx;
+  margin-top: 32rpx;
+  border-radius: 48rpx;
+  background: linear-gradient(135deg, #8EC5B9 0%, #6f9a8e 100%);
+  color: #ffffff;
+  font-size: 32rpx;
+  font-weight: 600;
+  border: none;
+  box-shadow: 0 8rpx 32rpx rgba(142, 197, 185, 0.35);
+}
+
+.save-btn::after { border: none; }
+
+.save-btn:active {
+  transform: scale(0.98);
+}
+
+.save-btn[disabled] {
+  opacity: 0.4;
+}
+
+.save-tip {
+  text-align: center;
+  margin-top: 16rpx;
+}
+
+.save-tip text {
+  font-size: 24rpx;
+  color: var(--text-tertiary);
+}
+
+/* ===== 隐藏 Canvas ===== */
+.cut-canvas {
+  position: fixed;
+  left: -9999rpx;
+  width: 300px;
+  height: 300px;
+}
+
+/* ===== 动画 ===== */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(16rpx); }
+  to { opacity: 1; transform: translateY(0); }
+}
