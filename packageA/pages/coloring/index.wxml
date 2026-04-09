@@ -1,0 +1,147 @@
+<!--pages/coloring/index.wxml-->
+<view class="page">
+  <!-- 装饰背景色块 -->
+  <view class="bg-blobs">
+    <view class="blob blob-1"></view>
+    <view class="blob blob-2"></view>
+    <view class="blob blob-3"></view>
+    <view class="blob blob-4"></view>
+  </view>
+
+  <!-- ========== 模板选择页 ========== -->
+  <view class="select-page" wx:if="{{!hasCanvas}}">
+    <!-- 头部 -->
+    <view class="hero">
+      <view class="hero-badge">
+        <text class="iconfont icon-palette hero-badge-icon"></text>
+        <text class="hero-title">涂色画板</text>
+      </view>
+      <text class="hero-desc">选一个喜欢的图案，开始你的创作吧</text>
+    </view>
+
+    <!-- 已选模板预览 -->
+    <view class="preview-card {{selectedTemplate ? 'preview-active' : ''}}" wx:if="{{selectedTemplate}}">
+      <view class="preview-inner">
+        <text class="preview-icon iconfont {{selectedIcon}}"></text>
+      </view>
+      <view class="preview-info">
+        <text class="preview-name">{{selectedName}}</text>
+        <text class="preview-hint">点击下方按钮开始涂色</text>
+      </view>
+    </view>
+
+    <!-- 未选择时的提示 -->
+    <view class="preview-card preview-empty" wx:if="{{!selectedTemplate}}">
+      <view class="preview-inner preview-inner-empty">
+        <t-icon name="edit-1" size="64rpx" color="#C8D6D2"></t-icon>
+      </view>
+      <view class="preview-info">
+        <text class="preview-name" style="color: #999;">请选择一个模板</text>
+        <text class="preview-hint">在下方挑选你喜欢的图案</text>
+      </view>
+    </view>
+
+    <!-- 模板网格 -->
+    <view class="template-grid">
+      <view
+        wx:for="{{templates}}"
+        wx:key="id"
+        class="grid-card {{selectedTemplate === item.id ? 'grid-card-selected' : ''}}"
+        bindtap="selectTemplate"
+        data-id="{{item.id}}"
+        style="animation-delay: {{index * 60}}ms;"
+      >
+        <view class="grid-card-bg grid-card-bg-{{item.id}}"></view>
+        <text class="grid-card-icon iconfont {{item.icon}}"></text>
+        <text class="grid-card-name">{{item.name}}</text>
+        <view class="grid-card-check" wx:if="{{selectedTemplate === item.id}}">
+          <t-icon name="check" size="24rpx" color="#fff"></t-icon>
+        </view>
+      </view>
+    </view>
+
+    <!-- 开始按钮 -->
+    <view class="start-section">
+      <button
+        class="btn-go {{selectedTemplate ? '' : 'btn-go-disabled'}}"
+        bindtap="startDrawing"
+        disabled="{{!selectedTemplate}}"
+      >
+        <text class="btn-go-text">{{selectedTemplate ? '开始涂色' : '请先选择模板'}}</text>
+        <t-icon wx:if="{{selectedTemplate}}" name="arrow-right" size="32rpx" color="#fff"></t-icon>
+      </button>
+    </view>
+  </view>
+
+  <!-- ========== 画布页 ========== -->
+  <view class="canvas-page" wx:if="{{hasCanvas}}">
+    <!-- 画布 -->
+    <view class="canvas-container">
+      <view class="canvas-wrapper">
+        <canvas
+          id="colorCanvas"
+          type="2d"
+          class="color-canvas"
+          style="width: {{canvasStyleWidth}}px; height: {{canvasStyleHeight}}px;"
+          bindtouchstart="onTouchStart"
+          bindtouchmove="onTouchMove"
+          bindtouchend="onTouchEnd"
+          disable-scroll
+        ></canvas>
+      </view>
+
+      <!-- 工具栏 -->
+      <view class="toolbar">
+        <view class="tool-btn" bindtap="undo">
+          <t-icon name="rollback" size="40rpx" color="#666"></t-icon>
+          <text class="tool-label">撤销</text>
+        </view>
+        <view class="tool-btn" bindtap="clearCanvas">
+          <t-icon name="delete" size="40rpx" color="#666"></t-icon>
+          <text class="tool-label">清空</text>
+        </view>
+        <view class="tool-btn {{eraserMode ? 'tool-active' : ''}}" bindtap="toggleEraser">
+          <t-icon name="brush" size="40rpx" color="{{eraserMode ? '#8EC5B9' : '#666'}}"></t-icon>
+          <text class="tool-label">橡皮</text>
+        </view>
+        <view class="tool-btn" bindtap="changeTemplate">
+          <t-icon name="swap" size="40rpx" color="#666"></t-icon>
+          <text class="tool-label">换模板</text>
+        </view>
+        <view class="tool-btn" bindtap="saveCanvas">
+          <t-icon name="download" size="40rpx" color="#666"></t-icon>
+          <text class="tool-label">保存</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 底部调色板 -->
+    <view class="palette-area">
+      <view class="brush-size-row">
+        <text class="size-label">粗细</text>
+        <view class="size-options">
+          <view
+            wx:for="{{brushSizes}}"
+            wx:key="index"
+            class="size-dot {{currentSize === item ? 'size-active' : ''}}"
+            style="width: {{item + 6}}px; height: {{item + 6}}px;"
+            bindtap="setBrushSize"
+            data-size="{{item}}"
+          >
+            <view class="size-inner" style="width: {{item}}px; height: {{item}}px;"></view>
+          </view>
+        </view>
+      </view>
+      <view class="color-row">
+        <view
+          wx:for="{{colors}}"
+          wx:key="index"
+          class="color-dot {{currentColor === item ? 'color-active' : ''}}"
+          style="background: {{item}};"
+          bindtap="setColor"
+          data-color="{{item}}"
+        ></view>
+      </view>
+    </view>
+  </view>
+</view>

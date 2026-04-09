@@ -618,3 +618,4 @@
   transform: scale(0.96);
   box-shadow: var(--shadow-primary-hover);
 }
+

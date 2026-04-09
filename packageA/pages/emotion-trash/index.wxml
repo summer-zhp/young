@@ -1,0 +1,107 @@
+<!--pages/emotion-trash/index.wxml-->
+<view class="page">
+  <!-- 装饰背景 -->
+  <view class="bg-decoration bg-deco-1"></view>
+  <view class="bg-decoration bg-deco-2"></view>
+
+  <!-- 头部 -->
+  <view class="header">
+    <view class="header-content">
+      <view class="title-badge">
+        <t-icon name="delete" size="40rpx" color="#FF9F8F"></t-icon>
+        <text class="title-text">情绪垃圾桶</text>
+      </view>
+    </view>
+    <text class="header-subtitle">写下烦恼，丢掉它</text>
+  </view>
+
+  <!-- 主内容区 -->
+  <view class="main-content" wx:if="{{!isAnimating && !isDone}}">
+    <!-- 纸条输入区 -->
+    <view class="paper-card">
+      <view class="paper-header">
+        <view class="paper-lines"></view>
+        <text class="paper-hint">写下你的烦恼...</text>
+      </view>
+      <textarea
+        class="emotion-input"
+        placeholder="把不开心的都写下来吧..."
+        placeholder-style="color: #C0C0C0;"
+        value="{{emotionText}}"
+        bindinput="onInput"
+        maxlength="200"
+        auto-height
+      />
+      <view class="paper-footer">
+        <text class="char-count">{{emotionText.length}}/200</text>
+      </view>
+    </view>
+
+    <!-- 快捷情绪标签 -->
+    <view class="quick-tags">
+      <view class="tag-row">
+        <view
+          wx:for="{{quickEmotions}}"
+          wx:key="index"
+          class="emotion-tag {{selectedEmotion === item ? 'tag-selected' : ''}}"
+          bindtap="selectEmotion"
+          data-text="{{item}}"
+        >
+          {{item}}
+        </view>
+      </view>
+    </view>
+
+    <!-- 丢掉按钮 -->
+    <view class="action-area">
+      <button
+        class="btn-throw {{emotionText ? '' : 'btn-disabled'}}"
+        bindtap="throwAway"
+        disabled="{{!emotionText}}"
+      >
+        <t-icon name="delete" size="36rpx" color="#fff"></t-icon>
+        <text>丢进垃圾桶</text>
+      </button>
+    </view>
+  </view>
+
+  <!-- 撕碎动画区域 -->
+  <view class="animation-area" wx:if="{{isAnimating}}">
+    <view class="paper-anim {{animPhase === 1 ? 'crumple' : ''}} {{animPhase === 2 ? 'fall' : ''}} {{animPhase === 3 ? 'shred' : ''}}">
+      <view class="paper-content-anim">{{emotionText}}</view>
+    </view>
+    <!-- 碎纸片 -->
+    <view class="shreds" wx:if="{{animPhase >= 3}}">
+      <view
+        wx:for="{{shreds}}"
+        wx:key="index"
+        class="shred shred-{{item.id}}"
+        style="background: {{item.color}}; left: {{item.left}}rpx; top: {{item.top}}rpx; animation-delay: {{item.delay}}ms;"
+      ></view>
+    </view>
+    <!-- 垃圾桶 -->
+    <view class="trash-can {{animPhase >= 2 ? 'trash-open' : ''}}">
+      <view class="trash-lid"></view>
+      <view class="trash-body">
+        <view class="trash-line"></view>
+        <view class="trash-line"></view>
+        <view class="trash-line"></view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 完成状态 -->
+  <view class="done-area" wx:if="{{isDone}}">
+    <view class="done-icon">
+      <t-icon name="check-circle-filled" size="120rpx" color="#8EC5B9"></t-icon>
+    </view>
+    <text class="done-title">烦恼已清除</text>
+    <view class="healing-card">
+      <text class="healing-quote">{{healingQuote}}</text>
+    </view>
+    <button class="btn-restart" bindtap="restart">
+      <t-icon name="refresh" size="32rpx" color="#8EC5B9"></t-icon>
+      <text>再丢一次</text>
+    </button>
+  </view>
+</view>

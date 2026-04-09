@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "涂色画板",
+  "usingComponents": {
+    "t-icon": "tdesign-miniprogram/icon/icon"
+  }
+}

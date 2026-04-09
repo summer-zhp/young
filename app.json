@@ -2,20 +2,38 @@
   "pages": [
     "pages/index/index",
     "pages/toolbox/toolbox",
-    "pages/focus/focus",
-    "pages/bubble/index",
     "pages/profile/profile",
     "pages/favorite/index",
-    "pages/toolkit/toolkit",
-    "pages/toolkit/image2pdf/image2pdf",
-    "pages/toolkit/qrcode-generator/qrcode-generator",
-    "pages/toolkit/image-compressor/image-compressor",
-    "pages/led/led",
-    "pages/decision/decision",
-    "pages/decision/edit/edit",
-    "pages/toolkit/signature/signature",
-    "pages/toolkit/vault/vault",
-    "pages/toolkit/grid-cutter/grid-cutter"
+    "pages/toolkit/toolkit"
+  ],
+  "subPackages": [
+    {
+      "root": "packageA",
+      "name": "relax",
+      "pages": [
+        "pages/focus/focus",
+        "pages/bubble/index",
+        "pages/led/led",
+        "pages/decision/decision",
+        "pages/decision/edit/edit",
+        "pages/emotion-trash/index",
+        "pages/coloring/index",
+        "pages/treeHole/treeHole"
+      ]
+    },
+    {
+      "root": "packageB",
+      "name": "tools",
+      "pages": [
+        "pages/image2pdf/image2pdf",
+        "pages/qrcode-generator/qrcode-generator",
+        "pages/image-compressor/image-compressor",
+        "pages/signature/signature",
+        "pages/vault/vault",
+        "pages/grid-cutter/grid-cutter",
+        "pages/work-schedule/index"
+      ]
+    }
   ],
   "window": {
     "backgroundTextStyle": "light",

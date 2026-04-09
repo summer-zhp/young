@@ -1,0 +1,219 @@
+<!--pages/sudoku/index.wxml - 数独游戏-->
+<view class="page">
+
+  <!-- ===== Difficulty Selection Phase ===== -->
+  <view wx:if="{{phase === 'select'}}" class="select-phase">
+    <view class="decoration decoration-1"></view>
+    <view class="decoration decoration-2"></view>
+
+    <!-- Hero Header -->
+    <view class="hero-header">
+      <view class="hero-icon-box">
+        <t-icon name="bamboo-shoot" size="64rpx" color="#fff"></t-icon>
+      </view>
+      <text class="hero-title">数独</text>
+      <text class="hero-desc">用数字填满九宫格，锻炼你的逻辑思维</text>
+    </view>
+
+    <!-- How to Play -->
+    <view class="section-card">
+      <view class="section-header">
+        <view class="section-icon-box">
+          <t-icon name="bulletpoint" size="28rpx" color="#8EC5B9"></t-icon>
+        </view>
+        <text class="section-title">玩法说明</text>
+      </view>
+      <view class="steps-list">
+        <view class="step-item">
+          <view class="step-num">1</view>
+          <view class="step-content">
+            <text class="step-label">选择空格</text>
+            <text class="step-desc">点击空白格子选中，准备填入数字</text>
+          </view>
+        </view>
+        <view class="step-item">
+          <view class="step-num">2</view>
+          <view class="step-content">
+            <text class="step-label">填入数字</text>
+            <text class="step-desc">从底部数字键盘选择 1-9 填入格子</text>
+          </view>
+        </view>
+        <view class="step-item">
+          <view class="step-num">3</view>
+          <view class="step-content">
+            <text class="step-label">推理验证</text>
+            <text class="step-desc">每行、每列、每个3x3宫格内数字不能重复</text>
+          </view>
+        </view>
+        <view class="step-item">
+          <view class="step-num">4</view>
+          <view class="step-content">
+            <text class="step-label">完成挑战</text>
+            <text class="step-desc">填满所有格子且无误即为通关</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- Tips -->
+    <view class="section-card tip-card">
+      <view class="tip-row">
+        <t-icon name="star-filled" size="28rpx" color="#FFB5A9"></t-icon>
+        <text class="tip-text">最多允许 3 次错误，超过则游戏结束</text>
+      </view>
+    </view>
+
+    <!-- Difficulty Selection -->
+    <view class="section-card">
+      <view class="section-header">
+        <view class="section-icon-box">
+          <t-icon name="chart" size="28rpx" color="#8EC5B9"></t-icon>
+        </view>
+        <text class="section-title">选择难度</text>
+      </view>
+      <view class="difficulty-list">
+        <view
+          wx:for="{{difficulties}}"
+          wx:key="id"
+          class="difficulty-card"
+          bindtap="selectDifficulty"
+          data-id="{{item.id}}"
+        >
+          <view class="diff-card-inner">
+            <view class="diff-icon-wrapper diff-icon-{{item.id}}">
+              <t-icon name="{{item.icon}}" size="40rpx" color="#FFFFFF"></t-icon>
+            </view>
+            <view class="diff-info">
+              <text class="diff-name">{{item.name}}</text>
+              <text class="diff-desc">{{item.desc}}</text>
+            </view>
+            <view class="diff-start">
+              <t-icon name="chevron-right" size="32rpx" color="#9A9A9A"></t-icon>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- ===== Playing Phase ===== -->
+  <view wx:if="{{phase === 'playing'}}" class="playing-phase">
+
+    <!-- Top Bar -->
+    <view class="top-bar">
+      <view class="top-bar-left" bindtap="backToSelect">
+        <t-icon name="chevron-left" size="44rpx" color="#666666"></t-icon>
+      </view>
+      <view class="top-bar-center">
+        <view class="mistakes-counter">
+          <t-icon name="close-circle" size="30rpx" color="{{mistakes > 0 ? '#F44336' : '#CCCCCC'}}"></t-icon>
+          <text class="mistakes-text {{mistakes > 0 ? 'mistakes-active' : ''}}">{{mistakes}}/{{maxMistakes}}</text>
+        </view>
+      </view>
+      <view class="top-bar-right">
+        <view class="timer-box">
+          <t-icon name="time" size="30rpx" color="#8EC5B9"></t-icon>
+          <text class="timer-text">{{timeDisplay}}</text>
+        </view>
+        <view class="restart-btn" bindtap="restartGame">
+          <t-icon name="refresh" size="36rpx" color="#8EC5B9"></t-icon>
+        </view>
+      </view>
+    </view>
+
+    <!-- Difficulty Badge -->
+    <view class="diff-badge diff-badge-{{currentDifficulty.id}}">
+      <text class="diff-badge-text">{{currentDifficulty.name}}</text>
+    </view>
+
+    <!-- Sudoku Grid -->
+    <view class="grid-container">
+      <view class="sudoku-grid">
+        <view
+          wx:for="{{board}}"
+          wx:for-item="row"
+          wx:for-index="rowIdx"
+          wx:key="rowIdx"
+          class="grid-row {{rowIdx === 2 || rowIdx === 5 ? 'row-box-border' : ''}}"
+        >
+          <view
+            wx:for="{{row}}"
+            wx:for-item="cell"
+            wx:for-index="colIdx"
+            wx:key="colIdx"
+            class="grid-cell {{initial[rowIdx][colIdx] ? 'cell-initial' : 'cell-user'}} {{selectedCell.row === rowIdx && selectedCell.col === colIdx ? 'cell-selected' : ''}} {{selectedCell && (selectedCell.row === rowIdx || selectedCell.col === colIdx || cellMeta[selectedCell.row][selectedCell.col].box === cellMeta[rowIdx][colIdx].box) && !(selectedCell.row === rowIdx && selectedCell.col === colIdx) ? 'cell-highlight' : ''}} {{!initial[rowIdx][colIdx] && cell !== 0 && cell !== solution[rowIdx][colIdx] ? 'cell-error' : ''}} {{colIdx === 2 || colIdx === 5 ? 'col-box-border' : ''}}"
+            style="width: {{cellSize}}rpx; height: {{cellSize}}rpx;"
+            bindtap="onCellTap"
+            data-row="{{rowIdx}}"
+            data-col="{{colIdx}}"
+          >
+            <text
+              wx:if="{{cell !== 0}}"
+              class="cell-text {{initial[rowIdx][colIdx] ? 'cell-text-initial' : (cell !== solution[rowIdx][colIdx] ? 'cell-text-error' : 'cell-text-user')}}"
+            >{{cell}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- Number Pad -->
+    <view class="number-pad">
+      <view
+        wx:for="{{numPad}}"
+        wx:key="*this"
+        class="num-btn"
+        bindtap="onNumberInput"
+        data-num="{{item}}"
+      >
+        <text class="num-btn-text">{{item}}</text>
+      </view>
+      <view class="num-btn num-btn-erase" bindtap="onErase">
+        <t-icon name="delete" size="36rpx" color="#666666"></t-icon>
+      </view>
+    </view>
+
+    <!-- Game Over Overlay -->
+    <view class="game-overlay {{gameOver || gameWon ? '' : 'overlay-hide'}}">
+      <view class="overlay-mask" bindtap="{{gameWon ? 'backToSelect' : ''}}"></view>
+      <view class="overlay-content">
+        <view class="overlay-icon-box">
+          <t-icon
+            name="{{gameWon ? 'check-circle' : 'close-circle'}}"
+            size="100rpx"
+            color="{{gameWon ? '#8EC5B9' : '#F44336'}}"
+          ></t-icon>
+        </view>
+        <text class="overlay-title">{{gameWon ? '恭喜通关！' : '游戏结束'}}</text>
+        <text class="overlay-subtitle">
+          {{gameWon ? '你成功完成了数独挑战' : '错误次数已达上限'}}
+        </text>
+        <view class="overlay-stats">
+          <view class="stat-item">
+            <text class="stat-label">用时</text>
+            <text class="stat-value">{{timeDisplay}}</text>
+          </view>
+          <view class="stat-divider"></view>
+          <view class="stat-item">
+            <text class="stat-label">错误</text>
+            <text class="stat-value">{{mistakes}}次</text>
+          </view>
+        </view>
+        <view class="overlay-actions">
+          <button class="overlay-btn overlay-btn-secondary" bindtap="backToSelect">返回</button>
+          <button
+            wx:if="{{gameOver}}"
+            class="overlay-btn overlay-btn-primary"
+            bindtap="restartGame"
+          >重试</button>
+          <button
+            wx:if="{{gameWon}}"
+            class="overlay-btn overlay-btn-primary"
+            bindtap="backToSelect"
+          >确定</button>
+        </view>
+      </view>
+    </view>
+
+  </view>
+
+</view>

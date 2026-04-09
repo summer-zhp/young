@@ -35,7 +35,12 @@ Page({
     isFavorited: false,
 
     // 日期
-    todayDate: ''
+    todayDate: '',
+
+    // 倒计时
+    workSchedule: null,
+    countdownState: 'not_configured',
+    countdownText: ''
   },
 
   /**
@@ -43,6 +48,7 @@ Page({
    */
   onLoad() {
     this.formatDate()
+    this.loadWorkSchedule()
     this.loadDailyContent()
   },
 
@@ -54,6 +60,132 @@ Page({
     if (this.data.dailyContent && this.data.dailyContent._id) {
       this.checkFavoriteStatus(this.data.dailyContent._id)
     }
+    // 刷新倒计时（用户可能更新了设置）
+    this.loadWorkSchedule()
+  },
+
+  onHide() {
+    if (this._countdownTimer) {
+      clearInterval(this._countdownTimer)
+      this._countdownTimer = null
+    }
+  },
+
+  onUnload() {
+    if (this._countdownTimer) {
+      clearInterval(this._countdownTimer)
+      this._countdownTimer = null
+    }
+  },
+
+  // ===== 倒计时 =====
+
+  loadWorkSchedule() {
+    try {
+      var ws = wx.getStorageSync('workSchedule')
+      if (ws) {
+        this.setData({ workSchedule: ws })
+        this.startCountdown()
+      } else {
+        this.setData({ workSchedule: null, countdownState: 'not_configured', countdownText: '' })
+      }
+    } catch (err) {
+      console.error('读取工作日程失败:', err)
+    }
+  },
+
+  startCountdown() {
+    if (this._countdownTimer) {
+      clearInterval(this._countdownTimer)
+    }
+    this.updateCountdown()
+    this._countdownTimer = setInterval(function () {
+      this.updateCountdown()
+    }.bind(this), 1000)
+  },
+
+  updateCountdown() {
+    var ws = this.data.workSchedule
+    if (!ws) {
+      this.setData({ countdownState: 'not_configured', countdownText: '' })
+      return
+    }
+
+    var now = new Date()
+    var day = now.getDay()
+
+    // 检查是否休息日
+    if (ws.restDays && ws.restDays.indexOf(day) > -1) {
+      this.setData({ countdownState: 'rest_day', countdownText: '今天是休息日，好好放松~' })
+      return
+    }
+
+    var nowMinutes = now.getHours() * 60 + now.getMinutes() + now.getSeconds() / 60
+    var startParts = ws.startTime.split(':')
+    var startMinutes = parseInt(startParts[0]) * 60 + parseInt(startParts[1])
+    var endParts = ws.endTime.split(':')
+    var endMinutes = parseInt(endParts[0]) * 60 + parseInt(endParts[1])
+
+    if (startMinutes >= endMinutes) {
+      // 夜班 - 跨午夜（如 19:00-07:00）
+      if (nowMinutes >= startMinutes || nowMinutes < endMinutes) {
+        var elapsed = nowMinutes >= startMinutes ? nowMinutes - startMinutes : (1440 - startMinutes) + nowMinutes
+        var totalWork = (1440 - startMinutes) + endMinutes
+        var diff = totalWork - elapsed
+        var hours = Math.floor(diff / 60)
+        var mins = Math.floor(diff % 60)
+        var secs = Math.floor((diff - Math.floor(diff)) * 60)
+        var text = hours > 0
+          ? '距离下班还有 ' + hours + '小时' + mins + '分' + secs + '秒'
+          : '距离下班还有 ' + mins + '分' + secs + '秒'
+        this.setData({ countdownState: 'working', countdownText: text })
+      } else {
+        var diff = startMinutes - nowMinutes
+        var hours = Math.floor(diff / 60)
+        var mins = Math.ceil(diff % 60)
+        var text = '距离上班还有 ' + hours + '小时' + mins + '分钟'
+        this.setData({ countdownState: 'before_work', countdownText: text })
+      }
+    } else {
+      // 白班 - 同一天
+      if (nowMinutes < startMinutes) {
+        var diff = startMinutes - nowMinutes
+        var hours = Math.floor(diff / 60)
+        var mins = Math.ceil(diff % 60)
+        var text = '距离上班还有 ' + hours + '小时' + mins + '分钟'
+        this.setData({ countdownState: 'before_work', countdownText: text })
+      } else if (nowMinutes < endMinutes) {
+        var diff = endMinutes - nowMinutes
+        var hours = Math.floor(diff / 60)
+        var mins = Math.floor(diff % 60)
+        var secs = Math.floor((diff - Math.floor(diff)) * 60)
+        var text = hours > 0
+          ? '距离下班还有 ' + hours + '小时' + mins + '分' + secs + '秒'
+          : '距离下班还有 ' + mins + '分' + secs + '秒'
+        this.setData({ countdownState: 'working', countdownText: text })
+      } else {
+        var diff = nowMinutes - endMinutes
+        var hours = Math.floor(diff / 60)
+        var mins = Math.floor(diff % 60)
+        var text = hours > 0
+          ? '已下班 ' + hours + '小时' + mins + '分钟，辛苦了~'
+          : '已下班 ' + mins + '分钟，辛苦了~'
+        this.setData({ countdownState: 'after_work', countdownText: text })
+      }
+    }
+  },
+
+  goToSchedule() {
+    var userInfo = wx.getStorageSync('userInfo')
+    if (!userInfo) {
+      wx.showModal({
+        title: '需要登录',
+        content: '请先登录后使用下班倒计时功能',
+        showCancel: false
+      })
+      return
+    }
+    wx.navigateTo({ url: '/packageB/pages/work-schedule/index' })
   },
 
   /**

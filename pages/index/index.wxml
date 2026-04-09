@@ -18,6 +18,40 @@
 
   <!-- 主内容区域 -->
   <view class="main-content">
+
+    <!-- 下班倒计时卡片 -->
+    <view class="countdown-card-wrapper">
+      <!-- 未设置 -->
+      <view class="countdown-card countdown-not-configured" wx:if="{{countdownState === 'not_configured'}}" bindtap="goToSchedule">
+        <view class="countdown-icon-box">
+          <t-icon name="time" size="40rpx" color="#8EC5B9"></t-icon>
+        </view>
+        <view class="countdown-info">
+          <text class="countdown-title">设置上下班时间</text>
+          <text class="countdown-desc">开启下班倒计时提醒</text>
+        </view>
+        <t-icon name="chevron-right" size="32rpx" color="#CCCCCC"></t-icon>
+      </view>
+
+      <view class="countdown-card countdown-rest" wx:elif="{{countdownState === 'rest_day'}}" bindtap="goToSchedule">
+        <view class="countdown-icon-box countdown-icon-rest">
+          <t-icon name="star-filled" size="40rpx" color="#FFFFFF"></t-icon>
+        </view>
+        <view class="countdown-info">
+          <text class="countdown-title countdown-title-rest">{{countdownText}}</text>
+        </view>
+      </view>
+
+      <view class="countdown-card countdown-{{countdownState}}" wx:else bindtap="goToSchedule">
+        <view class="countdown-icon-box {{countdownState === 'after_work' ? 'countdown-icon-after' : 'countdown-icon-work'}}">
+          <t-icon name="{{countdownState === 'before_work' ? 'sunrise' : (countdownState === 'after_work' ? 'sunset' : 'time')}}" size="40rpx" color="#FFFFFF"></t-icon>
+        </view>
+        <view class="countdown-info">
+          <text class="countdown-title">{{countdownText}}</text>
+        </view>
+      </view>
+    </view>
+
     <!-- 加载状态 -->
     <block wx:if="{{loading}}">
       <view class="loading-container">

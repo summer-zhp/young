@@ -1,0 +1,58 @@
+{
+  "id": "5155870",
+  "name": "young",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "2794558",
+      "name": "爱心",
+      "font_class": "heart-copy",
+      "unicode": "e60f",
+      "unicode_decimal": 58895
+    },
+    {
+      "icon_id": "3664405",
+      "name": "palette",
+      "font_class": "palette",
+      "unicode": "e65b",
+      "unicode_decimal": 58971
+    },
+    {
+      "icon_id": "5725717",
+      "name": "star",
+      "font_class": "star",
+      "unicode": "e70a",
+      "unicode_decimal": 59146
+    },
+    {
+      "icon_id": "20780470",
+      "name": "小屋",
+      "font_class": "xiaowu",
+      "unicode": "e78e",
+      "unicode_decimal": 59278
+    },
+    {
+      "icon_id": "28442460",
+      "name": "猫咪",
+      "font_class": "maomi",
+      "unicode": "e63b",
+      "unicode_decimal": 58939
+    },
+    {
+      "icon_id": "39593756",
+      "name": "卡通蝴蝶",
+      "font_class": "butterfly",
+      "unicode": "e60e",
+      "unicode_decimal": 58894
+    },
+    {
+      "icon_id": "42522181",
+      "name": "花朵-copy-copy",
+      "font_class": "huaduo1",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "情绪垃圾桶",
+  "usingComponents": {
+    "t-icon": "tdesign-miniprogram/icon/icon"
+  }
+}

@@ -50,7 +50,7 @@
 
 /* ===== 头部 - 全新设计 ===== */
 .header {
-  padding: 64rpx 40rpx 32rpx;
+  padding: 64rpx 40rpx 0;
   text-align: center;
   position: relative;
   z-index: 1;
@@ -104,6 +104,111 @@
   padding: 24rpx 32rpx 48rpx;
   position: relative;
   z-index: 1;
+}
+
+/* ===== 倒计时卡片 ===== */
+.countdown-card-wrapper {
+  margin-bottom: 20rpx;
+  animation: cardEnter 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.countdown-card {
+  display: flex;
+  align-items: center;
+  padding: 28rpx 32rpx;
+  border-radius: var(--radius-xl);
+  gap: 24rpx;
+  transition: all var(--transition-base);
+}
+
+.countdown-not-configured {
+  background: var(--surface-white);
+  box-shadow: var(--shadow-md);
+  border: 1px dashed rgba(142, 197, 185, 0.3);
+}
+
+.countdown-not-configured:active {
+  transform: scale(0.98);
+  border-color: rgba(142, 197, 185, 0.5);
+}
+
+.countdown-rest {
+  background: linear-gradient(135deg, rgba(255, 181, 169, 0.15) 0%, rgba(255, 150, 130, 0.08) 100%);
+  border: 1px solid rgba(255, 181, 169, 0.2);
+}
+
+.countdown-working {
+  background: linear-gradient(135deg, var(--primary-start) 0%, var(--primary-dark) 100%);
+  box-shadow: 0 6rpx 24rpx rgba(142, 197, 185, 0.3);
+}
+
+.countdown-before_work {
+  background: linear-gradient(135deg, rgba(142, 197, 185, 0.12) 0%, rgba(111, 169, 154, 0.06) 100%);
+  border: 1px solid rgba(142, 197, 185, 0.2);
+}
+
+.countdown-after_work {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.12) 0%, rgba(255, 165, 0, 0.06) 100%);
+  border: 1px solid rgba(255, 215, 0, 0.2);
+}
+
+.countdown-icon-box {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: linear-gradient(135deg, rgba(142, 197, 185, 0.15) 0%, rgba(111, 169, 154, 0.08) 100%);
+}
+
+.countdown-icon-rest {
+  background: linear-gradient(135deg, #FFB5A9 0%, #FF9A8B 100%);
+  box-shadow: 0 4rpx 16rpx rgba(255, 181, 169, 0.4);
+}
+
+.countdown-icon-work {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.countdown-icon-after {
+  background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+  box-shadow: 0 4rpx 16rpx rgba(255, 215, 0, 0.4);
+}
+
+.countdown-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+  min-width: 0;
+}
+
+.countdown-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: 0.5rpx;
+}
+
+.countdown-working .countdown-title {
+  color: #FFFFFF;
+  font-size: 32rpx;
+  font-variant-numeric: tabular-nums;
+}
+
+.countdown-title-rest {
+  color: #FF9A8B;
+}
+
+.countdown-desc {
+  font-size: 24rpx;
+  color: var(--text-tertiary);
+}
+
+.countdown-working .countdown-desc {
+  color: rgba(255, 255, 255, 0.8);
 }
 
 /* ===== 加载容器 - 优化 ===== */

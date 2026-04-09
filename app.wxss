@@ -1,5 +1,6 @@
 /* app.wxss - 全局样式优化 */
 @import './styles/theme.wxss';
+@import './static/iconfont/iconfont.wxss';
 
 /* ===== 设计令牌（已在 theme.wxss 中定义）===== */
 /* 使用全局主题令牌，保持一致性 */

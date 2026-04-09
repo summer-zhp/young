@@ -1,0 +1,147 @@
+<!--packageA/pages/bubble/index.wxml-->
+<view class="page">
+  <view class="bg-blobs">
+    <view class="bg-blob blob-a"></view>
+    <view class="bg-blob blob-b"></view>
+    <view class="bg-blob blob-c"></view>
+  </view>
+
+  <!-- 头部 -->
+  <view class="header">
+    <view class="title-pill">
+      <text class="title-text">戳泡泡</text>
+    </view>
+  </view>
+
+  <!-- 计分板 -->
+  <view class="score-bar" wx:if="{{isPlaying}}">
+    <view class="score-main">
+      <text class="score-num">{{score}}</text>
+      <text class="score-unit">个</text>
+    </view>
+    <view class="score-progress">
+      <view class="score-fill" style="width: {{score / targetScore * 100}}%"></view>
+    </view>
+  </view>
+
+  <!-- 游戏区域 -->
+  <view class="game-area">
+    <!-- 泡泡散落在画面中 -->
+    <view class="bubble-field" wx:if="{{isPlaying}}">
+      <view
+        wx:for="{{bubbles}}"
+        wx:key="id"
+        class="bubble-item {{item.popping ? 'bpop' : ''}} {{item.fading ? 'bfade' : ''}}"
+        style="left: {{item.x}}%; top: {{item.y}}%; width: {{item.size}}rpx; height: {{item.size}}rpx; animation-delay: {{item.delay}}ms;"
+        catchtap="popBubble"
+        data-idx="{{index}}"
+      >
+        <view class="bbody" style="background: {{item.color}};">
+          <view class="bshine"></view>
+          <view class="bdot"></view>
+        </view>
+        <!-- 爆炸粒子 -->
+        <view class="pop-fx" wx:if="{{item.popping}}">
+          <view class="px" style="background:{{item.solidColor}};animation-delay:0ms;--tx:-40rpx;--ty:-45rpx;"></view>
+          <view class="px" style="background:{{item.solidColor}};animation-delay:30ms;--tx:42rpx;--ty:-35rpx;"></view>
+          <view class="px" style="background:{{item.solidColor}};animation-delay:15ms;--tx:-38rpx;--ty:30rpx;"></view>
+          <view class="px" style="background:{{item.solidColor}};animation-delay:45ms;--tx:35rpx;--ty:38rpx;"></view>
+          <view class="px" style="background:{{item.solidColor}};animation-delay:20ms;--tx:0rpx;--ty:-50rpx;"></view>
+          <view class="px" style="background:{{item.solidColor}};animation-delay:35ms;--tx:-45rpx;--ty:0rpx;"></view>
+          <view class="px" style="background:{{item.solidColor}};animation-delay:10ms;--tx:40rpx;--ty:10rpx;"></view>
+          <view class="px" style="background:{{item.solidColor}};animation-delay:25ms;--tx:-10rpx;--ty:42rpx;"></view>
+        </view>
+        <!-- 消失淡出 -->
+        <view class="fade-ring" wx:if="{{item.showRing}}">
+          <view class="ring-track">
+            <view class="ring-fill" style="animation-duration: {{item.lifespan}}ms;"></view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 空闲状态 -->
+    <view class="idle-scene" wx:if="{{!isPlaying}}">
+      <view class="idle-b ub1">
+        <view class="bbody" style="background: radial-gradient(circle at 30% 28%, rgba(255,255,255,0.9), #FFB5A9 75%);">
+          <view class="bshine"></view>
+        </view>
+      </view>
+      <view class="idle-b ub2">
+        <view class="bbody" style="background: radial-gradient(circle at 30% 28%, rgba(255,255,255,0.9), #A8D5CC 75%);">
+          <view class="bshine"></view>
+        </view>
+      </view>
+      <view class="idle-b ub3">
+        <view class="bbody" style="background: radial-gradient(circle at 30% 28%, rgba(255,255,255,0.9), #FFE4A0 75%);">
+          <view class="bshine"></view>
+        </view>
+      </view>
+      <view class="idle-b ub4">
+        <view class="bbody" style="background: radial-gradient(circle at 30% 28%, rgba(255,255,255,0.9), #C4B5FD 75%);">
+          <view class="bshine"></view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 游戏介绍 -->
+    <view class="intro-section" wx:if="{{!isPlaying}}">
+      <view class="intro-card">
+        <text class="intro-title">怎么玩？</text>
+        <view class="intro-rules">
+          <view class="rule-item">
+            <view class="rule-num">1</view>
+            <text class="rule-text">泡泡会随机出现在画面中</text>
+          </view>
+          <view class="rule-item">
+            <view class="rule-num">2</view>
+            <text class="rule-text">在泡泡消失前点击戳破它</text>
+          </view>
+          <view class="rule-item">
+            <view class="rule-num">3</view>
+            <text class="rule-text">连续戳破可获得连击加分</text>
+          </view>
+        </view>
+      </view>
+      <view class="tip-card">
+        <text class="tip-icon">💡</text>
+        <text class="tip-text">快速连击3个以上泡泡，触发连击特效</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 连击 -->
+  <view class="combo" wx:if="{{comboShow}}">
+    <text class="combo-txt">{{comboText}}</text>
+  </view>
+
+  <!-- 底部 -->
+  <view class="bottom-bar">
+    <button wx:if="{{!isPlaying}}" class="btn-go" bindtap="startGame">开始游戏</button>
+    <button wx:else class="btn-end" bindtap="stopGame">结束</button>
+  </view>
+
+  <!-- 难度弹窗 -->
+  <view class="mask" wx:if="{{showModal}}" catchtap="closeModal">
+    <view class="modal" catchtap="noop">
+      <view class="modal-hd"><text class="modal-tt">选择难度</text></view>
+      <view class="modal-bd">
+        <view
+          wx:for="{{difficulties}}"
+          wx:key="v"
+          class="diff-row {{selDiff === item.v ? 'diff-on' : ''}}"
+          bindtap="pickDiff"
+          data-v="{{item.v}}"
+        >
+          <view class="diff-info">
+            <text class="diff-name">{{item.label}}</text>
+            <text class="diff-desc">同时{{item.max}}个 · 共{{item.total}}个</text>
+          </view>
+          <view class="diff-check" wx:if="{{selDiff === item.v}}">
+            <t-icon name="check" size="24rpx" color="#fff"></t-icon>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

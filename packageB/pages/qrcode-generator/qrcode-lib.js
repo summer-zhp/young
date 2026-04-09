@@ -3,7 +3,7 @@
  * 二维码生成工具函数
  * 使用 utils/qrcode.js 实现
  */
-import qrcode from '../../../utils/qrcode.js'
+import qrcode from '../../utils/qrcode.js'
 
 /**
  * 使用原生 Canvas 2D API 生成二维码

@@ -137,7 +137,7 @@ Page({
   // 跳转到新建页面
   goToCreate() {
     wx.navigateTo({
-      url: '/pages/decision/edit/edit'
+      url: '/packageA/pages/decision/edit/edit'
     })
   },
 
@@ -145,7 +145,7 @@ Page({
   goToEdit(e) {
     const item = e.currentTarget.dataset.item
     wx.navigateTo({
-      url: `/pages/decision/edit/edit?id=${item.id}`
+      url: `/packageA/pages/decision/edit/edit?id=${item.id}`
     })
   },
 

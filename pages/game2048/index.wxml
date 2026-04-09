@@ -1,0 +1,189 @@
+<!--pages/game2048/index.wxml-->
+<view class="page">
+
+  <!-- ===== Difficulty Selection Phase ===== -->
+  <view class="select-phase" wx:if="{{phase === 'select'}}">
+    <view class="decoration decoration-1"></view>
+    <view class="decoration decoration-2"></view>
+
+    <!-- Hero Header -->
+    <view class="hero-header">
+      <view class="hero-icon-box">
+        <t-icon name="app" size="64rpx" color="#8EC5B9"></t-icon>
+      </view>
+      <text class="hero-title">2048</text>
+      <text class="hero-desc">滑动合并数字，挑战最高分</text>
+    </view>
+
+    <!-- Best Score -->
+    <view class="best-score-bar">
+      <t-icon name="trophy" size="28rpx" color="#FFB5A9"></t-icon>
+      <text class="best-score-label">历史最高分</text>
+      <text class="best-score-value">{{bestScore}}</text>
+    </view>
+
+    <!-- How to Play -->
+    <view class="section-card">
+      <view class="section-header">
+        <view class="section-icon-box">
+          <t-icon name="bulletpoint" size="28rpx" color="#8EC5B9"></t-icon>
+        </view>
+        <text class="section-title">玩法说明</text>
+      </view>
+      <view class="steps-list">
+        <view class="step-item">
+          <view class="step-num">1</view>
+          <view class="step-content">
+            <text class="step-label">滑动方块</text>
+            <text class="step-desc">上下左右滑动，所有方块同方向移动</text>
+          </view>
+        </view>
+        <view class="step-item">
+          <view class="step-num">2</view>
+          <view class="step-content">
+            <text class="step-label">合并升级</text>
+            <text class="step-desc">相同数字碰撞合并为更大数字，分数增加</text>
+          </view>
+        </view>
+        <view class="step-item">
+          <view class="step-num">3</view>
+          <view class="step-content">
+            <text class="step-label">目标 2048</text>
+            <text class="step-desc">合并出 2048 即为通关，可继续挑战更高分</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- Tips -->
+    <view class="section-card tip-card">
+      <view class="tip-row">
+        <t-icon name="star-filled" size="28rpx" color="#FFB5A9"></t-icon>
+        <text class="tip-text">把最大数字保持在角落是关键策略</text>
+      </view>
+    </view>
+
+    <!-- Difficulty Selection -->
+    <view class="section-card">
+      <view class="section-header">
+        <view class="section-icon-box">
+          <t-icon name="chart" size="28rpx" color="#8EC5B9"></t-icon>
+        </view>
+        <text class="section-title">选择难度</text>
+      </view>
+      <view class="difficulty-list">
+        <view
+          wx:for="{{difficulties}}"
+          wx:key="id"
+          class="difficulty-card"
+          style="--card-delay: {{index * 100}}ms"
+          bindtap="selectDifficulty"
+          data-size="{{item.size}}"
+        >
+          <view class="diff-card-inner">
+            <view class="diff-icon-wrapper diff-icon-{{item.id}}">
+              <t-icon name="{{item.icon}}" size="40rpx" color="#FFFFFF"></t-icon>
+            </view>
+            <view class="diff-info">
+              <text class="diff-name">{{item.name}}</text>
+              <text class="diff-desc">{{item.desc}}</text>
+            </view>
+            <view class="diff-start">
+              <t-icon name="chevron-right" size="32rpx" color="#9A9A9A"></t-icon>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- ===== Playing Phase ===== -->
+  <view class="playing-phase" wx:if="{{phase === 'playing'}}">
+
+    <!-- Top Bar -->
+    <view class="top-bar">
+      <view class="top-bar-btn" bindtap="backToSelect">
+        <t-icon name="chevron-left" size="44rpx" color="#666"></t-icon>
+      </view>
+      <text class="top-bar-title">2048</text>
+      <view class="top-bar-btn" bindtap="restartGame">
+        <t-icon name="refresh" size="40rpx" color="#666"></t-icon>
+      </view>
+    </view>
+
+    <!-- Score Area -->
+    <view class="score-area">
+      <view class="score-pill score-current">
+        <text class="score-label">当前分数</text>
+        <text class="score-value">{{score}}</text>
+      </view>
+      <view class="score-pill score-best">
+        <text class="score-label">最高纪录</text>
+        <text class="score-value">{{bestScore}}</text>
+      </view>
+    </view>
+
+    <!-- Game Grid -->
+    <view class="grid-container" bindtouchstart="onTouchStart" bindtouchend="onTouchEnd">
+      <view class="grid-board" style="width: {{cellSize * gridSize + 8 * (gridSize + 1)}}px; height: {{cellSize * gridSize + 8 * (gridSize + 1)}}px;">
+        <view class="grid-cell" wx:for="{{cellInfo}}" wx:key="index"
+          style="width: {{cellSize}}px; height: {{cellSize}}px; background: {{item.bg}}; color: {{item.textColor}}; font-size: {{item.fontSize}}px; line-height: {{cellSize}}px;">
+          <text wx:if="{{item.isTile}}">{{item.value}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- Swipe Hint -->
+    <text class="swipe-hint">滑动方块，合并数字</text>
+
+    <!-- Game Over Overlay -->
+    <view class="game-overlay" wx:if="{{gameOver}}" catchtouchmove="true">
+      <view class="overlay-mask"></view>
+      <view class="overlay-content">
+        <view class="overlay-icon-box">
+          <t-icon name="close-circle" size="80rpx" color="#FF6B5A"></t-icon>
+        </view>
+        <text class="overlay-title">游戏结束</text>
+        <text class="overlay-score">得分：{{score}}</text>
+        <view class="overlay-btns">
+          <view class="overlay-btn btn-restart" bindtap="restartGame">
+            <t-icon name="refresh" size="32rpx" color="#fff"></t-icon>
+            <text class="overlay-btn-text">再来一局</text>
+          </view>
+          <view class="overlay-btn btn-back" bindtap="backToSelect">
+            <t-icon name="chevron-left" size="32rpx" color="#8EC5B9"></t-icon>
+            <text class="overlay-btn-text back-text">返回选择</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- Win Overlay -->
+    <view class="game-overlay" wx:if="{{gameWon}}" catchtouchmove="true">
+      <view class="overlay-mask"></view>
+      <view class="overlay-content win-content">
+        <view class="overlay-icon-box">
+          <t-icon name="star-filled" size="80rpx" color="#FFD700"></t-icon>
+        </view>
+        <text class="overlay-title win-title">恭喜通关</text>
+        <text class="overlay-score">得分：{{score}}</text>
+        <view class="overlay-btns">
+          <view class="overlay-btn btn-continue" bindtap="continuePlay">
+            <t-icon name="play-circle" size="32rpx" color="#fff"></t-icon>
+            <text class="overlay-btn-text">继续挑战</text>
+          </view>
+          <view class="overlay-btn btn-restart" bindtap="restartGame">
+            <t-icon name="refresh" size="32rpx" color="#fff"></t-icon>
+            <text class="overlay-btn-text">重新开始</text>
+          </view>
+          <view class="overlay-btn btn-back" bindtap="backToSelect">
+            <t-icon name="chevron-left" size="32rpx" color="#8EC5B9"></t-icon>
+            <text class="overlay-btn-text back-text">返回选择</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+  </view>
+
+</view>

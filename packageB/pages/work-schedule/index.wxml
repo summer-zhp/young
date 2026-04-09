@@ -1,0 +1,154 @@
+<!--pages/work-schedule/index.wxml - 上下班时间设置-->
+<view class="page">
+  <view class="bg-deco"></view>
+
+  <!-- 未登录状态 -->
+  <view wx:if="{{!hasUserInfo}}" class="login-prompt">
+    <view class="login-card">
+      <view class="login-icon-box">
+        <t-icon name="lock-on" size="56rpx" color="#8EC5B9"></t-icon>
+      </view>
+      <text class="login-title">需要登录后才能设置</text>
+      <text class="login-desc">登录后即可使用下班倒计时功能</text>
+      <view class="login-btn" bindtap="goToLogin">
+        <text class="login-btn-text">前往登录</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 已登录状态 -->
+  <view wx:else class="content">
+
+    <!-- 当前状态卡片 -->
+    <view class="status-card" wx:if="{{workSchedule}}">
+      <!-- 休息日 -->
+      <block wx:if="{{countdownState === 'rest_day'}}">
+        <view class="status-icon-box status-icon-rest">
+          <t-icon name="star-filled" size="48rpx" color="#FFFFFF"></t-icon>
+        </view>
+        <text class="status-text">{{countdownText}}</text>
+      </block>
+      <!-- 上班前 -->
+      <block wx:elif="{{countdownState === 'before_work'}}">
+        <view class="status-icon-box status-icon-before">
+          <t-icon name="sun-rising" size="48rpx" color="#FFFFFF"></t-icon>
+        </view>
+        <text class="status-text">{{countdownText}}</text>
+      </block>
+      <!-- 工作中 -->
+      <block wx:elif="{{countdownState === 'working'}}">
+        <view class="status-icon-box status-icon-working">
+          <t-icon name="work-history-filled" size="84rpx" color="#8EC5B9"></t-icon>
+        </view>
+        <text class="status-text status-text-working">{{countdownText}}</text>
+      </block>
+      <!-- 下班后 -->
+      <block wx:elif="{{countdownState === 'after_work'}}">
+        <view class="status-icon-box status-icon-after">
+          <t-icon name="sun-rising-filled" size="48rpx" color="#FFFFFF"></t-icon>
+        </view>
+        <text class="status-text">{{countdownText}}</text>
+      </block>
+      <view class="status-time-row">
+        <t-icon name="time" size="32rpx" color="#9a9a9a"></t-icon>
+        <text class="status-time-text">{{workSchedule.startTime}} - {{workSchedule.endTime}}</text>
+      </view>
+    </view>
+
+    <!-- 未设置提示 -->
+    <view class="empty-card" wx:else>
+      <view class="empty-icon-box">
+        <t-icon name="time" size="48rpx" color="#8EC5B9"></t-icon>
+      </view>
+      <text class="empty-title">设置上下班时间</text>
+      <text class="empty-desc">开启下班倒计时功能</text>
+    </view>
+
+    <!-- 设置表单 -->
+    <view class="form-card">
+      <!-- 上下班时间 -->
+      <view class="form-header">
+        <view class="form-icon-box">
+          <t-icon name="time" size="28rpx" color="#8EC5B9"></t-icon>
+        </view>
+        <text class="form-title">上下班时间</text>
+      </view>
+
+      <view class="form-section">
+        <text class="form-label">上班时间</text>
+        <picker mode="time" value="{{editStartTime}}" bindchange="onStartTimeChange">
+          <view class="time-picker">
+            <text class="time-value">{{editStartTime}}</text>
+            <t-icon name="chevron-right" size="28rpx" color="#CCCCCC"></t-icon>
+          </view>
+        </picker>
+      </view>
+
+      <view class="form-section">
+        <text class="form-label">下班时间</text>
+        <picker mode="time" value="{{editEndTime}}" bindchange="onEndTimeChange">
+          <view class="time-picker">
+            <text class="time-value">{{editEndTime}}</text>
+            <t-icon name="chevron-right" size="28rpx" color="#CCCCCC"></t-icon>
+          </view>
+        </picker>
+      </view>
+
+      <view class="form-divider"></view>
+
+      <!-- 休息方式 -->
+      <view class="form-header" style="margin-top: 8rpx;">
+        <view class="form-icon-box">
+          <t-icon name="calendar" size="28rpx" color="#FFB5A9"></t-icon>
+        </view>
+        <text class="form-title">休息日设置</text>
+      </view>
+
+      <view class="form-section">
+        <text class="form-label">休息方式</text>
+        <view class="type-row">
+          <view
+            class="type-btn {{editRestType === 'single' ? 'type-active' : ''}}"
+            bindtap="onRestTypeChange"
+            data-type="single"
+          >
+            <text>单休</text>
+          </view>
+          <view
+            class="type-btn {{editRestType === 'double' ? 'type-active' : ''}}"
+            bindtap="onRestTypeChange"
+            data-type="double"
+          >
+            <text>双休</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="form-section">
+        <text class="form-label">选择休息日</text>
+        <view class="day-grid">
+          <view
+            wx:for="{{weekDays}}"
+            wx:key="value"
+            class="day-chip {{item.active ? 'day-active' : ''}}"
+            bindtap="onRestDayToggle"
+            data-day="{{item.value}}"
+          >
+            <text>{{item.label}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 操作按钮 -->
+    <view class="action-area">
+      <view class="save-btn" bindtap="saveWorkSchedule">
+        <t-icon name="check" size="32rpx" color="#FFFFFF"></t-icon>
+        <text class="save-btn-text">保存设置</text>
+      </view>
+      <view class="clear-btn" wx:if="{{workSchedule}}" bindtap="clearWorkSchedule">
+        <text class="clear-btn-text">清除设置</text>
+      </view>
+    </view>
+  </view>
+</view>
