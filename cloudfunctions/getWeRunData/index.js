@@ -6,43 +6,29 @@ cloud.init({
 })
 
 exports.main = async (event, context) => {
-  const { OPENID } = cloud.getWXContext()
-
   try {
-    if (!event.cloudID) {
+    // 云开发会自动将 cloudID 参数解码为原始数据
+    // event.cloudID 传入时是 cloudID 字符串，SDK 自动替换为解密后的对象
+    const stepData = event.cloudID
+
+    if (!stepData) {
       return {
         success: false,
         message: '缺少 cloudID 参数'
       }
     }
 
-    // 通过 cloudID 获取开放数据（云开发自动解密）
-    const result = await cloud.openapi.werun.getOpenData({
-      list: [event.cloudID]
-    })
-
-    if (!result || !result.list || !result.list.length) {
+    // 如果 SDK 已自动解密，stepData 直接就是 { stepInfoList: [...] }
+    if (stepData.stepInfoList) {
       return {
-        success: false,
-        message: '获取运动数据失败'
+        success: true,
+        stepInfoList: stepData.stepInfoList
       }
     }
-
-    const openData = result.list[0]
-    if (openData.errcode || !openData.data) {
-      return {
-        success: false,
-        message: openData.errmsg || '数据解密失败'
-      }
-    }
-
-    // 解析步数数据
-    const stepData = JSON.parse(openData.data)
-    const stepInfoList = stepData.stepInfoList || []
 
     return {
-      success: true,
-      stepInfoList
+      success: false,
+      message: '数据解析失败'
     }
   } catch (err) {
     console.error('获取微信运动数据失败:', err)
