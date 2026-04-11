@@ -1,9 +1,7 @@
 // packageA/pages/werun/werun.js - 微信运动步数可视化
 const { cloud } = require('../../utils/cloud')
 
-const app = getApp()
 const systemInfo = wx.getWindowInfo()
-const DPR = systemInfo.pixelRatio
 const CHART_HEIGHT_PX = 200
 
 Page({
@@ -130,6 +128,11 @@ Page({
   },
 
   processStepData(rawList) {
+    if (!rawList.length) {
+      this.setData({ isLoading: false })
+      return
+    }
+
     // 按时间升序排列
     rawList.sort((a, b) => a.timestamp - b.timestamp)
 
@@ -273,10 +276,11 @@ Page({
     const padding = { top: 20, right: 16, bottom: 36, left: 16 }
     const chartW = width - padding.left - padding.right
     const chartH = height - padding.top - padding.bottom
-    const gap = chartW / (data.length - 1 || 1)
+    const gap = data.length > 1 ? chartW / (data.length - 1) : 0
     const maxVal = Math.max(...data.map(d => d.step), 1)
 
     const points = data.map((item, index) => ({
+      x: padding.left + gap * index,
       x: padding.left + gap * index,
       y: padding.top + chartH - (item.step / maxVal) * chartH
     }))
@@ -392,10 +396,12 @@ Page({
     }
 
     const item = data[index]
-    // 将 px 坐标转为 rpx 用于 tooltip 定位
+    // 将 px 坐标转为 rpx 用于 tooltip 定位，并限制在屏幕范围内
     const rpxRatio = 750 / systemInfo.windowWidth
-    const tooltipX = Math.round(touch.clientX * rpxRatio - 80)
-    const tooltipY = Math.round(touch.clientY * rpxRatio - 120)
+    const rawX = Math.round(touch.clientX * rpxRatio - 80)
+    const rawY = Math.round(touch.clientY * rpxRatio - 120)
+    const tooltipX = Math.max(20, Math.min(rawX, 590))
+    const tooltipY = Math.max(40, Math.min(rawY, 1200))
 
     this.setData({
       tooltipVisible: true,

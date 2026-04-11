@@ -85,7 +85,7 @@
       <view class="list-section">
         <text class="list-title">每日步数明细</text>
         <view class="step-list">
-          <view class="step-item {{index === 0 ? 'step-today' : ''}}" wx:for="{{stepInfoList}}" wx:key="timestamp">
+          <view class="step-item {{index === stepInfoList.length - 1 ? 'step-today' : ''}}" wx:for="{{stepInfoList}}" wx:key="timestamp">
             <view class="step-item-left">
               <text class="step-item-date">{{item.dateStr}}</text>
               <text class="step-item-week">{{item.weekStr}}</text>
@@ -100,14 +100,14 @@
     </view>
 
     <!-- 空状态 -->
-    <view class="empty-container" wx:if="{{!isLoading && stepInfoList.length === 0}}">
+    <view class="empty-container" wx:if="{{!isLoading && !errorMsg && stepInfoList.length === 0}}">
       <t-icon name="chart-bar" size="120rpx" color="#ccc"></t-icon>
       <text class="empty-title">暂无运动数据</text>
       <text class="empty-desc">请确保已在微信中开启微信运动功能</text>
     </view>
 
     <!-- 错误状态 -->
-    <view class="error-container" wx:if="{{errorMsg}}">
+    <view class="error-container" wx:if="{{!isLoading && errorMsg}}">
       <t-icon name="close-circle" size="120rpx" color="#FF6B81"></t-icon>
       <text class="error-title">{{errorMsg}}</text>
       <button class="retry-btn" bindtap="loadWeRunData">重新获取</button>
