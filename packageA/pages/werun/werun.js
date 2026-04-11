@@ -102,14 +102,13 @@ Page({
       })
 
       // 3. 通过云函数解密数据
+      console.log('werun cloudID:', werunRes.cloudID)
       const result = await cloud.callFunction('getWeRunData', {
         cloudID: werunRes.cloudID
-      }).catch(() => {
-        throw { errMsg: 'cloudFunctionError' }
       })
 
       if (!result.success) {
-        throw { errMsg: 'cloudFunctionError' }
+        throw new Error(result.message || '数据解析失败')
       }
 
       const stepInfoList = result.stepInfoList || []
@@ -124,8 +123,8 @@ Page({
         msg = '请授权后查看运动数据'
       } else if (err.errMsg && err.errMsg.indexOf('not support') > -1) {
         msg = '当前设备不支持微信运动'
-      } else if (err.errMsg === 'cloudFunctionError') {
-        msg = '网络异常，请稍后重试'
+      } else if (err.message) {
+        msg = err.message
       }
       this.setData({ isLoading: false, errorMsg: msg })
     }
