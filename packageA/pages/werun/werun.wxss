@@ -255,49 +255,11 @@
 }
 
 .chart-wrapper {
-  position: relative;
   width: 100%;
-}
-
-.chart-scroll {
-  width: 100%;
-  white-space: nowrap;
 }
 
 .step-chart {
   display: block;
-}
-
-/* Tooltip */
-.chart-tooltip {
-  position: absolute;
-  background: rgba(26, 26, 26, 0.85);
-  color: #fff;
-  padding: 12rpx 24rpx;
-  border-radius: var(--radius-md);
-  font-size: 24rpx;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4rpx;
-  opacity: 0;
-  transition: opacity 0.2s;
-  pointer-events: none;
-  z-index: 100;
-}
-
-.tooltip-show {
-  opacity: 1;
-}
-
-.tooltip-date {
-  font-size: 20rpx;
-  color: rgba(255, 255, 255, 0.7);
-}
-
-.tooltip-step {
-  font-size: 28rpx;
-  font-weight: 600;
 }
 
 /* ===== 每日步数列表 ===== */

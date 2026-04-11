@@ -23,14 +23,7 @@ Page({
     // 图表
     chartType: 'bar',
     chartWidth: 0,
-    chartHeight: 0,
-
-    // Tooltip
-    tooltipVisible: false,
-    tooltipX: 0,
-    tooltipY: 0,
-    tooltipDate: '',
-    tooltipStep: ''
+    chartHeight: 0
   },
 
   // Canvas 相关
@@ -183,34 +176,38 @@ Page({
 
   initCanvas() {
     const query = this.createSelectorQuery()
-    query.select('#stepChart')
-      .fields({ node: true, size: true })
-      .exec((res) => {
-        if (!res[0]) return
+    query.select('.chart-wrapper')
+      .boundingClientRect((rect) => {
+        if (!rect) return
 
-        const canvas = res[0].node
-        const ctx = canvas.getContext('2d')
+        const containerWidth = rect.width
+        const widthPx = containerWidth
 
-        const dataCount = this.chartData.length
-        // 每个数据点至少 24px 宽度，保证可读性
-        const minWidthPx = Math.max(dataCount * 24, systemInfo.windowWidth - 64)
-        const widthPx = minWidthPx
+        const query2 = this.createSelectorQuery()
+        query2.select('#stepChart')
+          .fields({ node: true, size: true })
+          .exec((res) => {
+            if (!res[0]) return
 
-        const dpr = wx.getWindowInfo().pixelRatio
-        canvas.width = widthPx * dpr
-        canvas.height = CHART_HEIGHT_PX * dpr
-        ctx.scale(dpr, dpr)
+            const canvas = res[0].node
+            const ctx = canvas.getContext('2d')
 
-        this.canvas = canvas
-        this.ctx = ctx
+            const dpr = wx.getWindowInfo().pixelRatio
+            canvas.width = widthPx * dpr
+            canvas.height = CHART_HEIGHT_PX * dpr
+            ctx.scale(dpr, dpr)
 
-        this.setData({
-          chartWidth: widthPx,
-          chartHeight: CHART_HEIGHT_PX
-        })
+            this.canvas = canvas
+            this.ctx = ctx
 
-        this.drawChart()
-      })
+            this.setData({
+              chartWidth: widthPx,
+              chartHeight: CHART_HEIGHT_PX
+            })
+
+            this.drawChart()
+          })
+      }).exec()
   },
 
   drawChart() {
@@ -373,18 +370,18 @@ Page({
   },
 
   onCanvasTouch(e) {
-    if (!this.chartData.length || !e.touches.length) return
+    if (!this.chartData.length) return
 
-    const touch = e.touches[0]
+    // bindtap 事件使用 e.detail.x/y
+    const touch = e.detail || {}
     const data = this.chartData
     const width = this.data.chartWidth
-    const height = CHART_HEIGHT_PX
     const padding = { top: 20, right: 16, bottom: 36, left: 16 }
     const chartW = width - padding.left - padding.right
 
     const gap = this.data.chartType === 'bar'
       ? chartW / data.length
-      : chartW / (data.length - 1 || 1)
+      : data.length > 1 ? chartW / (data.length - 1) : chartW
 
     const offsetX = touch.x
     let index
@@ -395,29 +392,13 @@ Page({
       index = Math.round((offsetX - padding.left) / gap)
     }
 
-    if (index < 0 || index >= data.length) {
-      this.setData({ tooltipVisible: false })
-      return
-    }
+    if (index < 0 || index >= data.length) return
 
     const item = data[index]
-    // 将 px 坐标转为 rpx 用于 tooltip 定位，并限制在屏幕范围内
-    const rpxRatio = 750 / systemInfo.windowWidth
-    const rawX = Math.round(touch.clientX * rpxRatio - 80)
-    const rawY = Math.round(touch.clientY * rpxRatio - 120)
-    const tooltipX = Math.max(20, Math.min(rawX, 590))
-    const tooltipY = Math.max(40, Math.min(rawY, 1200))
-
-    this.setData({
-      tooltipVisible: true,
-      tooltipX,
-      tooltipY,
-      tooltipDate: item.fullDate,
-      tooltipStep: item.step.toLocaleString()
+    wx.showToast({
+      title: `${item.fullDate}  ${item.step.toLocaleString()}步`,
+      icon: 'none',
+      duration: 1500
     })
-  },
-
-  onTouchEnd() {
-    this.setData({ tooltipVisible: false })
   }
 })

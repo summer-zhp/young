@@ -67,17 +67,10 @@
           </view>
         </view>
         <view class="chart-wrapper">
-          <scroll-view scroll-x class="chart-scroll" enhanced show-scrollbar="{{false}}">
-            <canvas type="2d" id="stepChart" class="step-chart"
-              style="width: {{chartWidth}}px; height: {{chartHeight}}px;"
-              bindtouchstart="onCanvasTouch" bindtouchmove="onCanvasTouch" bindtouchend="onTouchEnd">
-            </canvas>
-          </scroll-view>
-        </view>
-        <!-- Tooltip -->
-        <view class="chart-tooltip {{tooltipVisible ? 'tooltip-show' : ''}}" style="left: {{tooltipX}}rpx; top: {{tooltipY}}rpx;">
-          <text class="tooltip-date">{{tooltipDate}}</text>
-          <text class="tooltip-step">{{tooltipStep}} 步</text>
+          <canvas type="2d" id="stepChart" class="step-chart"
+            style="width: {{chartWidth}}px; height: {{chartHeight}}px;"
+            bindtap="onCanvasTouch">
+          </canvas>
         </view>
       </view>
 
