@@ -101,14 +101,16 @@ Page({
         })
       })
 
-      // 3. 通过云函数解密数据（传 cloudID，SDK 自动解密）
+      // 3. 通过云函数解密数据（传 encryptedData + iv + code）
       const result = await cloud.callFunction('getWeRunData', {
-        cloudID: werunRes.cloudID
+        encryptedData: werunRes.encryptedData,
+        iv: werunRes.iv,
+        code: loginRes.code
       })
 
-      // 临时调试：打印完整返回结果
-      console.log('云函数返回:', JSON.stringify(result))
-      throw new Error('调试: ' + JSON.stringify(result))
+      if (!result.success) {
+        throw new Error(result.message || '数据解析失败')
+      }
 
       const stepInfoList = result.stepInfoList || []
 
