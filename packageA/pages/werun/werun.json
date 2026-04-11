@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "微信运动",
+  "usingComponents": {
+    "t-icon": "tdesign-miniprogram/icon/icon"
+  }
+}
