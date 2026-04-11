@@ -106,9 +106,9 @@ Page({
         cloudID: werunRes.cloudID
       })
 
-      if (!result.success) {
-        throw new Error(result.message || '数据解析失败')
-      }
+      // 临时调试：打印完整返回结果
+      console.log('云函数返回:', JSON.stringify(result))
+      throw new Error('调试: ' + JSON.stringify(result))
 
       const stepInfoList = result.stepInfoList || []
 
