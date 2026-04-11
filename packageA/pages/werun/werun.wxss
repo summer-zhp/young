@@ -270,7 +270,7 @@
 
 /* Tooltip */
 .chart-tooltip {
-  position: fixed;
+  position: absolute;
   background: rgba(26, 26, 26, 0.85);
   color: #fff;
   padding: 12rpx 24rpx;

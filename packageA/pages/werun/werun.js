@@ -55,7 +55,8 @@ Page({
           this.setData({ isAuthorized: true })
           this.loadWeRunData()
         } else {
-          this.setData({ isAuthorized: false })
+          // 未授权过，自动发起授权请求（已登录用户直接弹窗授权）
+          this.requestAuth()
         }
       }
     })
