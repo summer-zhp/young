@@ -1,5 +1,5 @@
 // packageA/pages/werun/werun.js - 微信运动步数可视化
-const { cloud } = require('../../utils/cloud')
+const { cloud } = require('../../../utils/cloud')
 
 const systemInfo = wx.getWindowInfo()
 const CHART_HEIGHT_PX = 200
@@ -39,6 +39,10 @@ Page({
   chartData: [],
 
   onLoad() {
+    if (!getApp().requireLogin()) {
+      wx.navigateBack()
+      return
+    }
     this.checkAuth()
   },
 
