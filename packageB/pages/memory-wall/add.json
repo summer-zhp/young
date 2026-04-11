@@ -1,0 +1,7 @@
+{
+  "usingComponents": {
+    "t-icon": "tdesign-miniprogram/icon/icon",
+    "t-switch": "tdesign-miniprogram/switch/switch"
+  },
+  "navigationBarTitleText": "添加纪念"
+}

@@ -40,6 +40,14 @@ Page({
         description: '选色涂鸦，放松心情',
         url: '/packageA/pages/coloring/index'
       },
+      {
+        id: 6,
+        name: '时光纪念墙',
+        icon: 'image',
+        description: '记录每一个值得珍藏的时刻',
+        url: '/packageB/pages/memory-wall/index',
+        highlight: true
+      },
     ],
     filteredTools: []
   },

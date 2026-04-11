@@ -1,0 +1,186 @@
+<!--packageB/pages/memory-wall/index.wxml-->
+<view class="page">
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{!loading && memories.length === 0}}">
+    <view class="empty-icon">
+      <t-icon name="image" size="120rpx" color="#ccc"></t-icon>
+    </view>
+    <text class="empty-title">还没有纪念</text>
+    <text class="empty-desc">记录生活中的每一个美好时刻</text>
+    <view class="empty-btn" bindtap="goToAdd">
+      <t-icon name="add" size="32rpx" color="#fff"></t-icon>
+      <text class="empty-btn-text">添加第一条纪念</text>
+    </view>
+  </view>
+
+  <!-- 纪念墙网格 -->
+  <scroll-view
+    wx:if="{{memories.length > 0 || loading}}"
+    class="wall-scroll"
+    scroll-y
+    enhanced
+    show-scrollbar="{{false}}"
+    refresher-enabled="{{false}}"
+    bindscrolltolower="loadMore"
+  >
+    <!-- 顶部统计 -->
+    <view class="wall-header">
+      <text class="wall-count">共 {{memories.length}} 条纪念</text>
+    </view>
+
+    <!-- 双列瀑布流 -->
+    <view class="wall-grid">
+      <view class="wall-column">
+        <view
+          wx:for="{{memories}}"
+          wx:if="{{index % 2 === 0}}"
+          wx:key="_id"
+          class="memory-card"
+          bindtap="showDetail"
+          data-index="{{index}}"
+        >
+          <!-- 图片区域 -->
+          <view class="card-image-wrap" wx:if="{{item.images.length > 0}}">
+            <image
+              class="card-image"
+              src="{{item.images[0]}}"
+              mode="aspectFill"
+              lazy-load
+              bindtap="previewImageFromCard"
+              data-url="{{item.images[0]}}"
+              data-index="{{index}}"
+              catchtap="previewImageFromCard"
+            ></image>
+            <view class="image-count" wx:if="{{item.images.length > 1}}">
+              <t-icon name="image" size="20rpx" color="#fff"></t-icon>
+              <text class="image-count-text">{{item.images.length}}</text>
+            </view>
+          </view>
+
+          <!-- 文字内容 -->
+          <view class="card-content" wx:if="{{item.text}}">
+            <text class="card-text">{{item.text}}</text>
+          </view>
+
+          <!-- 底部信息 -->
+          <view class="card-footer">
+            <view class="card-location" wx:if="{{item.location}}">
+              <t-icon name="location" size="22rpx" color="#8EC5B9"></t-icon>
+              <text class="card-location-text">{{item.location.name}}</text>
+            </view>
+            <text class="card-time">{{item.displayTime}}</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="wall-column">
+        <view
+          wx:for="{{memories}}"
+          wx:if="{{index % 2 === 1}}"
+          wx:key="_id"
+          class="memory-card"
+          bindtap="showDetail"
+          data-index="{{index}}"
+        >
+          <view class="card-image-wrap" wx:if="{{item.images.length > 0}}">
+            <image
+              class="card-image"
+              src="{{item.images[0]}}"
+              mode="aspectFill"
+              lazy-load
+              catchtap="previewImageFromCard"
+              data-url="{{item.images[0]}}"
+              data-index="{{index}}"
+            ></image>
+            <view class="image-count" wx:if="{{item.images.length > 1}}">
+              <t-icon name="image" size="20rpx" color="#fff"></t-icon>
+              <text class="image-count-text">{{item.images.length}}</text>
+            </view>
+          </view>
+
+          <view class="card-content" wx:if="{{item.text}}">
+            <text class="card-text">{{item.text}}</text>
+          </view>
+
+          <view class="card-footer">
+            <view class="card-location" wx:if="{{item.location}}">
+              <t-icon name="location" size="22rpx" color="#8EC5B9"></t-icon>
+              <text class="card-location-text">{{item.location.name}}</text>
+            </view>
+            <text class="card-time">{{item.displayTime}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 加载更多 -->
+    <view class="load-more" wx:if="{{loading}}">
+      <view class="loading-spinner"></view>
+      <text class="load-more-text">加载中...</text>
+    </view>
+    <view class="load-more" wx:elif="{{!hasMore && memories.length > 0}}">
+      <text class="load-more-text">— 已经到底了 —</text>
+    </view>
+
+    <!-- 底部占位 -->
+    <view class="bottom-space"></view>
+  </scroll-view>
+
+  <!-- 悬浮添加按钮 -->
+  <view class="fab-btn" bindtap="goToAdd" wx:if="{{memories.length > 0}}">
+    <t-icon name="add" size="56rpx" color="#fff"></t-icon>
+  </view>
+
+  <!-- 详情弹窗 -->
+  <view class="detail-mask" wx:if="{{showDetail}}" bindtap="hideDetail">
+    <view class="detail-container" catchtap="">
+      <!-- 关闭按钮 -->
+      <view class="detail-close" bindtap="hideDetail">
+        <t-icon name="close" size="40rpx" color="#666"></t-icon>
+      </view>
+
+      <block wx:if="{{currentMemory}}">
+        <!-- 图片轮播 -->
+        <swiper
+          class="detail-swiper"
+          wx:if="{{currentMemory.images.length > 0}}"
+          indicator-dots="{{currentMemory.images.length > 1}}"
+          indicator-color="rgba(255,255,255,0.4)"
+          indicator-active-color="#fff"
+          circular
+          autoplay="{{false}}"
+        >
+          <swiper-item wx:for="{{currentMemory.images}}" wx:key="*this">
+            <image
+              class="detail-image"
+              src="{{item}}"
+              mode="aspectFit"
+              bindtap="previewImage"
+              data-url="{{item}}"
+            ></image>
+          </swiper-item>
+        </swiper>
+
+        <!-- 文字内容 -->
+        <view class="detail-content" wx:if="{{currentMemory.text}}">
+          <text class="detail-text">{{currentMemory.text}}</text>
+        </view>
+
+        <!-- 信息栏 -->
+        <view class="detail-info">
+          <view class="detail-location" wx:if="{{currentMemory.location}}">
+            <t-icon name="location" size="28rpx" color="#8EC5B9"></t-icon>
+            <text class="detail-location-text">{{currentMemory.location.address || currentMemory.location.name}}</text>
+          </view>
+          <text class="detail-time">{{currentMemory.displayTime}}</text>
+        </view>
+
+        <!-- 删除按钮 -->
+        <view class="detail-delete" bindtap="confirmDelete">
+          <t-icon name="delete" size="28rpx" color="#F44336"></t-icon>
+          <text class="detail-delete-text">删除纪念</text>
+        </view>
+      </block>
+    </view>
+  </view>
+</view>

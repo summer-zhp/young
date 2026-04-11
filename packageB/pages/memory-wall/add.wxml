@@ -1,0 +1,85 @@
+<!--packageB/pages/memory-wall/add.wxml-->
+<view class="page">
+  <view class="form">
+    <!-- 图片选择区域 -->
+    <view class="section">
+      <view class="section-title">
+        <t-icon name="image" size="28rpx" color="#8EC5B9"></t-icon>
+        <text class="section-title-text">照片</text>
+        <text class="section-title-hint">{{images.length}}/{{maxImages}}</text>
+      </view>
+      <view class="image-grid">
+        <view class="image-item" wx:for="{{images}}" wx:key="*this">
+          <image
+            class="image-preview"
+            src="{{item}}"
+            mode="aspectFill"
+            bindtap="previewImage"
+            data-url="{{item}}"
+          ></image>
+          <view class="image-remove" catchtap="removeImage" data-index="{{index}}">
+            <t-icon name="close-circle-filled" size="36rpx" color="rgba(0,0,0,0.6)"></t-icon>
+          </view>
+        </view>
+        <!-- 添加按钮 -->
+        <view class="image-add" bindtap="chooseImage" wx:if="{{images.length < maxImages}}">
+          <t-icon name="add" size="56rpx" color="#ccc"></t-icon>
+          <text class="image-add-text">添加照片</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 文字记录 -->
+    <view class="section">
+      <view class="section-title">
+        <t-icon name="edit" size="28rpx" color="#8EC5B9"></t-icon>
+        <text class="section-title-text">记录这一刻</text>
+      </view>
+      <view class="textarea-wrap">
+        <textarea
+          class="text-input"
+          placeholder="写下此刻的心情和故事..."
+          placeholder-style="color: #ccc;"
+          value="{{text}}"
+          bindinput="onTextInput"
+          maxlength="500"
+          auto-height
+          style="min-height: 160rpx;"
+        ></textarea>
+        <text class="text-count">{{text.length || 0}}/500</text>
+      </view>
+    </view>
+
+    <!-- 位置记录 -->
+    <view class="section">
+      <view class="section-title">
+        <t-icon name="location" size="28rpx" color="#8EC5B9"></t-icon>
+        <text class="section-title-text">记录位置</text>
+      </view>
+      <view class="location-row">
+        <view class="location-info" wx:if="{{location}}">
+          <t-icon name="location" size="28rpx" color="#8EC5B9"></t-icon>
+          <view class="location-detail">
+            <text class="location-name">{{location.name}}</text>
+            <text class="location-address" wx:if="{{location.address}}">{{location.address}}</text>
+          </view>
+        </view>
+        <view class="location-placeholder" wx:else>
+          <text class="location-placeholder-text">开启后可记录当前位置</text>
+        </view>
+        <t-switch
+          value="{{locationEnabled}}"
+          bind:change="toggleLocation"
+          custom-style="--td-switch-checked-color: #8EC5B9;"
+        />
+      </view>
+    </view>
+  </view>
+
+  <!-- 保存按钮 -->
+  <view class="save-area">
+    <view class="save-btn {{saving ? 'disabled' : ''}}" bindtap="{{saving ? '' : 'save'}}">
+      <text class="save-btn-text">{{saving ? '保存中...' : '保存纪念'}}</text>
+    </view>
+  </view>
+</view>

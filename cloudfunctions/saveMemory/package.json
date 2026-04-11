@@ -1,0 +1,9 @@
+{
+  "name": "saveMemory",
+  "version": "1.0.0",
+  "description": "保存时光纪念",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}
