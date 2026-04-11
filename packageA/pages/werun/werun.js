@@ -88,12 +88,12 @@ Page({
     this.setData({ isLoading: true, errorMsg: '' })
 
     try {
-      // 1. 先登录
-      await new Promise((resolve, reject) => {
+      // 1. 登录获取 code
+      const loginRes = await new Promise((resolve, reject) => {
         wx.login({ success: resolve, fail: reject })
       })
 
-      // 2. 调用 wx.getWeRunData 获取 cloudID
+      // 2. 获取微信运动加密数据
       const werunRes = await new Promise((resolve, reject) => {
         wx.getWeRunData({
           success: resolve,
@@ -101,10 +101,11 @@ Page({
         })
       })
 
-      // 3. 通过云函数解密数据
-      console.log('werun cloudID:', werunRes.cloudID)
+      // 3. 通过云函数解密数据（传 encryptedData + iv + code）
       const result = await cloud.callFunction('getWeRunData', {
-        cloudID: werunRes.cloudID
+        encryptedData: werunRes.encryptedData,
+        iv: werunRes.iv,
+        code: loginRes.code
       })
 
       if (!result.success) {

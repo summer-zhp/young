@@ -1,52 +1,61 @@
 // 云函数入口 - 获取微信运动步数数据
+// 通过 encryptedData + iv + code 方式解密
 const cloud = require('wx-server-sdk')
+const crypto = require('crypto')
 
 cloud.init({
   env: cloud.DYNAMIC_CURRENT_ENV
 })
 
+/**
+ * 解密微信运动数据
+ * @param {string} encryptedData Base64 编码的加密数据
+ * @param {string} sessionKey Base64 编码的会话密钥
+ * @param {string} iv Base64 编码的初始向量
+ * @returns {object} 解密后的数据
+ */
+function decryptData(encryptedData, sessionKey, iv) {
+  const sessionKeyBuf = Buffer.from(sessionKey, 'base64')
+  const ivBuf = Buffer.from(iv, 'base64')
+  const encryptedBuf = Buffer.from(encryptedData, 'base64')
+
+  const decipher = crypto.createDecipheriv('aes-128-cbc', sessionKeyBuf, ivBuf)
+  decipher.setAutoPadding(true)
+
+  let decrypted = decipher.update(encryptedBuf, null, 'utf8')
+  decrypted += decipher.final('utf8')
+
+  return JSON.parse(decrypted)
+}
+
 exports.main = async (event, context) => {
   try {
-    const cloudData = event.cloudID
+    const { encryptedData, iv, code } = event
 
-    if (!cloudData) {
-      return { success: false, message: '缺少 cloudID 参数' }
+    if (!encryptedData || !iv || !code) {
+      return { success: false, message: '缺少必要参数' }
     }
 
-    // 情况1：SDK 自动解密成功，cloudData 已经是 { stepInfoList: [...] } 对象
-    if (typeof cloudData === 'object' && cloudData.stepInfoList) {
-      return { success: true, stepInfoList: cloudData.stepInfoList }
+    // 通过 code 获取 session_key
+    const sessionRes = await cloud.openapi.code2Session({
+      jsCode: code
+    })
+
+    if (!sessionRes || !sessionRes.sessionKey) {
+      return { success: false, message: '获取会话密钥失败' }
     }
 
-    // 情况2：SDK 未自动解密，cloudData 还是字符串，手动调用 getOpenData
-    if (typeof cloudData === 'string') {
-      const result = await cloud.openapi.werun.getOpenData({
-        list: [cloudData]
-      })
+    // 解密运动数据
+    const stepData = decryptData(encryptedData, sessionRes.sessionKey, iv)
 
-      if (!result || !result.list || !result.list.length) {
-        return { success: false, message: 'getOpenData 返回为空' }
-      }
-
-      const openData = result.list[0]
-
-      // getOpenData 可能返回已解析的数据对象
-      if (typeof openData === 'object' && openData.stepInfoList) {
-        return { success: true, stepInfoList: openData.stepInfoList }
-      }
-
-      // 也可能返回 { data: JSON字符串 } 格式
-      if (openData.data) {
-        const parsed = JSON.parse(openData.data)
-        if (parsed.stepInfoList) {
-          return { success: true, stepInfoList: parsed.stepInfoList }
-        }
-      }
-
-      return { success: false, message: '无法解析运动数据', debugType: typeof openData }
+    if (!stepData || !stepData.stepInfoList) {
+      return { success: false, message: '运动数据格式异常' }
     }
 
-    return { success: false, message: 'cloudID 格式异常', debugType: typeof cloudData }
+    return {
+      success: true,
+      stepInfoList: stepData.stepInfoList
+    }
   } catch (err) {
     console.error('获取微信运动数据失败:', err)
     return { success: false, message: err.message || '云函数执行异常' }
