@@ -86,7 +86,12 @@ Page({
     this.setData({ isLoading: true, errorMsg: '' })
 
     try {
-      // 1. 调用 wx.getWeRunData 获取 cloudID
+      // 1. 先登录
+      await new Promise((resolve, reject) => {
+        wx.login({ success: resolve, fail: reject })
+      })
+
+      // 2. 调用 wx.getWeRunData 获取 cloudID
       const werunRes = await new Promise((resolve, reject) => {
         wx.getWeRunData({
           success: resolve,
@@ -94,27 +99,31 @@ Page({
         })
       })
 
-      // 2. 通过云函数解密数据
+      // 3. 通过云函数解密数据
       const result = await cloud.callFunction('getWeRunData', {
         cloudID: werunRes.cloudID
+      }).catch(() => {
+        throw { errMsg: 'cloudFunctionError' }
       })
 
       if (!result.success) {
-        throw new Error(result.message || '获取数据失败')
+        throw { errMsg: 'cloudFunctionError' }
       }
 
       const stepInfoList = result.stepInfoList || []
 
-      // 3. 处理数据
+      // 4. 处理数据
       this.processStepData(stepInfoList)
 
     } catch (err) {
       console.error('获取微信运动数据失败:', err)
-      let msg = '获取运动数据失败'
+      let msg = '获取运动数据失败，请确保已开启微信运动'
       if (err.errMsg && err.errMsg.indexOf('auth deny') > -1) {
         msg = '请授权后查看运动数据'
       } else if (err.errMsg && err.errMsg.indexOf('not support') > -1) {
         msg = '当前设备不支持微信运动'
+      } else if (err.errMsg === 'cloudFunctionError') {
+        msg = '网络异常，请稍后重试'
       }
       this.setData({ isLoading: false, errorMsg: msg })
     }
@@ -355,7 +364,7 @@ Page({
   },
 
   onCanvasTouch(e) {
-    if (!this.chartData.length) return
+    if (!this.chartData.length || !e.touches.length) return
 
     const touch = e.touches[0]
     const data = this.chartData
@@ -383,10 +392,21 @@ Page({
     }
 
     const item = data[index]
+    // 将 px 坐标转为 rpx 用于 tooltip 定位
+    const rpxRatio = 750 / systemInfo.windowWidth
+    const tooltipX = Math.round(touch.clientX * rpxRatio - 80)
+    const tooltipY = Math.round(touch.clientY * rpxRatio - 120)
+
     this.setData({
       tooltipVisible: true,
+      tooltipX,
+      tooltipY,
       tooltipDate: item.fullDate,
       tooltipStep: item.step.toLocaleString()
     })
+  },
+
+  onTouchEnd() {
+    this.setData({ tooltipVisible: false })
   }
 })

@@ -69,7 +69,8 @@
         <view class="chart-wrapper">
           <scroll-view scroll-x class="chart-scroll" enhanced show-scrollbar="{{false}}">
             <canvas type="2d" id="stepChart" class="step-chart"
-              style="width: {{chartWidth}}px; height: {{chartHeight}}px;">
+              style="width: {{chartWidth}}px; height: {{chartHeight}}px;"
+              bindtouchstart="onCanvasTouch" bindtouchmove="onCanvasTouch" bindtouchend="onTouchEnd">
             </canvas>
           </scroll-view>
         </view>
