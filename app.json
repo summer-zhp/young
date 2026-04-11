@@ -18,7 +18,8 @@
         "pages/decision/edit/edit",
         "pages/emotion-trash/index",
         "pages/coloring/index",
-        "pages/treeHole/treeHole"
+        "pages/treeHole/treeHole",
+        "pages/werun/werun"
       ]
     },
     {

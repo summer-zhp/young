@@ -48,6 +48,14 @@ Page({
         url: '/packageB/pages/memory-wall/index',
         highlight: true
       },
+      {
+        id: 7,
+        name: '微信运动',
+        icon: 'chart-bar',
+        description: '查看31天运动步数',
+        url: '/packageA/pages/werun/werun',
+        highlight: true
+      },
     ],
     filteredTools: []
   },
