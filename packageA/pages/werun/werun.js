@@ -101,11 +101,9 @@ Page({
         })
       })
 
-      // 3. 通过云函数解密数据（传 encryptedData + iv + code）
+      // 3. 通过云函数解密数据（传 cloudID，SDK 自动解密）
       const result = await cloud.callFunction('getWeRunData', {
-        encryptedData: werunRes.encryptedData,
-        iv: werunRes.iv,
-        code: loginRes.code
+        cloudID: werunRes.cloudID
       })
 
       if (!result.success) {

@@ -1,63 +1,56 @@
 // 云函数入口 - 获取微信运动步数数据
-// 通过 encryptedData + iv + code 方式解密
 const cloud = require('wx-server-sdk')
-const crypto = require('crypto')
 
 cloud.init({
   env: cloud.DYNAMIC_CURRENT_ENV
 })
 
-/**
- * 解密微信运动数据
- * @param {string} encryptedData Base64 编码的加密数据
- * @param {string} sessionKey Base64 编码的会话密钥
- * @param {string} iv Base64 编码的初始向量
- * @returns {object} 解密后的数据
- */
-function decryptData(encryptedData, sessionKey, iv) {
-  const sessionKeyBuf = Buffer.from(sessionKey, 'base64')
-  const ivBuf = Buffer.from(iv, 'base64')
-  const encryptedBuf = Buffer.from(encryptedData, 'base64')
-
-  const decipher = crypto.createDecipheriv('aes-128-cbc', sessionKeyBuf, ivBuf)
-  decipher.setAutoPadding(true)
-
-  let decrypted = decipher.update(encryptedBuf, null, 'utf8')
-  decrypted += decipher.final('utf8')
-
-  return JSON.parse(decrypted)
-}
-
 exports.main = async (event, context) => {
   try {
-    const { encryptedData, iv, code } = event
+    // 打印接收到的数据用于调试
+    const cloudIDValue = event.cloudID
+    console.log('cloudID type:', typeof cloudIDValue)
+    console.log('cloudID value:', JSON.stringify(cloudIDValue).substring(0, 200))
 
-    if (!encryptedData || !iv || !code) {
-      return { success: false, message: '缺少必要参数' }
+    // 情况1：SDK 自动解密成功，cloudID 已被替换为 { stepInfoList: [...] }
+    if (cloudIDValue && typeof cloudIDValue === 'object' && cloudIDValue.stepInfoList) {
+      return { success: true, stepInfoList: cloudIDValue.stepInfoList }
     }
 
-    // 通过 code 获取 session_key
-    const sessionRes = await cloud.openapi.code2Session({
-      jsCode: code
-    })
-
-    if (!sessionRes || !sessionRes.sessionKey) {
-      return { success: false, message: '获取会话密钥失败' }
-    }
-
-    // 解密运动数据
-    const stepData = decryptData(encryptedData, sessionRes.sessionKey, iv)
-
-    if (!stepData || !stepData.stepInfoList) {
-      return { success: false, message: '运动数据格式异常' }
+    // 情况2：cloudID 还是字符串（自动解密未生效）
+    // 尝试通过云调用解密
+    if (cloudIDValue && typeof cloudIDValue === 'string') {
+      try {
+        const result = await cloud.openapi.werun.getOpenData({
+          list: [cloudIDValue]
+        })
+        if (result && result.list && result.list[0]) {
+          const openData = result.list[0]
+          if (typeof openData === 'object' && openData.stepInfoList) {
+            return { success: true, stepInfoList: openData.stepInfoList }
+          }
+          if (openData.data) {
+            const parsed = JSON.parse(openData.data)
+            if (parsed.stepInfoList) {
+              return { success: true, stepInfoList: parsed.stepInfoList }
+            }
+          }
+        }
+      } catch (e) {
+        console.log('getOpenData failed:', e.message)
+      }
     }
 
     return {
-      success: true,
-      stepInfoList: stepData.stepInfoList
+      success: false,
+      message: '无法解密运动数据，请检查云函数 SDK 版本',
+      debug: {
+        cloudIDType: typeof cloudIDValue,
+        eventKeys: Object.keys(event)
+      }
     }
   } catch (err) {
-    console.error('获取微信运动数据失败:', err)
+    console.error('云函数异常:', err)
     return { success: false, message: err.message || '云函数执行异常' }
   }
 }
