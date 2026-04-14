@@ -1,43 +1,45 @@
-<!--pages/toolbox/toolbox.wxml - 工具箱页面重新设计-->
+<!--pages/toolbox/toolbox.wxml - 放松室页面重新设计-->
 <view class="page">
-  <!-- 装饰背景元素 -->
-  <view class="decoration decoration-1"></view>
-  <view class="decoration decoration-2"></view>
+  <!-- 装饰背景 -->
+  <view class="blob blob-1"></view>
+  <view class="blob blob-2"></view>
 
-  <!-- 头部区域 -->
+  <!-- 头部 -->
   <view class="header">
-    <view class="header-content">
-      <!-- <view class="title-wrapper">
-        <view class="title-icon-box">
-          <t-icon name="grid-view" size="40rpx" color="#8EC5B9"></t-icon>
+    <text class="header-subtitle">选择一种方式，给自己充充电~</text>
+  </view>
+
+  <!-- 推荐卡片 -->
+  <view class="featured-wrap" wx:if="{{featuredTool}}">
+    <view class="featured-card" bindtap="goToTool" data-url="{{featuredTool.url}}">
+      <view class="featured-deco featured-deco-1"></view>
+      <view class="featured-deco featured-deco-2"></view>
+      <view class="featured-content">
+        <view class="featured-left">
+          <text class="featured-tag">推荐体验</text>
+          <text class="featured-name">{{featuredTool.name}}</text>
+          <text class="featured-desc">{{featuredTool.description}}</text>
         </view>
-        <text class="header-title">放松室</text>
-      </view> -->
-      <text class="header-subtitle">选择一种方式，开启治愈我们的时光~</text>
+        <view class="featured-icon-circle">
+          <t-icon name="{{featuredTool.icon}}" size="56rpx" color="rgba(255,255,255,0.95)"></t-icon>
+        </view>
+      </view>
     </view>
   </view>
 
-  <!-- 工具列表 -->
-  <view class="tools-container">
-    <view class="tools-grid">
-      <view wx:for="{{filteredTools}}" wx:key="id" class="tool-card" style="--card-delay: {{index * 100}}ms" bindtap="goToTool"
-        data-url="{{item.url}}">
-        <view class="tool-card-inner">
-          <view class="tool-icon-wrapper">
-            <view class="tool-icon-bg"></view>
-            <view class="tool-icon-tcb">
-              <t-icon name="{{item.icon}}" size="48rpx" color="#8EC5B9"></t-icon>
-            </view>
-          </view>
-          <view class="tool-info">
-            <text class="tool-name">{{item.name}}</text>
-            <text class="tool-desc">{{item.description}}</text>
-          </view>
-          <view class="tool-arrow">
-            <t-icon name="chevron-right" size="32rpx" color="#9A9A9A"></t-icon>
-          </view>
-        </view>
+  <!-- 工具卡片网格 -->
+  <view class="tools-grid">
+    <view class="grid-card {{item.wide ? 'grid-card-wide' : ''}}" wx:for="{{gridTools}}" wx:key="id"
+      bindtap="goToTool" data-url="{{item.url}}"
+      style="background: {{item.cardBg}}; animation-delay: {{item.delay}}">
+      <view class="grid-icon-circle" style="background: {{item.iconBg}}">
+        <t-icon name="{{item.icon}}" size="36rpx" color="#fff"></t-icon>
       </view>
+      <view class="grid-text">
+        <text class="grid-name" style="color: {{item.nameColor}}">{{item.name}}</text>
+        <text class="grid-desc">{{item.description}}</text>
+      </view>
+      <view wx:if="{{item.isNew}}" class="new-badge">NEW</view>
     </view>
   </view>
 </view>

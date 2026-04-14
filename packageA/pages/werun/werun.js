@@ -1,404 +1,319 @@
 // packageA/pages/werun/werun.js - 微信运动步数可视化
-const { cloud } = require('../../../utils/cloud')
-
-const systemInfo = wx.getWindowInfo()
-const CHART_HEIGHT_PX = 200
+var echarts = require('../../components/ec-canvas/echarts');
+var { cloud } = require('../../../utils/cloud');
 
 Page({
   data: {
-    // 授权状态
     isAuthorized: false,
     authDenied: false,
-
-    // 数据状态
     isLoading: false,
     stepInfoList: [],
     errorMsg: '',
-
-    // 统计数据
     totalSteps: '0',
     avgSteps: '0',
     maxSteps: '0',
-
-    // 图表
     chartType: 'bar',
-    chartWidth: 0,
-    chartHeight: 0
+    ec: {
+      lazyLoad: true
+    }
   },
 
-  // Canvas 相关
-  canvas: null,
-  ctx: null,
+  chart: null,
   chartData: [],
 
-  onLoad() {
-    if (!getApp().requireLogin()) {
-      wx.navigateBack()
+  onLoad: function () {
+    if (!getApp().isLogged()) {
+      wx.showModal({
+        title: '提示',
+        content: '请先登录后查看运动足迹',
+        confirmText: '去登录',
+        confirmColor: '#8EC5B9',
+        success: function (res) {
+          if (res.confirm) {
+            wx.switchTab({ url: '/pages/profile/profile' })
+          } else {
+            wx.navigateBack()
+          }
+        }
+      })
       return
     }
-    this.checkAuth()
+    this.checkAuth();
   },
 
-  // ===== 授权流程 =====
+  // ===== 授权 =====
 
-  checkAuth() {
+  checkAuth: function () {
+    var that = this;
     wx.getSetting({
-      success: (res) => {
+      success: function (res) {
         if (res.authSetting['scope.werun']) {
-          this.setData({ isAuthorized: true })
-          this.loadWeRunData()
+          that.setData({ isAuthorized: true });
+          that.loadWeRunData();
         } else {
-          // 未授权过，自动发起授权请求（已登录用户直接弹窗授权）
-          this.requestAuth()
+          that.requestAuth();
         }
       }
-    })
+    });
   },
 
-  requestAuth() {
+  requestAuth: function () {
+    var that = this;
     wx.authorize({
       scope: 'scope.werun',
-      success: () => {
-        this.setData({ isAuthorized: true, authDenied: false })
-        this.loadWeRunData()
+      success: function () {
+        that.setData({ isAuthorized: true, authDenied: false });
+        that.loadWeRunData();
       },
-      fail: () => {
-        this.setData({ authDenied: true })
-        wx.showToast({ title: '需要授权才能查看运动数据', icon: 'none' })
+      fail: function () {
+        that.setData({ authDenied: true });
+        wx.showToast({ title: '需要授权才能查看运动数据', icon: 'none' });
       }
-    })
+    });
   },
 
-  onSettingCallback(res) {
+  onSettingCallback: function (res) {
     if (res.detail.authSetting['scope.werun']) {
-      this.setData({ isAuthorized: true, authDenied: false })
-      this.loadWeRunData()
+      this.setData({ isAuthorized: true, authDenied: false });
+      this.loadWeRunData();
     }
   },
 
-  // ===== 数据获取 =====
+  // ===== 数据 =====
 
-  async loadWeRunData() {
-    this.setData({ isLoading: true, errorMsg: '' })
-
-    try {
-      // 1. 登录获取 code
-      const loginRes = await new Promise((resolve, reject) => {
-        wx.login({ success: resolve, fail: reject })
-      })
-
-      // 2. 获取微信运动加密数据
-      const werunRes = await new Promise((resolve, reject) => {
+  loadWeRunData: function () {
+    var that = this;
+    this.setData({ isLoading: true, errorMsg: '' });
+    wx.login({
+      success: function (loginRes) {
         wx.getWeRunData({
-          success: resolve,
-          fail: reject
-        })
-      })
-
-      // 3. 通过云函数解密数据（传 encryptedData + iv + code）
-      const result = await cloud.callFunction('getWeRunData', {
-        encryptedData: werunRes.encryptedData,
-        iv: werunRes.iv,
-        code: loginRes.code
-      })
-
-      if (!result.success) {
-        throw new Error(result.message || '数据解析失败')
-      }
-
-      const stepInfoList = result.stepInfoList || []
-
-      // 4. 处理数据
-      this.processStepData(stepInfoList)
-
-    } catch (err) {
-      console.error('获取微信运动数据失败:', err)
-      let msg = '获取运动数据失败，请确保已开启微信运动'
-      if (err.errMsg && err.errMsg.indexOf('auth deny') > -1) {
-        msg = '请授权后查看运动数据'
-      } else if (err.errMsg && err.errMsg.indexOf('not support') > -1) {
-        msg = '当前设备不支持微信运动'
-      } else if (err.message) {
-        msg = err.message
-      }
-      this.setData({ isLoading: false, errorMsg: msg })
-    }
+          success: function (werunRes) {
+            cloud.callFunction('getWeRunData', {
+              encryptedData: werunRes.encryptedData,
+              iv: werunRes.iv,
+              code: loginRes.code
+            }).then(function (result) {
+              if (!result.success) throw new Error(result.message || '数据解析失败');
+              that.processStepData(result.stepInfoList || []);
+            }).catch(function (err) { that.handleDataError(err); });
+          },
+          fail: function (err) { that.handleDataError(err); }
+        });
+      },
+      fail: function (err) { that.handleDataError(err); }
+    });
   },
 
-  processStepData(rawList) {
-    if (!rawList.length) {
-      this.setData({ isLoading: false })
-      return
-    }
+  handleDataError: function (err) {
+    console.error('获取微信运动数据失败:', err);
+    var msg = '获取运动数据失败，请确保已开启微信运动';
+    if (err.errMsg && err.errMsg.indexOf('auth deny') > -1) msg = '请授权后查看运动数据';
+    else if (err.errMsg && err.errMsg.indexOf('not support') > -1) msg = '当前设备不支持微信运动';
+    else if (err.message) msg = err.message;
+    this.setData({ isLoading: false, errorMsg: msg });
+  },
 
-    // 按时间升序排列
-    rawList.sort((a, b) => a.timestamp - b.timestamp)
+  processStepData: function (rawList) {
+    if (!rawList.length) { this.setData({ isLoading: false }); return; }
 
-    const maxStep = Math.max(...rawList.map(item => item.step), 1)
-    const totalStep = rawList.reduce((sum, item) => sum + item.step, 0)
-    const avgStep = Math.round(totalStep / rawList.length)
+    rawList.sort(function (a, b) { return a.timestamp - b.timestamp; });
+    var maxStep = Math.max.apply(null, rawList.map(function (d) { return d.step; }));
+    maxStep = Math.max(maxStep, 1);
+    var totalStep = rawList.reduce(function (s, d) { return s + d.step; }, 0);
+    var avgStep = Math.round(totalStep / rawList.length);
+    var weekDays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
 
-    const weekDays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
-
-    const stepInfoList = rawList.map(item => {
-      const date = new Date(item.timestamp * 1000)
-      const month = date.getMonth() + 1
-      const day = date.getDate()
-      const weekDay = weekDays[date.getDay()]
-      const barPercent = Math.round((item.step / maxStep) * 100)
-
+    var stepInfoList = rawList.map(function (item) {
+      var date = new Date(item.timestamp * 1000);
+      var month = date.getMonth() + 1;
+      var day = date.getDate();
       return {
         timestamp: item.timestamp,
         step: item.step,
-        dateStr: `${month}/${day}`,
-        weekStr: weekDay,
-        fullDate: `${date.getFullYear()}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`,
+        dateStr: month + '/' + day,
+        weekStr: weekDays[date.getDay()],
+        fullDate: date.getFullYear() + '-' + String(month).padStart(2, '0') + '-' + String(day).padStart(2, '0'),
         stepStr: item.step.toLocaleString(),
-        barPercent
-      }
-    })
+        barPercent: Math.round((item.step / maxStep) * 100)
+      };
+    });
 
-    this.chartData = stepInfoList
+    this.chartData = stepInfoList;
 
     this.setData({
       isLoading: false,
-      stepInfoList,
+      stepInfoList: stepInfoList,
       totalSteps: totalStep.toLocaleString(),
       avgSteps: avgStep.toLocaleString(),
       maxSteps: maxStep.toLocaleString()
-    })
+    });
 
-    // 初始化 Canvas 并绘制图表
-    this.initCanvas()
+    this.initChart();
   },
 
-  // ===== Canvas 图表 =====
+  // ===== ECharts =====
 
-  initCanvas() {
-    const query = this.createSelectorQuery()
-    query.select('.chart-wrapper')
-      .boundingClientRect((rect) => {
-        if (!rect) return
+  initChart: function () {
+    var ecComponent = this.selectComponent('#werunChart');
+    if (!ecComponent) return;
 
-        const containerWidth = rect.width
-        const widthPx = containerWidth
-
-        const query2 = this.createSelectorQuery()
-        query2.select('#stepChart')
-          .fields({ node: true, size: true })
-          .exec((res) => {
-            if (!res[0]) return
-
-            const canvas = res[0].node
-            const ctx = canvas.getContext('2d')
-
-            const dpr = wx.getWindowInfo().pixelRatio
-            canvas.width = widthPx * dpr
-            canvas.height = CHART_HEIGHT_PX * dpr
-            ctx.scale(dpr, dpr)
-
-            this.canvas = canvas
-            this.ctx = ctx
-
-            this.setData({
-              chartWidth: widthPx,
-              chartHeight: CHART_HEIGHT_PX
-            })
-
-            this.drawChart()
-          })
-      }).exec()
+    var that = this;
+    ecComponent.init(function (canvas, width, height, dpr) {
+      var chart = echarts.init(canvas, null, {
+        width: width,
+        height: height,
+        devicePixelRatio: dpr
+      });
+      canvas.setChart(chart);
+      chart.setOption(that.getChartOption());
+      that.chart = chart;
+      return chart;
+    });
   },
 
-  drawChart() {
-    const ctx = this.ctx
-    if (!ctx || !this.chartData.length) return
-
-    const data = this.chartData
-    const width = this.data.chartWidth
-    const height = CHART_HEIGHT_PX
-
-    // 清空画布
-    ctx.clearRect(0, 0, width, height)
-
-    if (this.data.chartType === 'bar') {
-      this.drawBarChart(ctx, data, width, height)
-    } else {
-      this.drawLineChart(ctx, data, width, height)
-    }
+  getChartOption: function () {
+    return this.data.chartType === 'bar'
+      ? this.getBarOption()
+      : this.getLineOption();
   },
 
-  drawBarChart(ctx, data, width, height) {
-    const padding = { top: 20, right: 16, bottom: 36, left: 16 }
-    const chartW = width - padding.left - padding.right
-    const chartH = height - padding.top - padding.bottom
-    const barWidth = Math.min(chartW / data.length * 0.6, 20)
-    const gap = chartW / data.length
-    const maxVal = Math.max(...data.map(d => d.step), 1)
+  getBarOption: function () {
+    var data = this.chartData;
+    var dates = data.map(function (d) { return d.dateStr; });
+    var steps = data.map(function (d) { return d.step; });
+    var that = this;
 
-    // 绘制 Y 轴参考线
-    ctx.strokeStyle = '#f0f0f0'
-    ctx.lineWidth = 0.5
-    for (let i = 0; i <= 3; i++) {
-      const y = padding.top + (chartH / 3) * i
-      ctx.beginPath()
-      ctx.moveTo(padding.left, y)
-      ctx.lineTo(width - padding.right, y)
-      ctx.stroke()
-    }
-
-    // 绘制柱子
-    data.forEach((item, index) => {
-      const x = padding.left + gap * index + (gap - barWidth) / 2
-      const barH = (item.step / maxVal) * chartH
-      const y = padding.top + chartH - barH
-
-      // 渐变填充
-      const gradient = ctx.createLinearGradient(x, y, x, padding.top + chartH)
-      gradient.addColorStop(0, '#8EC5B9')
-      gradient.addColorStop(1, 'rgba(142, 197, 185, 0.3)')
-
-      ctx.fillStyle = gradient
-      // 圆角柱子
-      const radius = Math.min(barWidth / 2, 4)
-      this.roundRect(ctx, x, y, barWidth, barH, radius)
-      ctx.fill()
-
-      // X 轴日期（隔几个显示）
-      if (index % Math.ceil(data.length / 8) === 0 || index === data.length - 1) {
-        ctx.fillStyle = '#999'
-        ctx.font = '10px sans-serif'
-        ctx.textAlign = 'center'
-        ctx.fillText(item.dateStr, x + barWidth / 2, height - 8)
-      }
-    })
+    return {
+      tooltip: {
+        trigger: 'axis',
+        confine: true,
+        backgroundColor: 'rgba(255,255,255,0.95)',
+        borderColor: '#eee',
+        borderWidth: 1,
+        textStyle: { color: '#333', fontSize: 12 },
+        formatter: function (params) {
+          var p = params[0];
+          var item = data[p.dataIndex];
+          return item.fullDate + ' ' + item.weekStr + '\n' + p.marker + ' ' + p.value.toLocaleString() + ' 步';
+        }
+      },
+      grid: { left: 8, right: 8, bottom: 28, top: 16, containLabel: true },
+      xAxis: {
+        type: 'category',
+        data: dates,
+        axisLabel: { fontSize: 9, color: '#999' },
+        axisLine: { lineStyle: { color: '#e8e8e8' } },
+        axisTick: { show: false }
+      },
+      yAxis: {
+        type: 'value',
+        splitLine: { lineStyle: { color: '#f5f5f5' } },
+        axisLabel: {
+          fontSize: 9, color: '#999',
+          formatter: function (v) {
+            if (v >= 10000) return (v / 10000).toFixed(1) + 'w';
+            if (v >= 1000) return (v / 1000).toFixed(0) + 'k';
+            return v;
+          }
+        }
+      },
+      dataZoom: [{
+        type: 'inside',
+        startValue: Math.max(0, data.length - 10),
+        endValue: data.length - 1
+      }],
+      series: [{
+        type: 'bar',
+        data: steps,
+        barMaxWidth: 20,
+        itemStyle: {
+          color: {
+            type: 'linear', x: 0, y: 0, x2: 0, y2: 1,
+            colorStops: [
+              { offset: 0, color: '#8EC5B9' },
+              { offset: 1, color: 'rgba(142,197,185,0.3)' }
+            ]
+          },
+          borderRadius: [3, 3, 0, 0]
+        }
+      }]
+    };
   },
 
-  drawLineChart(ctx, data, width, height) {
-    const padding = { top: 20, right: 16, bottom: 36, left: 16 }
-    const chartW = width - padding.left - padding.right
-    const chartH = height - padding.top - padding.bottom
-    const gap = data.length > 1 ? chartW / (data.length - 1) : 0
-    const maxVal = Math.max(...data.map(d => d.step), 1)
+  getLineOption: function () {
+    var data = this.chartData;
+    var dates = data.map(function (d) { return d.dateStr; });
+    var steps = data.map(function (d) { return d.step; });
 
-    const points = data.map((item, index) => ({
-      x: padding.left + gap * index,
-      x: padding.left + gap * index,
-      y: padding.top + chartH - (item.step / maxVal) * chartH
-    }))
-
-    // 绘制 Y 轴参考线
-    ctx.strokeStyle = '#f0f0f0'
-    ctx.lineWidth = 0.5
-    for (let i = 0; i <= 3; i++) {
-      const y = padding.top + (chartH / 3) * i
-      ctx.beginPath()
-      ctx.moveTo(padding.left, y)
-      ctx.lineTo(width - padding.right, y)
-      ctx.stroke()
-    }
-
-    // 填充区域渐变
-    ctx.beginPath()
-    ctx.moveTo(points[0].x, padding.top + chartH)
-    points.forEach(p => ctx.lineTo(p.x, p.y))
-    ctx.lineTo(points[points.length - 1].x, padding.top + chartH)
-    ctx.closePath()
-
-    const gradient = ctx.createLinearGradient(0, padding.top, 0, padding.top + chartH)
-    gradient.addColorStop(0, 'rgba(142, 197, 185, 0.3)')
-    gradient.addColorStop(1, 'rgba(142, 197, 185, 0.02)')
-    ctx.fillStyle = gradient
-    ctx.fill()
-
-    // 绘制折线
-    ctx.beginPath()
-    ctx.moveTo(points[0].x, points[0].y)
-    for (let i = 1; i < points.length; i++) {
-      ctx.lineTo(points[i].x, points[i].y)
-    }
-    ctx.strokeStyle = '#8EC5B9'
-    ctx.lineWidth = 2
-    ctx.lineJoin = 'round'
-    ctx.stroke()
-
-    // 绘制数据点
-    points.forEach((p, i) => {
-      ctx.beginPath()
-      ctx.arc(p.x, p.y, 3, 0, Math.PI * 2)
-      ctx.fillStyle = '#fff'
-      ctx.fill()
-      ctx.strokeStyle = '#8EC5B9'
-      ctx.lineWidth = 1.5
-      ctx.stroke()
-    })
-
-    // X 轴日期
-    data.forEach((item, index) => {
-      if (index % Math.ceil(data.length / 8) === 0 || index === data.length - 1) {
-        ctx.fillStyle = '#999'
-        ctx.font = '10px sans-serif'
-        ctx.textAlign = 'center'
-        const x = padding.left + gap * index
-        ctx.fillText(item.dateStr, x, height - 8)
-      }
-    })
-  },
-
-  roundRect(ctx, x, y, w, h, r) {
-    r = Math.min(r, w / 2, h / 2)
-    if (h < 1) { h = 1; y = y + h - 1; }
-    ctx.beginPath()
-    ctx.moveTo(x + r, y)
-    ctx.lineTo(x + w - r, y)
-    ctx.arcTo(x + w, y, x + w, y + r, r)
-    ctx.lineTo(x + w, y + h)
-    ctx.lineTo(x, y + h)
-    ctx.lineTo(x, y + r)
-    ctx.arcTo(x, y, x + r, y, r)
-    ctx.closePath()
+    return {
+      tooltip: {
+        trigger: 'axis',
+        confine: true,
+        backgroundColor: 'rgba(255,255,255,0.95)',
+        borderColor: '#eee',
+        borderWidth: 1,
+        textStyle: { color: '#333', fontSize: 12 },
+        formatter: function (params) {
+          var p = params[0];
+          var item = data[p.dataIndex];
+          return item.fullDate + ' ' + item.weekStr + '\n' + p.marker + ' ' + p.value.toLocaleString() + ' 步';
+        }
+      },
+      grid: { left: 8, right: 8, bottom: 28, top: 16, containLabel: true },
+      xAxis: {
+        type: 'category',
+        data: dates,
+        boundaryGap: false,
+        axisLabel: { fontSize: 9, color: '#999' },
+        axisLine: { lineStyle: { color: '#e8e8e8' } },
+        axisTick: { show: false }
+      },
+      yAxis: {
+        type: 'value',
+        splitLine: { lineStyle: { color: '#f5f5f5' } },
+        axisLabel: {
+          fontSize: 9, color: '#999',
+          formatter: function (v) {
+            if (v >= 10000) return (v / 10000).toFixed(1) + 'w';
+            if (v >= 1000) return (v / 1000).toFixed(0) + 'k';
+            return v;
+          }
+        }
+      },
+      dataZoom: [{
+        type: 'inside',
+        startValue: Math.max(0, data.length - 10),
+        endValue: data.length - 1
+      }],
+      series: [{
+        type: 'line',
+        data: steps,
+        smooth: true,
+        symbol: 'circle',
+        symbolSize: 5,
+        lineStyle: { color: '#8EC5B9', width: 2 },
+        itemStyle: { color: '#8EC5B9', borderColor: '#fff', borderWidth: 1.5 },
+        areaStyle: {
+          color: {
+            type: 'linear', x: 0, y: 0, x2: 0, y2: 1,
+            colorStops: [
+              { offset: 0, color: 'rgba(142,197,185,0.3)' },
+              { offset: 1, color: 'rgba(142,197,185,0.02)' }
+            ]
+          }
+        }
+      }]
+    };
   },
 
   // ===== 交互 =====
 
-  switchChart(e) {
-    const type = e.currentTarget.dataset.type
-    if (type === this.data.chartType) return
-
-    this.setData({ chartType: type })
-    this.drawChart()
-  },
-
-  onCanvasTouch(e) {
-    if (!this.chartData.length) return
-
-    // bindtap 事件使用 e.detail.x/y
-    const touch = e.detail || {}
-    const data = this.chartData
-    const width = this.data.chartWidth
-    const padding = { top: 20, right: 16, bottom: 36, left: 16 }
-    const chartW = width - padding.left - padding.right
-
-    const gap = this.data.chartType === 'bar'
-      ? chartW / data.length
-      : data.length > 1 ? chartW / (data.length - 1) : chartW
-
-    const offsetX = touch.x
-    let index
-
-    if (this.data.chartType === 'bar') {
-      index = Math.floor((offsetX - padding.left) / gap)
-    } else {
-      index = Math.round((offsetX - padding.left) / gap)
+  switchChart: function (e) {
+    var type = e.currentTarget.dataset.type;
+    if (type === this.data.chartType) return;
+    this.setData({ chartType: type });
+    if (this.chart) {
+      this.chart.setOption(this.getChartOption(), true);
     }
-
-    if (index < 0 || index >= data.length) return
-
-    const item = data[index]
-    wx.showToast({
-      title: `${item.fullDate}  ${item.step.toLocaleString()}步`,
-      icon: 'none',
-      duration: 1500
-    })
   }
-})
+});

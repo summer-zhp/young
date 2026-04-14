@@ -81,16 +81,40 @@ Page({
   // ===== 倒计时 =====
 
   loadWorkSchedule() {
+    var that = this
     try {
       var ws = wx.getStorageSync('workSchedule')
       if (ws) {
         this.setData({ workSchedule: ws })
         this.startCountdown()
       } else {
+        // 本地没有，从云端恢复
         this.setData({ workSchedule: null, countdownState: 'not_configured', countdownText: '' })
+        this.loadWorkScheduleFromCloud()
       }
     } catch (err) {
       console.error('读取工作日程失败:', err)
+    }
+  },
+
+  async loadWorkScheduleFromCloud() {
+    try {
+      var userInfo = getApp().globalData.userInfo
+      if (!userInfo || !userInfo.openid) return
+
+      var res = await wx.cloud.callFunction({
+        name: 'getUserInfo',
+        data: {}
+      })
+
+      if (res.result && res.result.success && res.result.data.workSchedule) {
+        var ws = res.result.data.workSchedule
+        wx.setStorageSync('workSchedule', ws)
+        this.setData({ workSchedule: ws })
+        this.startCountdown()
+      }
+    } catch (err) {
+      console.error('从云端恢复工作日程失败:', err)
     }
   },
 

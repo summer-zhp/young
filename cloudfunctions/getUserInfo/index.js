@@ -39,7 +39,8 @@ exports.main = async (event, context) => {
           nickname: user.nickname,
           user_no: user.user_no,
           avatar_url: user.avatar_url || user.avatar,
-          days: days
+          days: days,
+          workSchedule: user.workSchedule || null
         },
         isNew: false
       }

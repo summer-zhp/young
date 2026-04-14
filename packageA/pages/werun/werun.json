@@ -1,6 +1,7 @@
 {
-  "navigationBarTitleText": "微信运动",
+  "navigationBarTitleText": "运动足迹",
   "usingComponents": {
-    "t-icon": "tdesign-miniprogram/icon/icon"
+    "t-icon": "tdesign-miniprogram/icon/icon",
+    "ec-canvas": "../../components/ec-canvas/ec-canvas"
   }
 }

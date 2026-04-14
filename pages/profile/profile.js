@@ -64,6 +64,14 @@ Page({
         wx.setStorageSync('userInfo', userInfo)
         wx.setStorageSync('userJob', this.data.userJob || '')
 
+        // 同步到全局状态
+        getApp().globalData.userInfo = userInfo
+
+        // 从云端恢复工作日程设置
+        if (userInfo.workSchedule) {
+          wx.setStorageSync('workSchedule', userInfo.workSchedule)
+        }
+
         this.setData({
           userInfo,
           userJob: this.data.userJob || '',
@@ -90,6 +98,9 @@ Page({
         // 加载统计数据
         this.loadStats()
         this.loadFavorites()
+
+        // 登录成功后重新加载首页
+        wx.reLaunch({ url: '/pages/index/index' })
       } else {
         console.error('云函数返回失败:', res.result)
         wx.hideLoading()
@@ -156,6 +167,11 @@ Page({
 
         // 保存到本地缓存
         wx.setStorageSync('userInfo', userInfo)
+
+        // 从云端恢复工作日程设置
+        if (userInfo.workSchedule) {
+          wx.setStorageSync('workSchedule', userInfo.workSchedule)
+        }
 
         this.setData({
           userInfo,

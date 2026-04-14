@@ -10,7 +10,7 @@
       <view class="auth-icon-box">
         <t-icon name="chart-bar" size="80rpx" color="#8EC5B9"></t-icon>
       </view>
-      <text class="auth-title">微信运动</text>
+      <text class="auth-title">运动足迹</text>
       <text class="auth-desc">查看你过去31天的运动步数数据，用图表展示你的运动轨迹</text>
       <button class="auth-btn" bindtap="requestAuth">
         <t-icon name="lock-on" size="32rpx" color="#fff"></t-icon>
@@ -57,21 +57,17 @@
           <text class="chart-title">步数趋势</text>
           <view class="chart-tabs">
             <view class="chart-tab {{chartType === 'bar' ? 'tab-active' : ''}}" bindtap="switchChart" data-type="bar">
-              <t-icon name="bar-chart" size="28rpx" color="{{chartType === 'bar' ? '#8EC5B9' : '#999'}}"></t-icon>
               <text>柱状图</text>
             </view>
             <view class="chart-tab {{chartType === 'line' ? 'tab-active' : ''}}" bindtap="switchChart" data-type="line">
-              <t-icon name="chart-line" size="28rpx" color="{{chartType === 'line' ? '#8EC5B9' : '#999'}}"></t-icon>
               <text>折线图</text>
             </view>
           </view>
         </view>
-        <view class="chart-wrapper">
-          <canvas type="2d" id="stepChart" class="step-chart"
-            style="width: {{chartWidth}}px; height: {{chartHeight}}px;"
-            bindtap="onCanvasTouch">
-          </canvas>
+        <view class="chart-container">
+          <ec-canvas id="werunChart" canvas-id="werunChart" ec="{{ec}}"></ec-canvas>
         </view>
+        <text class="chart-hint">左右滑动查看更多天数</text>
       </view>
 
       <!-- 每日步数列表 -->
