@@ -192,3 +192,69 @@
   border: 1px solid var(--primary-start); border-radius: var(--radius-full); padding: 16rpx 48rpx;
 }
 .retry-btn::after { border: none; }
+
+/* ===== 分享海报 ===== */
+.poster-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  margin: 24rpx 32rpx 0;
+  padding: 24rpx;
+  background: linear-gradient(135deg, var(--primary-start) 0%, var(--primary-end) 100%);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-primary);
+  font-size: 28rpx;
+  color: #fff;
+  font-weight: 500;
+}
+.poster-section:active { opacity: 0.85; transform: scale(0.98); }
+
+/* 海报画布 - 隐藏在屏幕外 */
+.poster-canvas-wrap {
+  position: fixed;
+  left: -9999px;
+  top: -9999px;
+}
+
+/* 海报预览弹窗 */
+.poster-modal {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+.poster-modal-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 80%;
+}
+.poster-img {
+  width: 100%;
+  border-radius: 16rpx;
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.3);
+}
+.poster-actions {
+  margin-top: 32rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16rpx;
+}
+.poster-save-btn {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  padding: 20rpx 48rpx;
+  border-radius: var(--radius-full);
+  font-size: 28rpx;
+  color: #fff;
+  background: linear-gradient(135deg, var(--primary-start), var(--primary-end));
+  box-shadow: var(--shadow-primary);
+}
+.poster-save-btn:active { transform: scale(0.96); }
+.poster-tip-text { font-size: 24rpx; color: rgba(255, 255, 255, 0.6); }

@@ -37,9 +37,11 @@ exports.main = async (event, context) => {
           _id: user._id,
           openid: OPENID,
           nickname: user.nickname,
+          wxNickname: user.wxNickname || '',
           user_no: user.user_no,
           avatar_url: user.avatar_url || user.avatar,
           days: days,
+          created_at: user.created_at || user.createTime || null,
           workSchedule: user.workSchedule || null
         },
         isNew: false

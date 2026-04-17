@@ -1,0 +1,143 @@
+<!--packageB/pages/image-editor/image-editor.wxml-->
+<view class="page">
+
+  <!-- Upload area (shown when no image) -->
+  <view class="upload-area" wx:if="{{!hasImage}}" bindtap="chooseImage">
+    <view class="upload-box">
+      <t-icon name="image" size="72rpx" color="#8EC5B9"></t-icon>
+      <text class="upload-text">选择图片</text>
+      <text class="upload-hint">支持 JPG、PNG 格式</text>
+    </view>
+  </view>
+
+  <!-- Editor area (shown when image loaded) -->
+  <view class="editor" wx:if="{{hasImage}}">
+    <!-- Canvas preview -->
+    <view class="canvas-container">
+      <canvas type="2d" id="editorCanvas" class="editor-canvas"
+        style="width: {{canvasWidth}}px; height: {{canvasHeight}}px">
+      </canvas>
+
+      <!-- Crop overlay -->
+      <view class="crop-overlay" wx:if="{{editMode === 'crop' && cropBox}}">
+        <view class="crop-mask" style="top:0; left:0; right:0; height:{{cropBox.top}}px"></view>
+        <view class="crop-mask" style="top:{{cropBox.top}}px; left:0; width:{{cropBox.left}}px; height:{{cropBox.height}}px"></view>
+        <view class="crop-mask" style="top:{{cropBox.top}}px; right:0; width:{{canvasWidth - cropBox.left - cropBox.width}}px; height:{{cropBox.height}}px"></view>
+        <view class="crop-mask" style="top:{{cropBox.top + cropBox.height}}px; left:0; right:0; bottom:0"></view>
+        <view class="crop-border" style="left:{{cropBox.left}}px; top:{{cropBox.top}}px; width:{{cropBox.width}}px; height:{{cropBox.height}}px">
+          <view class="crop-corner crop-corner-tl" data-corner="tl" catchtouchstart="onCropTouchStart" catchtouchmove="onCropTouchMove"></view>
+          <view class="crop-corner crop-corner-tr" data-corner="tr" catchtouchstart="onCropTouchStart" catchtouchmove="onCropTouchMove"></view>
+          <view class="crop-corner crop-corner-bl" data-corner="bl" catchtouchstart="onCropTouchStart" catchtouchmove="onCropTouchMove"></view>
+          <view class="crop-corner crop-corner-br" data-corner="br" catchtouchstart="onCropTouchStart" catchtouchmove="onCropTouchMove"></view>
+        </view>
+      </view>
+    </view>
+
+    <!-- Top action bar -->
+    <view class="action-bar">
+      <view class="action-btn undo-btn {{canUndo ? '' : 'disabled'}}" bindtap="undoAction">
+        <t-icon name="undo" size="36rpx" color="{{canUndo ? '#8EC5B9' : '#ccc'}}"></t-icon>
+        <text>还原</text>
+      </view>
+      <view class="action-btn save-btn" bindtap="saveImage">
+        <t-icon name="download" size="36rpx" color="#8EC5B9"></t-icon>
+        <text>保存</text>
+      </view>
+    </view>
+
+    <!-- Bottom panel -->
+    <view class="panel">
+      <view class="tab-bar">
+        <view class="tab-item {{editMode === 'adjust' ? 'active' : ''}}" bindtap="switchTab" data-mode="adjust">
+          <text>调整</text>
+        </view>
+        <view class="tab-item {{editMode === 'filter' ? 'active' : ''}}" bindtap="switchTab" data-mode="filter">
+          <text>滤镜</text>
+        </view>
+        <view class="tab-item {{editMode === 'crop' ? 'active' : ''}}" bindtap="switchTab" data-mode="crop">
+          <text>裁剪</text>
+        </view>
+      </view>
+
+      <!-- Adjust panel -->
+      <view class="panel-content" wx:if="{{editMode === 'adjust'}}">
+        <view class="slider-group">
+          <view class="slider-row">
+            <text class="slider-label">亮度</text>
+            <slider class="editor-slider" min="0" max="200" value="{{brightness}}"
+              activeColor="#8EC5B9" backgroundColor="#e5e5e5" block-size="20"
+              bindchange="onBrightnessChange" />
+            <text class="slider-value">{{brightness}}%</text>
+          </view>
+          <view class="slider-row">
+            <text class="slider-label">对比度</text>
+            <slider class="editor-slider" min="0" max="200" value="{{contrast}}"
+              activeColor="#8EC5B9" backgroundColor="#e5e5e5" block-size="20"
+              bindchange="onContrastChange" />
+            <text class="slider-value">{{contrast}}%</text>
+          </view>
+          <view class="slider-row">
+            <text class="slider-label">饱和度</text>
+            <slider class="editor-slider" min="0" max="200" value="{{saturate}}"
+              activeColor="#8EC5B9" backgroundColor="#e5e5e5" block-size="20"
+              bindchange="onSaturateChange" />
+            <text class="slider-value">{{saturate}}%</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- Filter panel -->
+      <view class="panel-content" wx:if="{{editMode === 'filter'}}">
+        <!-- Filter intensity slider -->
+        <view class="intensity-row" wx:if="{{filterIndex > 0}}">
+          <text class="slider-label">强度</text>
+          <slider class="editor-slider" min="0" max="100" value="{{filterIntensity}}"
+            activeColor="#8EC5B9" backgroundColor="#e5e5e5" block-size="20"
+            bindchange="onFilterIntensityChange" />
+          <text class="slider-value">{{filterIntensity}}%</text>
+        </view>
+        <scroll-view scroll-x class="filter-scroll">
+          <view class="filter-list">
+            <view class="filter-item {{filterIndex === index ? 'active' : ''}}"
+              wx:for="{{filters}}" wx:key="index"
+              bindtap="onFilterSelect" data-index="{{index}}">
+              <view class="filter-preview filter-color-{{index}}">
+                <t-icon name="{{index === 0 ? 'image' : 'filter'}}" size="32rpx" color="#fff"></t-icon>
+              </view>
+              <text class="filter-name">{{item.name}}</text>
+            </view>
+          </view>
+        </scroll-view>
+      </view>
+
+      <!-- Crop panel -->
+      <view class="panel-content" wx:if="{{editMode === 'crop'}}">
+        <view class="crop-ratios">
+          <view class="ratio-item {{cropRatio === 'free' ? 'active' : ''}}" bindtap="onRatioSelect" data-ratio="free">
+            <text>自由</text>
+          </view>
+          <view class="ratio-item {{cropRatio === '1:1' ? 'active' : ''}}" bindtap="onRatioSelect" data-ratio="1:1">
+            <text>1:1</text>
+          </view>
+          <view class="ratio-item {{cropRatio === '4:3' ? 'active' : ''}}" bindtap="onRatioSelect" data-ratio="4:3">
+            <text>4:3</text>
+          </view>
+          <view class="ratio-item {{cropRatio === '3:4' ? 'active' : ''}}" bindtap="onRatioSelect" data-ratio="3:4">
+            <text>3:4</text>
+          </view>
+          <view class="ratio-item {{cropRatio === '16:9' ? 'active' : ''}}" bindtap="onRatioSelect" data-ratio="16:9">
+            <text>16:9</text>
+          </view>
+        </view>
+        <view class="crop-confirm-bar">
+          <view class="crop-cancel" bindtap="cancelCrop">
+            <text>取消</text>
+          </view>
+          <view class="crop-confirm" bindtap="confirmCrop">
+            <text>确认裁剪</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

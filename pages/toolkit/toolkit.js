@@ -82,5 +82,12 @@ Page({
     wx.navigateTo({
       url: '/packageB/pages/grid-cutter/grid-cutter'
     })
+  },
+
+  // 跳转到图片编辑页面
+  goToImageEditor() {
+    wx.navigateTo({
+      url: '/packageB/pages/image-editor/image-editor'
+    })
   }
 })

@@ -43,12 +43,21 @@
           <text class="bento-desc">智能压缩保持清晰</text>
         </view>
         <view class="bento-card" bindtap="goToGridCutter" style="animation-delay: 0.2s">
-          <view class="card-badge">NEW</view>
           <view class="bento-icon bg-orange">
             <t-icon name="component-grid-filled" size="40rpx" color="#fff"></t-icon>
           </view>
           <text class="bento-name">九宫格切图</text>
           <text class="bento-desc">朋友圈九宫格</text>
+        </view>
+      </view>
+      <view class="bento-row" style="margin-top: 16rpx">
+        <view class="bento-card" bindtap="goToImageEditor" style="animation-delay: 0.25s">
+          <view class="card-badge">NEW</view>
+          <view class="bento-icon bg-mint">
+            <t-icon name="edit" size="40rpx" color="#fff"></t-icon>
+          </view>
+          <text class="bento-name">图片编辑</text>
+          <text class="bento-desc">滤镜裁剪调色</text>
         </view>
       </view>
     </view>
@@ -92,7 +101,6 @@
           <text class="bento-desc">加密安全分享</text>
         </view>
         <view class="bento-card" bindtap="goToSignature" style="animation-delay: 0.35s">
-          <view class="card-badge">NEW</view>
           <view class="bento-icon bg-sky">
             <t-icon name="edit-1" size="40rpx" color="#fff"></t-icon>
           </view>

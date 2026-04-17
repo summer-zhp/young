@@ -30,8 +30,11 @@
             </view>
             <t-icon wx:else name="user-circle" size="80rpx" color="#fff"></t-icon>
           </view>
-          <view class="user-info">
-            <text class="user-nickname">{{userInfo.nickname}}</text>
+          <view class="user-info" bindtap="showNicknameInput">
+            <view class="user-nickname-row">
+              <text class="user-nickname">{{wxNickname || userInfo.nickname}}</text>
+              <t-icon name="edit" size="24rpx" color="rgba(255,255,255,0.6)"></t-icon>
+            </view>
             <view class="user-meta">
               <text class="user-days">已加入 {{userInfo.days || 0}} 天</text>
               <text class="user-divider">·</text>
@@ -130,6 +133,21 @@
       <view class="modal-body">
         <form bindsubmit="saveJob">
           <input name="job" class="job-input" placeholder="请输入你的职位，例如：前端工程师" placeholder-class="input-placeholder" />
+          <button class="submit-btn" form-type="submit" type="button">保存</button>
+        </form>
+      </view>
+    </view>
+
+    <!-- 昵称输入弹窗 -->
+    <view class="modal-mask" wx:if="{{showNicknameInput}}" catchtap="hideNicknameInput"></view>
+    <view class="modal-content" wx:if="{{showNicknameInput}}">
+      <view class="modal-header">
+        <text class="modal-title">设置昵称</text>
+        <t-icon name="close" size="40rpx" color="#9A9A9A" bindtap="hideNicknameInput"></t-icon>
+      </view>
+      <view class="modal-body">
+        <form bindsubmit="saveNickname">
+          <input name="nickname" type="nickname" class="job-input" placeholder="点击获取微信昵称或手动输入" placeholder-class="input-placeholder" value="{{wxNickname}}" />
           <button class="submit-btn" form-type="submit" type="button">保存</button>
         </form>
       </view>

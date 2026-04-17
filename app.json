@@ -18,7 +18,6 @@
         "pages/decision/edit/edit",
         "pages/emotion-trash/index",
         "pages/coloring/index",
-        "pages/treeHole/treeHole",
         "pages/werun/werun"
       ]
     },
@@ -34,7 +33,8 @@
         "pages/grid-cutter/grid-cutter",
         "pages/work-schedule/index",
         "pages/memory-wall/index",
-        "pages/memory-wall/add"
+        "pages/memory-wall/add",
+        "pages/image-editor/image-editor"
       ]
     }
   ],

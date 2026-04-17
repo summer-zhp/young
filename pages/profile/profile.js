@@ -10,7 +10,9 @@ Page({
     isLoading: false,
     isNewUser: false,
     userJob: '', // 用户职位
-    showJobInput: false // 是否显示职位输入弹窗
+    showJobInput: false, // 是否显示职位输入弹窗
+    wxNickname: '', // 微信昵称
+    showNicknameInput: false // 是否显示昵称输入弹窗
   },
 
   onLoad() {
@@ -19,9 +21,26 @@ Page({
   },
 
   onShow() {
+    // 刷新加入天数
+    if (this.data.hasUserInfo && this.data.userInfo) {
+      this.refreshDays()
+    }
     // 刷新收藏列表
     if (this.data.hasUserInfo) {
       this.loadFavorites()
+    }
+  },
+
+  // 根据注册时间实时计算加入天数
+  refreshDays() {
+    var userInfo = this.data.userInfo
+    var createdTime = new Date(userInfo.created_at || userInfo.createTime)
+    if (createdTime) {
+      var now = new Date()
+      var days = Math.floor((now - createdTime) / (1000 * 60 * 60 * 24)) + 1
+      if (userInfo.days !== days) {
+        this.setData({ 'userInfo.days': days })
+      }
     }
   },
 
@@ -30,10 +49,12 @@ Page({
     try {
       const userInfo = wx.getStorageSync('userInfo')
       const userJob = wx.getStorageSync('userJob') || ''
+      const wxNickname = (userInfo && userInfo.wxNickname) || ''
       if (userInfo) {
         this.setData({
           userInfo,
           userJob,
+          wxNickname,
           hasUserInfo: true
         })
         // 加载统计数据
@@ -324,6 +345,58 @@ Page({
         title: '保存失败，请重试',
         icon: 'error'
       })
+    }
+  },
+
+  // 显示昵称输入弹窗
+  showNicknameInput() {
+    this.setData({ showNicknameInput: true })
+  },
+
+  // 隐藏昵称输入弹窗
+  hideNicknameInput() {
+    this.setData({ showNicknameInput: false })
+  },
+
+  // 保存昵称
+  async saveNickname(e) {
+    const { nickname } = e.detail.value
+    const trimmed = (nickname || '').trim()
+
+    if (!trimmed) {
+      wx.showToast({ title: '请输入昵称', icon: 'none' })
+      return
+    }
+
+    wx.showLoading({ title: '保存中...' })
+
+    try {
+      const res = await wx.cloud.callFunction({
+        name: 'updateUserNickname',
+        data: { wxNickname: trimmed }
+      })
+
+      wx.hideLoading()
+
+      if (res.result && res.result.success) {
+        const userInfo = { ...this.data.userInfo, wxNickname: trimmed }
+        wx.setStorageSync('userInfo', userInfo)
+        getApp().globalData.userInfo = userInfo
+
+        this.setData({
+          userInfo,
+          wxNickname: trimmed,
+          showNicknameInput: false
+        })
+
+        wx.showToast({ title: '保存成功', icon: 'success' })
+      } else {
+        throw new Error('保存失败')
+      }
+    } catch (err) {
+      wx.hideLoading()
+      console.error('保存昵称失败:', err)
+      wx.showToast({ title: '保存失败，请重试', icon: 'error' })
     }
   },
 

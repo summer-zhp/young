@@ -15,7 +15,9 @@ Page({
     chartType: 'bar',
     ec: {
       lazyLoad: true
-    }
+    },
+    posterImage: '',
+    showPosterModal: false
   },
 
   chart: null,
@@ -116,7 +118,7 @@ Page({
   processStepData: function (rawList) {
     if (!rawList.length) { this.setData({ isLoading: false }); return; }
 
-    rawList.sort(function (a, b) { return a.timestamp - b.timestamp; });
+    rawList.sort(function (a, b) { return b.timestamp - a.timestamp; });
     var maxStep = Math.max.apply(null, rawList.map(function (d) { return d.step; }));
     maxStep = Math.max(maxStep, 1);
     var totalStep = rawList.reduce(function (s, d) { return s + d.step; }, 0);
@@ -219,8 +221,8 @@ Page({
       },
       dataZoom: [{
         type: 'inside',
-        startValue: Math.max(0, data.length - 10),
-        endValue: data.length - 1
+        startValue: 0,
+        endValue: Math.min(9, data.length - 1)
       }],
       series: [{
         type: 'bar',
@@ -282,8 +284,8 @@ Page({
       },
       dataZoom: [{
         type: 'inside',
-        startValue: Math.max(0, data.length - 10),
-        endValue: data.length - 1
+        startValue: 0,
+        endValue: Math.min(9, data.length - 1)
       }],
       series: [{
         type: 'line',
@@ -315,5 +317,147 @@ Page({
     if (this.chart) {
       this.chart.setOption(this.getChartOption(), true);
     }
+  },
+
+  // ===== 海报生成 =====
+
+  generatePoster: function () {
+    var that = this;
+    if (!that.data.stepInfoList.length) {
+      wx.showToast({ title: '请先获取运动数据', icon: 'none' });
+      return;
+    }
+    wx.showLoading({ title: '生成海报中...' });
+
+    // 通过云函数获取背景图临时链接
+    cloud.callFunction('getPosterBg').then(function (result) {
+      if (!result.success) {
+        wx.hideLoading();
+        wx.showToast({ title: '获取背景图失败', icon: 'none' });
+        return;
+      }
+      wx.downloadFile({
+        url: result.url,
+        success: function (dlRes) {
+          wx.getImageInfo({
+            src: dlRes.tempFilePath,
+            success: function (info) {
+              that.drawPoster(info.path, info.width, info.height);
+            },
+            fail: function () {
+              that.drawPoster(dlRes.tempFilePath, 750, 1334);
+            }
+          });
+        },
+        fail: function () {
+          wx.hideLoading();
+          wx.showToast({ title: '下载背景图失败', icon: 'none' });
+        }
+      });
+    }).catch(function () {
+      wx.hideLoading();
+      wx.showToast({ title: '获取背景图失败', icon: 'none' });
+    });
+  },
+
+  drawPoster: function (bgPath, imgW, imgH) {
+    var that = this;
+    var query = wx.createSelectorQuery();
+    query.select('#posterCanvas')
+      .fields({ node: true, size: true })
+      .exec(function (res) {
+        if (!res[0]) {
+          wx.hideLoading();
+          wx.showToast({ title: '画布初始化失败', icon: 'none' });
+          return;
+        }
+
+        var canvas = res[0].node;
+        var ctx = canvas.getContext('2d');
+        canvas.width = imgW;
+        canvas.height = imgH;
+
+        var bgImg = canvas.createImage();
+        bgImg.onload = function () {
+          // 绘制背景图
+          ctx.drawImage(bgImg, 0, 0, imgW, imgH);
+
+          var userInfo = getApp().globalData.userInfo || {};
+          // 优先使用微信昵称，否则使用平台昵称
+          var nickName = userInfo.wxNickname || userInfo.nickname || userInfo.nickName || '打工人';
+
+          // 字体大小按画布宽度等比缩放
+          var nameSize = Math.round(imgW * 0.048);
+          var dataSize = Math.round(imgW * 0.055);
+
+          // 绘制用户昵称（居中，稍微下移）
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillStyle = '#3C4E4F';
+          ctx.font = nameSize + 'px sans-serif';
+          ctx.fillText(nickName, imgW * 0.5, imgH * 0.62);
+
+          // 绘制步数数据（左对齐，字号加大，颜色与左侧标签一致）
+          ctx.textAlign = 'left';
+          ctx.font = dataSize + 'px sans-serif';
+          ctx.fillStyle = '#3C4E4F';
+          ctx.fillText(that.data.totalSteps, imgW * 0.5, imgH * 0.683);
+          ctx.fillText(that.data.avgSteps, imgW * 0.41, imgH * 0.749);
+          ctx.fillText(that.data.maxSteps, imgW * 0.5, imgH * 0.812);
+
+          // 导出图片
+          setTimeout(function () {
+            wx.canvasToTempFilePath({
+              canvas: canvas,
+              quality: 1,
+              success: function (tempRes) {
+                wx.hideLoading();
+                that.setData({
+                  posterImage: tempRes.tempFilePath,
+                  showPosterModal: true
+                });
+              },
+              fail: function () {
+                wx.hideLoading();
+                wx.showToast({ title: '生成海报失败', icon: 'none' });
+              }
+            });
+          }, 200);
+        };
+
+        bgImg.onerror = function () {
+          wx.hideLoading();
+          wx.showToast({ title: '加载背景图失败', icon: 'none' });
+        };
+
+        bgImg.src = bgPath;
+      });
+  },
+
+  savePoster: function () {
+    var that = this;
+    wx.saveImageToPhotosAlbum({
+      filePath: that.data.posterImage,
+      success: function () {
+        wx.showToast({ title: '已保存到相册', icon: 'success' });
+      },
+      fail: function (err) {
+        if (err.errMsg.indexOf('auth deny') > -1 || err.errMsg.indexOf('authorize') > -1) {
+          wx.showModal({
+            title: '提示',
+            content: '需要授权才能保存图片到相册',
+            confirmText: '去设置',
+            confirmColor: '#8EC5B9',
+            success: function (modalRes) {
+              if (modalRes.confirm) wx.openSetting();
+            }
+          });
+        }
+      }
+    });
+  },
+
+  closePosterModal: function () {
+    this.setData({ showPosterModal: false });
   }
 });

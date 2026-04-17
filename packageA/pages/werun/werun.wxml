@@ -70,6 +70,12 @@
         <text class="chart-hint">左右滑动查看更多天数</text>
       </view>
 
+      <!-- 生成海报 -->
+      <view class="poster-section" bindtap="generatePoster">
+        <t-icon name="share" size="32rpx" color="#fff"></t-icon>
+        <text>生成运动海报</text>
+      </view>
+
       <!-- 每日步数列表 -->
       <view class="list-section">
         <text class="list-title">每日步数明细</text>
@@ -100,6 +106,25 @@
       <t-icon name="close-circle" size="120rpx" color="#FF6B81"></t-icon>
       <text class="error-title">{{errorMsg}}</text>
       <button class="retry-btn" bindtap="loadWeRunData">重新获取</button>
+    </view>
+  </view>
+
+  <!-- 海报画布（隐藏） -->
+  <view class="poster-canvas-wrap">
+    <canvas type="2d" id="posterCanvas" style="width:375px;height:667px;"></canvas>
+  </view>
+
+  <!-- 海报预览弹窗 -->
+  <view class="poster-modal" wx:if="{{showPosterModal}}" catchtap="closePosterModal">
+    <view class="poster-modal-body" catchtap="">
+      <image class="poster-img" src="{{posterImage}}" mode="widthFix" show-menu-by-longpress="{{true}}"></image>
+      <view class="poster-actions">
+        <view class="poster-save-btn" bindtap="savePoster">
+          <t-icon name="download" size="32rpx" color="#fff"></t-icon>
+          <text>保存到相册</text>
+        </view>
+        <text class="poster-tip-text">长按图片也可保存或转发</text>
+      </view>
     </view>
   </view>
 </view>
