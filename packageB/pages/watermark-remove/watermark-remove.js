@@ -504,9 +504,24 @@ Page({
 
   // Retry editing
   retryEditing: function () {
-    this.setData({
+    var self = this
+    // Clear mask and strokes
+    self._strokes = []
+    self._maskData = null
+    self._img = null
+    self._canvas = null
+    self._ctx = null
+
+    self.setData({
       showResult: false,
-      resultSrc: ''
+      resultSrc: '',
+      canUndo: false,
+      hasMask: false
     })
+
+    // Re-init canvas after DOM re-renders
+    setTimeout(function () {
+      self.initCanvas()
+    }, 300)
   }
 })
