@@ -1,0 +1,85 @@
+<!--packageB/pages/watermark/watermark.wxml-->
+<view class="page">
+
+  <!-- Upload area (shown when no image) -->
+  <view class="upload-area" wx:if="{{!hasImage}}" bindtap="chooseImage">
+    <view class="upload-box">
+      <t-icon name="image" size="72rpx" color="#8EC5B9"></t-icon>
+      <text class="upload-text">选择图片</text>
+      <text class="upload-hint">支持 JPG、PNG 格式</text>
+    </view>
+  </view>
+
+  <!-- Editor area (shown when image loaded) -->
+  <view class="editor" wx:if="{{hasImage}}">
+    <!-- Preview section -->
+    <view class="preview-section">
+      <image class="preview-image" src="{{imageSrc}}" mode="aspectFit"></image>
+      <view class="mode-badge">{{mode === 'visible' ? '可见水印' : '不可见水印'}}</view>
+    </view>
+
+    <!-- Bottom panel -->
+    <view class="panel">
+      <!-- Mode tabs -->
+      <view class="tab-bar">
+        <view class="tab-item {{mode === 'visible' ? 'active' : ''}}" bindtap="switchMode" data-mode="visible">
+          <text>可见水印</text>
+        </view>
+        <view class="tab-item {{mode === 'invisible' ? 'active' : ''}}" bindtap="switchMode" data-mode="invisible">
+          <text>不可见水印</text>
+        </view>
+      </view>
+
+      <!-- Panel content -->
+      <view class="panel-content">
+        <!-- Watermark text input -->
+        <view class="input-group">
+          <text class="input-label">水印文字</text>
+          <input class="text-input" type="text" placeholder="请输入水印文字" maxlength="200"
+            value="{{watermarkText}}" bindinput="onTextChange" />
+          <text class="char-count">{{watermarkText.length}}/200</text>
+        </view>
+
+        <!-- Visible mode parameters -->
+        <view class="params-group" wx:if="{{mode === 'visible'}}">
+          <view class="slider-row">
+            <text class="slider-label">透明度</text>
+            <slider class="editor-slider" min="5" max="50" value="{{opacity}}"
+              activeColor="#8EC5B9" backgroundColor="#e5e5e5" block-size="20"
+              bindchange="onOpacityChange" />
+            <text class="slider-value">{{opacity}}%</text>
+          </view>
+          <view class="slider-row">
+            <text class="slider-label">字体大小</text>
+            <slider class="editor-slider" min="12" max="48" value="{{fontSize}}"
+              activeColor="#8EC5B9" backgroundColor="#e5e5e5" block-size="20"
+              bindchange="onFontSizeChange" />
+            <text class="slider-value">{{fontSize}}</text>
+          </view>
+        </view>
+
+        <!-- Invisible mode info -->
+        <view class="info-tip" wx:if="{{mode === 'invisible'}}">
+          <t-icon name="info-circle" size="32rpx" color="#8EC5B9"></t-icon>
+          <text class="info-text">不可见水印使用隐写技术，信息隐藏在图片像素中。请保存为 PNG 格式以确保水印不被压缩丢失。</text>
+        </view>
+      </view>
+
+      <!-- Action bar -->
+      <view class="action-bar">
+        <view class="action-btn change-btn" bindtap="chooseImage">
+          <t-icon name="image" size="36rpx" color="#666"></t-icon>
+          <text>换一张</text>
+        </view>
+        <view class="action-btn save-btn" bindtap="saveImage">
+          <t-icon name="download" size="36rpx" color="#fff"></t-icon>
+          <text>保存相册</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- Hidden canvas for processing -->
+  <canvas type="2d" id="watermarkCanvas" class="hidden-canvas"></canvas>
+
+</view>
