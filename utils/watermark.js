@@ -111,7 +111,150 @@ function drawVisibleWatermark(ctx, width, height, text, fontSize, opacity) {
   ctx.restore()
 }
 
+/**
+ * 边界优先迭代修复：修复指定区域的像素
+ * @param {Uint8ClampedArray} imageData - 图像像素数据 (RGBA 格式, length = width * height * 4)
+ * @param {Uint8Array} mask - 修复掩码 (length = width * height), 1 = 需要填充, 0 = 保持
+ * @param {number} width - 图像宽度
+ * @param {number} height - 图像高度
+ */
+function inpaintRegion(imageData, mask, width, height) {
+  if (!imageData || !mask || width <= 0 || height <= 0) {
+    return
+  }
+
+  var w = width
+  var h = height
+  var totalPixels = w * h
+
+  // 创建工作数组，复制掩码
+  var remaining = new Uint8Array(totalPixels)
+  for (var i = 0; i < totalPixels; i++) {
+    remaining[i] = mask[i]
+  }
+
+  // 统计待修复像素数量
+  var remainingCount = 0
+  for (var i = 0; i < totalPixels; i++) {
+    if (remaining[i] === 1) {
+      remainingCount++
+    }
+  }
+
+  // 如果没有需要修复的像素，直接返回
+  if (remainingCount === 0) {
+    return
+  }
+
+  var maxIterations = 500
+  var iteration = 0
+
+  // 迭代修复
+  while (remainingCount > 0 && iteration < maxIterations) {
+    // 收集边界像素
+    var boundaryPixels = []
+
+    for (var y = 0; y < h; y++) {
+      for (var x = 0; x < w; x++) {
+        var idx = y * w + x
+
+        // 只处理待修复的像素
+        if (remaining[idx] !== 1) {
+          continue
+        }
+
+        // 检查4连通邻域是否有已知像素
+        var isBoundary = false
+
+        // 上
+        if (y === 0 || remaining[(y - 1) * w + x] === 0) {
+          isBoundary = true
+        }
+        // 下
+        if (!isBoundary && (y === h - 1 || remaining[(y + 1) * w + x] === 0)) {
+          isBoundary = true
+        }
+        // 左
+        if (!isBoundary && (x === 0 || remaining[y * w + (x - 1)] === 0)) {
+          isBoundary = true
+        }
+        // 右
+        if (!isBoundary && (x === w - 1 || remaining[y * w + (x + 1)] === 0)) {
+          isBoundary = true
+        }
+
+        if (isBoundary) {
+          boundaryPixels.push({ x: x, y: y, idx: idx })
+        }
+      }
+    }
+
+    // 如果没有边界像素，说明是孤立区域，退出
+    if (boundaryPixels.length === 0) {
+      break
+    }
+
+    // 修复每个边界像素
+    for (var i = 0; i < boundaryPixels.length; i++) {
+      var bp = boundaryPixels[i]
+      var x = bp.x
+      var y = bp.y
+
+      // 在半径3像素内采样已知像素
+      var radius = 3
+      var sumR = 0
+      var sumG = 0
+      var sumB = 0
+      var sumA = 0
+      var totalWeight = 0
+
+      for (var dy = -radius; dy <= radius; dy++) {
+        for (var dx = -radius; dx <= radius; dx++) {
+          var nx = x + dx
+          var ny = y + dy
+
+          // 边界检查
+          if (nx < 0 || nx >= w || ny < 0 || ny >= h) {
+            continue
+          }
+
+          var nidx = ny * w + nx
+
+          // 只使用已知像素
+          if (remaining[nidx] === 0) {
+            var distance = Math.sqrt(dx * dx + dy * dy)
+            var weight = 1 / (distance + 0.1)
+
+            var pixelIdx = nidx * 4
+            sumR += imageData[pixelIdx] * weight
+            sumG += imageData[pixelIdx + 1] * weight
+            sumB += imageData[pixelIdx + 2] * weight
+            sumA += imageData[pixelIdx + 3] * weight
+            totalWeight += weight
+          }
+        }
+      }
+
+      // 计算加权平均值并写入
+      if (totalWeight > 0) {
+        var pixelIdx = bp.idx * 4
+        imageData[pixelIdx] = sumR / totalWeight
+        imageData[pixelIdx + 1] = sumG / totalWeight
+        imageData[pixelIdx + 2] = sumB / totalWeight
+        imageData[pixelIdx + 3] = sumA / totalWeight
+      }
+
+      // 标记为已填充
+      remaining[bp.idx] = 0
+      remainingCount--
+    }
+
+    iteration++
+  }
+}
+
 module.exports = {
   encodeLSB: encodeLSB,
-  drawVisibleWatermark: drawVisibleWatermark
+  drawVisibleWatermark: drawVisibleWatermark,
+  inpaintRegion: inpaintRegion
 }
