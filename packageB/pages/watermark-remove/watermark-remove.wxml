@@ -1,0 +1,105 @@
+<!--packageB/pages/watermark-remove/watermark-remove.wxml-->
+<view class="page">
+  <!-- Upload Area -->
+  <view class="upload-area" wx:if="{{!hasImage}}">
+    <view class="upload-box" bindtap="chooseImage">
+      <t-icon name="image" size="96rpx" color="#8EC5B9"/>
+      <text class="upload-text">选择图片</text>
+      <text class="upload-hint">支持相册或拍照</text>
+    </view>
+  </view>
+
+  <!-- Editor Area -->
+  <view class="editor" wx:if="{{hasImage && !showResult}}">
+    <!-- Canvas Container -->
+    <view class="canvas-container">
+      <canvas
+        type="2d"
+        id="displayCanvas"
+        class="display-canvas"
+        style="width: {{canvasWidth}}px; height: {{canvasHeight}}px;"
+        catchtouchstart="onTouchStart"
+        catchtouchmove="onTouchMove"
+        catchtouchend="onTouchEnd"
+      />
+    </view>
+
+    <!-- Top Action Bar -->
+    <view class="top-action-bar">
+      <view class="action-btn {{canUndo ? '' : 'disabled'}}" bindtap="undoStroke">
+        <t-icon name="undo" size="20px" color="{{canUndo ? '#5A5A5A' : '#C0C0C0'}}"/>
+        <text>撤销</text>
+      </view>
+      <view class="action-btn {{hasMask ? '' : 'disabled'}}" bindtap="clearMask">
+        <t-icon name="delete" size="20px" color="{{hasMask ? '#5A5A5A' : '#C0C0C0'}}"/>
+        <text>清除</text>
+      </view>
+    </view>
+
+    <!-- Bottom Panel -->
+    <view class="panel">
+      <view class="panel-content">
+        <!-- Brush Size Slider -->
+        <view class="slider-group">
+          <view class="slider-row">
+            <text class="slider-label">画笔大小</text>
+            <slider
+              class="editor-slider"
+              min="5"
+              max="80"
+              value="{{brushSize}}"
+              bindchange="onBrushSizeChange"
+              activeColor="#8EC5B9"
+              backgroundColor="#E8E8E8"
+              block-size="20"
+            />
+            <text class="slider-value">{{brushSize}}</text>
+          </view>
+        </view>
+
+        <!-- Info Tip -->
+        <view class="info-tip">
+          <t-icon name="info-circle" size="32rpx" color="#8EC5B9"/>
+          <text class="info-text">用手指涂抹水印区域，红色半透明区域即为选中范围</text>
+        </view>
+      </view>
+
+      <!-- Action Bar -->
+      <view class="action-bar">
+        <view class="action-btn change-btn" bindtap="chooseImage">
+          <t-icon name="image" size="20px"/>
+          <text>换图片</text>
+        </view>
+        <view class="action-btn save-btn {{hasMask ? '' : 'disabled'}}" bindtap="startInpainting">
+          <t-icon name="check" size="20px"/>
+          <text>去水印</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- Result Area -->
+  <view class="result-area" wx:if="{{showResult}}">
+    <view class="result-container">
+      <image class="result-image" src="{{resultSrc}}" mode="aspectFit"/>
+    </view>
+
+    <view class="action-bar">
+      <view class="action-btn change-btn" bindtap="retryEditing">
+        <t-icon name="redo" size="20px"/>
+        <text>重新编辑</text>
+      </view>
+      <view class="action-btn save-btn" bindtap="saveImage">
+        <t-icon name="download" size="20px"/>
+        <text>保存到相册</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- Hidden Process Canvas -->
+  <canvas
+    type="2d"
+    id="processCanvas"
+    class="hidden-canvas"
+  />
+</view>

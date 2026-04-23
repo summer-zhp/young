@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "去水印",
+  "usingComponents": {
+    "t-icon": "tdesign-miniprogram/icon/icon"
+  }
+}
