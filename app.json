@@ -35,7 +35,8 @@
         "pages/memory-wall/index",
         "pages/memory-wall/add",
         "pages/image-editor/image-editor",
-        "pages/watermark/watermark"
+        "pages/watermark/watermark",
+        "pages/watermark-remove/watermark-remove"
       ]
     }
   ],

@@ -96,5 +96,12 @@ Page({
     wx.navigateTo({
       url: '/packageB/pages/watermark/watermark'
     })
+  },
+
+  // 跳转到去水印页面
+  goToWatermarkRemove() {
+    wx.navigateTo({
+      url: '/packageB/pages/watermark-remove/watermark-remove'
+    })
   }
 })
