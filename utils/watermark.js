@@ -74,7 +74,7 @@ function encodeLSB(imageData, text) {
 }
 
 /**
- * 在 canvas 上绘制可见水印（平铺、旋转、半透明文本）
+ * 在 canvas 右下角绘制可见水印（单个、半透明文本 + 阴影）
  * @param {CanvasRenderingContext2D} ctx - Canvas 上下文
  * @param {number} width - Canvas 宽度
  * @param {number} height - Canvas 高度
@@ -87,53 +87,27 @@ function drawVisibleWatermark(ctx, width, height, text, fontSize, opacity) {
     return
   }
 
-  // 保存当前 canvas 状态
   ctx.save()
 
-  // 设置不透明度
   ctx.globalAlpha = opacity
-
-  // 设置字体和文本样式
-  ctx.font = fontSize + 'px sans-serif'
+  ctx.font = 'bold ' + fontSize + 'px sans-serif'
   ctx.fillStyle = '#FFFFFF'
-  ctx.textAlign = 'center'
-  ctx.textBaseline = 'middle'
+  ctx.textAlign = 'right'
+  ctx.textBaseline = 'bottom'
 
-  // 计算对角线长度以确定平铺范围
-  var diagonal = Math.sqrt(width * width + height * height)
+  // 文字阴影增强可读性
+  ctx.shadowColor = 'rgba(0, 0, 0, 0.5)'
+  ctx.shadowBlur = fontSize / 3
+  ctx.shadowOffsetX = 1
+  ctx.shadowOffsetY = 1
 
-  // 将原点移到 canvas 中心
-  ctx.translate(width / 2, height / 2)
+  // 右下角绘制，留出边距
+  var padding = fontSize * 1.2
+  var x = width - padding
+  var y = height - padding
 
-  // 旋转 -45 度
-  ctx.rotate(-45 * Math.PI / 180)
+  ctx.fillText(text, x, y)
 
-  // 将原点移回左上角（现在是旋转后的坐标系）
-  ctx.translate(-diagonal / 2, -diagonal / 2)
-
-  // 计算文本尺寸
-  var textMetrics = ctx.measureText(text)
-  var textWidth = textMetrics.width
-  var textHeight = fontSize
-
-  // 计算平铺间距（文本尺寸的1.5倍）
-  var spacingX = textWidth * 1.5
-  var spacingY = textHeight * 2
-
-  // 计算需要多少行列来覆盖对角线区域
-  var cols = Math.ceil(diagonal / spacingX) + 2
-  var rows = Math.ceil(diagonal / spacingY) + 2
-
-  // 平铺绘制文本
-  for (var row = -1; row < rows; row++) {
-    for (var col = -1; col < cols; col++) {
-      var x = col * spacingX + spacingX / 2
-      var y = row * spacingY + spacingY / 2
-      ctx.fillText(text, x, y)
-    }
-  }
-
-  // 恢复 canvas 状态
   ctx.restore()
 }
 
