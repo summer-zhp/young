@@ -34,7 +34,8 @@
         "pages/work-schedule/index",
         "pages/memory-wall/index",
         "pages/memory-wall/add",
-        "pages/image-editor/image-editor"
+        "pages/image-editor/image-editor",
+        "pages/watermark/watermark"
       ]
     }
   ],

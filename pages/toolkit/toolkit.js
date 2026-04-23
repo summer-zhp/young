@@ -89,5 +89,12 @@ Page({
     wx.navigateTo({
       url: '/packageB/pages/image-editor/image-editor'
     })
+  },
+
+  // 跳转到隐形水印页面
+  goToWatermark() {
+    wx.navigateTo({
+      url: '/packageB/pages/watermark/watermark'
+    })
   }
 })
