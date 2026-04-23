@@ -51,31 +51,23 @@ function encodeLSB(imageData, text) {
   payload[5 + dataLength] = 0xAB
 
   // 将位写入像素的 RGB 通道 LSB
-  var bitIndex = 0
-  var pixelIndex = 0
+  for (var bitIndex = 0; bitIndex < bitsNeeded; bitIndex++) {
+    var byteIndex = Math.floor(bitIndex / 8)
+    var bitPos = bitIndex % 8
+    var bit = (payload[byteIndex] >> bitPos) & 1
 
-  for (var byteIndex = 0; byteIndex < payloadLength; byteIndex++) {
-    var byte = payload[byteIndex]
+    // 计算 pixel 和 channel：每像素 3 bit（R/G/B 各 1 bit）
+    var pixelIdx = Math.floor(bitIndex / 3)
+    var channelOffset = bitIndex % 3 // 0=R, 1=G, 2=B
+    var dataIdx = pixelIdx * 4 + channelOffset
 
-    for (var bitPos = 0; bitPos < 8; bitPos++) {
-      var bit = (byte >> bitPos) & 1
-
-      // 计算当前像素和通道索引
-      var currentPixel = pixelIndex + Math.floor((bitIndex - pixelIndex * 3) / 3)
-      var channelOffset = (bitIndex - pixelIndex * 3) % 3
-
-      var dataIdx = currentPixel * 4 + channelOffset
-
-      // 清除 LSB 并设置新位
-      imageData[dataIdx] = (imageData[dataIdx] & 0xFE) | bit
-
-      bitIndex++
-
-      // 每3位移动到下一个像素
-      if (bitIndex % 3 === 0) {
-        pixelIndex++
-      }
+    // 安全检查
+    if (dataIdx >= imageData.length) {
+      return false
     }
+
+    // 清除 LSB 并设置新位
+    imageData[dataIdx] = (imageData[dataIdx] & 0xFE) | bit
   }
 
   return true
