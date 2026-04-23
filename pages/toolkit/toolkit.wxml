@@ -59,6 +59,13 @@
           <text class="bento-name">图片编辑</text>
           <text class="bento-desc">滤镜裁剪调色</text>
         </view>
+        <view class="bento-card" bindtap="goToWatermark" style="animation-delay: 0.3s">
+          <view class="bento-icon bg-sage">
+            <t-icon name="view-image" size="40rpx" color="#fff"></t-icon>
+          </view>
+          <text class="bento-name">添加水印</text>
+          <text class="bento-desc">版权保护</text>
+        </view>
       </view>
     </view>
 
@@ -106,16 +113,6 @@
           </view>
           <text class="bento-name">电子签名</text>
           <text class="bento-desc">手写签名保存</text>
-        </view>
-      </view>
-      <view class="bento-row" style="margin-top: 16rpx">
-        <view class="bento-card" bindtap="goToWatermark" style="animation-delay: 0.4s">
-          <view class="card-badge">NEW</view>
-          <view class="bento-icon bg-sage">
-            <t-icon name="shield" size="40rpx" color="#fff"></t-icon>
-          </view>
-          <text class="bento-name">隐形水印</text>
-          <text class="bento-desc">版权保护</text>
         </view>
       </view>
     </view>

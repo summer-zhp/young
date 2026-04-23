@@ -1,5 +1,5 @@
 {
-  "navigationBarTitleText": "隐形水印",
+  "navigationBarTitleText": "添加水印",
   "usingComponents": {
     "t-icon": "tdesign-miniprogram/icon/icon"
   }
