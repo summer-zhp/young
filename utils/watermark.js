@@ -113,6 +113,7 @@ function drawVisibleWatermark(ctx, width, height, text, fontSize, opacity) {
 
 /**
  * 边界优先迭代修复：修复指定区域的像素
+ * 使用方向射线采样 + 加权混合，减少模糊累积
  * @param {Uint8ClampedArray} imageData - 图像像素数据 (RGBA 格式, length = width * height * 4)
  * @param {Uint8Array} mask - 修复掩码 (length = width * height), 1 = 需要填充, 0 = 保持
  * @param {number} width - 图像宽度
@@ -127,61 +128,54 @@ function inpaintRegion(imageData, mask, width, height) {
   var h = height
   var totalPixels = w * h
 
-  // 创建工作数组，复制掩码
-  var remaining = new Uint8Array(totalPixels)
+  // 创建工作数组：0=已知, 1=原始待修复, 2=已填充(本轮)
+  var filled = new Uint8Array(totalPixels)
   for (var i = 0; i < totalPixels; i++) {
-    remaining[i] = mask[i]
+    filled[i] = mask[i]
   }
 
   // 统计待修复像素数量
   var remainingCount = 0
   for (var i = 0; i < totalPixels; i++) {
-    if (remaining[i] === 1) {
+    if (filled[i] === 1) {
       remainingCount++
     }
   }
 
-  // 如果没有需要修复的像素，直接返回
   if (remainingCount === 0) {
     return
   }
 
-  var maxIterations = 500
-  var iteration = 0
+  // 8 个方向的射线方向向量
+  var dirs = [
+    { dx: 1, dy: 0 },
+    { dx: -1, dy: 0 },
+    { dx: 0, dy: 1 },
+    { dx: 0, dy: -1 },
+    { dx: 1, dy: 1 },
+    { dx: -1, dy: 1 },
+    { dx: 1, dy: -1 },
+    { dx: -1, dy: -1 }
+  ]
 
-  // 迭代修复
+  var maxIterations = 500
+  var sampleRadius = 9
+
+  var iteration = 0
   while (remainingCount > 0 && iteration < maxIterations) {
-    // 收集边界像素
+    // 收集边界像素（与已知像素相邻的待修复像素）
     var boundaryPixels = []
 
     for (var y = 0; y < h; y++) {
       for (var x = 0; x < w; x++) {
         var idx = y * w + x
+        if (filled[idx] !== 1) continue
 
-        // 只处理待修复的像素
-        if (remaining[idx] !== 1) {
-          continue
-        }
-
-        // 检查4连通邻域是否有已知像素
         var isBoundary = false
-
-        // 上
-        if (y === 0 || remaining[(y - 1) * w + x] === 0) {
-          isBoundary = true
-        }
-        // 下
-        if (!isBoundary && (y === h - 1 || remaining[(y + 1) * w + x] === 0)) {
-          isBoundary = true
-        }
-        // 左
-        if (!isBoundary && (x === 0 || remaining[y * w + (x - 1)] === 0)) {
-          isBoundary = true
-        }
-        // 右
-        if (!isBoundary && (x === w - 1 || remaining[y * w + (x + 1)] === 0)) {
-          isBoundary = true
-        }
+        if (y === 0 || filled[(y - 1) * w + x] === 0) isBoundary = true
+        if (!isBoundary && (y === h - 1 || filled[(y + 1) * w + x] === 0)) isBoundary = true
+        if (!isBoundary && (x === 0 || filled[y * w + (x - 1)] === 0)) isBoundary = true
+        if (!isBoundary && (x === w - 1 || filled[y * w + (x + 1)] === 0)) isBoundary = true
 
         if (isBoundary) {
           boundaryPixels.push({ x: x, y: y, idx: idx })
@@ -189,67 +183,152 @@ function inpaintRegion(imageData, mask, width, height) {
       }
     }
 
-    // 如果没有边界像素，说明是孤立区域，退出
-    if (boundaryPixels.length === 0) {
-      break
-    }
+    if (boundaryPixels.length === 0) break
 
     // 修复每个边界像素
     for (var i = 0; i < boundaryPixels.length; i++) {
       var bp = boundaryPixels[i]
-      var x = bp.x
-      var y = bp.y
+      var px = bp.x
+      var py = bp.y
 
-      // 在半径3像素内采样已知像素
-      var radius = 3
-      var sumR = 0
-      var sumG = 0
-      var sumB = 0
-      var sumA = 0
-      var totalWeight = 0
+      // 方法1：方向射线采样 - 沿8个方向寻找最近的已知像素
+      var dirR = 0, dirG = 0, dirB = 0, dirA = 0, dirCount = 0
 
-      for (var dy = -radius; dy <= radius; dy++) {
-        for (var dx = -radius; dx <= radius; dx++) {
-          var nx = x + dx
-          var ny = y + dy
+      for (var d = 0; d < dirs.length; d++) {
+        var ddx = dirs[d].dx
+        var ddy = dirs[d].dy
+        // 沿射线方向搜索，找最近的已知像素
+        for (var step = 1; step <= sampleRadius; step++) {
+          var sx = px + ddx * step
+          var sy = py + ddy * step
+          if (sx < 0 || sx >= w || sy < 0 || sy >= h) break
 
-          // 边界检查
-          if (nx < 0 || nx >= w || ny < 0 || ny >= h) {
-            continue
-          }
-
-          var nidx = ny * w + nx
-
-          // 只使用已知像素
-          if (remaining[nidx] === 0) {
-            var distance = Math.sqrt(dx * dx + dy * dy)
-            var weight = 1 / (distance + 0.1)
-
-            var pixelIdx = nidx * 4
-            sumR += imageData[pixelIdx] * weight
-            sumG += imageData[pixelIdx + 1] * weight
-            sumB += imageData[pixelIdx + 2] * weight
-            sumA += imageData[pixelIdx + 3] * weight
-            totalWeight += weight
+          var sidx = sy * w + sx
+          if (filled[sidx] === 0) {
+            // 找到已知像素，距离越近权重越高
+            var pixIdx = sidx * 4
+            var weight = 1 / step
+            dirR += imageData[pixIdx] * weight
+            dirG += imageData[pixIdx + 1] * weight
+            dirB += imageData[pixIdx + 2] * weight
+            dirA += imageData[pixIdx + 3] * weight
+            dirCount += weight
+            break
           }
         }
       }
 
-      // 计算加权平均值并写入
-      if (totalWeight > 0) {
-        var pixelIdx = bp.idx * 4
-        imageData[pixelIdx] = sumR / totalWeight
-        imageData[pixelIdx + 1] = sumG / totalWeight
-        imageData[pixelIdx + 2] = sumB / totalWeight
-        imageData[pixelIdx + 3] = sumA / totalWeight
+      // 方法2：邻域加权采样（用于补充方向射线的不足）
+      var sumR = 0, sumG = 0, sumB = 0, sumA = 0, totalWeight = 0
+      for (var dy = -sampleRadius; dy <= sampleRadius; dy++) {
+        for (var dx = -sampleRadius; dx <= sampleRadius; dx++) {
+          var nx = px + dx
+          var ny = py + dy
+          if (nx < 0 || nx >= w || ny < 0 || ny >= h) continue
+
+          var nidx = ny * w + nx
+          if (filled[nidx] === 0) {
+            var distance = Math.sqrt(dx * dx + dy * dy)
+            if (distance > sampleRadius) continue
+            // 高斯权重
+            var gWeight = Math.exp(-distance * distance / (sampleRadius * sampleRadius * 0.5))
+            var pixIdx = nidx * 4
+            sumR += imageData[pixIdx] * gWeight
+            sumG += imageData[pixIdx + 1] * gWeight
+            sumB += imageData[pixIdx + 2] * gWeight
+            sumA += imageData[pixIdx + 3] * gWeight
+            totalWeight += gWeight
+          }
+        }
       }
 
-      // 标记为已填充
-      remaining[bp.idx] = 0
+      // 混合：方向采样占 40%，邻域采样占 60%
+      var finalR, finalG, finalB, finalA
+      if (dirCount > 0 && totalWeight > 0) {
+        finalR = (dirR / dirCount) * 0.4 + (sumR / totalWeight) * 0.6
+        finalG = (dirG / dirCount) * 0.4 + (sumG / totalWeight) * 0.6
+        finalB = (dirB / dirCount) * 0.4 + (sumB / totalWeight) * 0.6
+        finalA = (dirA / dirCount) * 0.4 + (sumA / totalWeight) * 0.6
+      } else if (dirCount > 0) {
+        finalR = dirR / dirCount
+        finalG = dirG / dirCount
+        finalB = dirB / dirCount
+        finalA = dirA / dirCount
+      } else if (totalWeight > 0) {
+        finalR = sumR / totalWeight
+        finalG = sumG / totalWeight
+        finalB = sumB / totalWeight
+        finalA = sumA / totalWeight
+      } else {
+        // 无采样数据，跳过
+        iteration++
+        continue
+      }
+
+      var pixelIdx = bp.idx * 4
+      imageData[pixelIdx] = finalR
+      imageData[pixelIdx + 1] = finalG
+      imageData[pixelIdx + 2] = finalB
+      imageData[pixelIdx + 3] = finalA
+
+      filled[bp.idx] = 0
       remainingCount--
     }
 
     iteration++
+  }
+
+  // 后处理：边界羽化平滑
+  // 对修复区域边缘2-3像素做轻微模糊，消除填充区域与原图的过渡痕迹
+  var blurRadius = 2
+  // 找到边界像素（原来是 mask=1 的区域，且与 mask=0 相邻）
+  for (var y = 0; y < h; y++) {
+    for (var x = 0; x < w; x++) {
+      var idx = y * w + x
+      if (mask[idx] !== 1) continue
+
+      // 检查是否在边界附近
+      var nearEdge = false
+      for (var dy = -blurRadius; dy <= blurRadius && !nearEdge; dy++) {
+        for (var dx = -blurRadius; dx <= blurRadius && !nearEdge; dx++) {
+          var nx = x + dx
+          var ny = y + dy
+          if (nx >= 0 && nx < w && ny >= 0 && ny < h) {
+            if (mask[ny * w + nx] === 0) {
+              nearEdge = true
+            }
+          }
+        }
+      }
+
+      if (!nearEdge) continue
+
+      // 对边界附近像素做轻微混合
+      var sumR = 0, sumG = 0, sumB = 0, totalW = 0
+      for (var dy = -blurRadius; dy <= blurRadius; dy++) {
+        for (var dx = -blurRadius; dx <= blurRadius; dx++) {
+          var nx = x + dx
+          var ny = y + dy
+          if (nx < 0 || nx >= w || ny < 0 || ny >= h) continue
+          var distance = Math.sqrt(dx * dx + dy * dy)
+          if (distance > blurRadius) continue
+          var bWeight = Math.exp(-distance * distance / (blurRadius * blurRadius * 0.5))
+          var pixIdx = (ny * w + nx) * 4
+          sumR += imageData[pixIdx] * bWeight
+          sumG += imageData[pixIdx + 1] * bWeight
+          sumB += imageData[pixIdx + 2] * bWeight
+          totalW += bWeight
+        }
+      }
+
+      if (totalW > 0) {
+        // 混合比例：70% 平滑值 + 30% 原值，避免过度模糊
+        var pixIdx = idx * 4
+        imageData[pixIdx] = imageData[pixIdx] * 0.3 + (sumR / totalW) * 0.7
+        imageData[pixIdx + 1] = imageData[pixIdx + 1] * 0.3 + (sumG / totalW) * 0.7
+        imageData[pixIdx + 2] = imageData[pixIdx + 2] * 0.3 + (sumB / totalW) * 0.7
+      }
+    }
   }
 }
 
