@@ -1,0 +1,133 @@
+<h2>灵魂画像 - 页面 UI 线框图</h2>
+<p class="subtitle">三个核心页面的布局设计</p>
+
+<div class="split">
+  <!-- 答题页 -->
+  <div class="mockup">
+    <div class="mockup-header">答题页 - 单题卡片</div>
+    <div class="mockup-body" style="padding: 16px; min-height: 400px;">
+      <!-- 进度条 -->
+      <div style="margin-bottom: 16px;">
+        <div style="display: flex; justify-content: space-between; font-size: 12px; color: #888; margin-bottom: 4px;">
+          <span>第 12 / 40 题</span>
+          <span>30%</span>
+        </div>
+        <div style="background: #e8e8e8; border-radius: 8px; height: 6px;">
+          <div style="background: linear-gradient(90deg, #8EC5B9, #6BA89C); width: 30%; height: 100%; border-radius: 8px;"></div>
+        </div>
+      </div>
+
+      <!-- 维度标签 -->
+      <div style="text-align: center; margin-bottom: 12px;">
+        <span style="background: #f0f7f5; color: #6BA89C; padding: 4px 12px; border-radius: 12px; font-size: 11px;">E / I 维度</span>
+      </div>
+
+      <!-- 题目 -->
+      <div style="text-align: center; margin-bottom: 24px;">
+        <h3 style="font-size: 18px; line-height: 1.6; color: #333;">周末到了，你更倾向于？</h3>
+      </div>
+
+      <!-- 选项卡片 -->
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div style="border: 2px solid #8EC5B9; border-radius: 16px; padding: 16px; background: #f8fcfb; cursor: pointer; position: relative;">
+          <div style="position: absolute; top: 8px; left: 12px; width: 20px; height: 20px; background: #8EC5B9; border-radius: 50%; color: white; font-size: 11px; display: flex; align-items: center; justify-content: center;">A</div>
+          <p style="margin: 0 0 0 28px; font-size: 15px; color: #444;">约朋友出去聚会逛街</p>
+        </div>
+        <div style="border: 2px solid #e0e0e0; border-radius: 16px; padding: 16px; background: white; cursor: pointer; position: relative;">
+          <div style="position: absolute; top: 8px; left: 12px; width: 20px; height: 20px; background: #ccc; border-radius: 50%; color: white; font-size: 11px; display: flex; align-items: center; justify-content: center;">B</div>
+          <p style="margin: 0 0 0 28px; font-size: 15px; color: #444;">在家安静地看书追剧</p>
+        </div>
+      </div>
+
+      <!-- 底部提示 -->
+      <div style="text-align: center; margin-top: 24px; color: #aaa; font-size: 12px;">
+        点击选项自动进入下一题
+      </div>
+    </div>
+  </div>
+
+  <!-- 结果页 -->
+  <div class="mockup">
+    <div class="mockup-header">结果页 - 灵魂画像</div>
+    <div class="mockup-body" style="padding: 16px; min-height: 400px;">
+      <!-- MBTI 类型 -->
+      <div style="text-align: center; margin-bottom: 16px;">
+        <div style="font-size: 36px; font-weight: bold; background: linear-gradient(135deg, #8EC5B9, #5BA89C); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">ENFP</div>
+        <p style="font-size: 14px; color: #666; margin: 4px 0;">竞选者 · 外向直觉情感知觉</p>
+      </div>
+
+      <!-- 雷达图占位 -->
+      <div style="text-align: center; margin-bottom: 16px;">
+        <div style="width: 160px; height: 160px; margin: 0 auto; border-radius: 50%; border: 2px dashed #8EC5B9; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle, #f0f7f5, white);">
+          <div style="text-align: center;">
+            <div style="font-size: 11px; color: #888;">四维分数</div>
+            <div style="font-size: 10px; color: #8EC5B9; margin-top: 4px;">
+              E:70% N:60%<br>F:55% P:65%
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 三重趣味标签 -->
+      <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+        <div style="flex: 1; background: #FFF3E0; border-radius: 12px; padding: 10px; text-align: center;">
+          <div style="font-size: 20px;">🐕</div>
+          <div style="font-size: 12px; font-weight: bold; color: #E65100;">金毛犬</div>
+          <div style="font-size: 10px; color: #999;">动物人格</div>
+        </div>
+        <div style="flex: 1; background: #E8F5E9; border-radius: 12px; padding: 10px; text-align: center;">
+          <div style="font-size: 20px;">🔥</div>
+          <div style="font-size: 12px; font-weight: bold; color: #2E7D32;">社交发动机</div>
+          <div style="font-size: 10px; color: #999;">职场人设</div>
+        </div>
+        <div style="flex: 1; background: #F3E5F5; border-radius: 12px; padding: 10px; text-align: center;">
+          <div style="font-size: 20px;">✨</div>
+          <div style="font-size: 12px; font-weight: bold; color: #7B1FA2;">灵焰使者</div>
+          <div style="font-size: 10px; color: #999;">奇幻角色</div>
+        </div>
+      </div>
+
+      <!-- 性格分析 -->
+      <div style="background: #f9f9f9; border-radius: 12px; padding: 12px; margin-bottom: 12px;">
+        <div style="font-size: 13px; font-weight: bold; color: #333; margin-bottom: 6px;">性格解读</div>
+        <p style="font-size: 12px; color: #666; line-height: 1.6; margin: 0;">你是一个充满热情和创造力的灵魂，善于发现生活中的可能性。你的热情能感染周围的人...</p>
+      </div>
+
+      <!-- 分享按钮 -->
+      <div style="display: flex; gap: 8px;">
+        <button style="flex: 1; background: linear-gradient(135deg, #8EC5B9, #5BA89C); color: white; border: none; border-radius: 20px; padding: 10px; font-size: 14px; cursor: pointer;">生成分享图</button>
+        <button style="flex: 1; background: white; color: #8EC5B9; border: 1px solid #8EC5B9; border-radius: 20px; padding: 10px; font-size: 14px; cursor: pointer;">查看历史</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="margin-top: 24px;">
+  <div class="mockup">
+    <div class="mockup-header">历史记录页</div>
+    <div class="mockup-body" style="padding: 16px;">
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <!-- 记录卡片1 -->
+        <div style="border: 1px solid #e8e8e8; border-radius: 16px; padding: 16px; display: flex; align-items: center; gap: 12px;">
+          <div style="width: 48px; height: 48px; background: #FFF3E0; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px;">🐕</div>
+          <div style="flex: 1;">
+            <div style="font-size: 15px; font-weight: bold; color: #333;">ENFP · 金毛犬</div>
+            <div style="font-size: 12px; color: #999; margin-top: 2px;">社交发动机 · 灵焰使者</div>
+            <div style="font-size: 11px; color: #bbb; margin-top: 2px;">2026-04-28 测试</div>
+          </div>
+          <div style="color: #ccc; font-size: 18px;">›</div>
+        </div>
+        <!-- 记录卡片2 -->
+        <div style="border: 1px solid #e8e8e8; border-radius: 16px; padding: 16px; display: flex; align-items: center; gap: 12px;">
+          <div style="width: 48px; height: 48px; background: #E3F2FD; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px;">🦉</div>
+          <div style="flex: 1;">
+            <div style="font-size: 15px; font-weight: bold; color: #333;">INTJ · 猫头鹰</div>
+            <div style="font-size: 12px; color: #999; margin-top: 2px;">战略大师 · 暗影贤者</div>
+            <div style="font-size: 11px; color: #bbb; margin-top: 2px;">2026-03-15 测试</div>
+          </div>
+          <div style="color: #ccc; font-size: 18px;">›</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -107,38 +107,35 @@
         </view>
       </view>
 
-      <!-- 操作按钮 -->
-      <view class="action-buttons-wrapper">
-        <view class="action-buttons">
-          <view
-            class="action-btn {{isFavorited ? 'favorited' : ''}}"
-            bindtap="toggleFavorite"
-          >
-            <view class="action-icon-wrapper">
-              <t-icon name="{{isFavorited ? 'heart-filled' : 'heart'}}" size="40rpx" color="#8EC5B9"></t-icon>
-            </view>
-            <text class="action-text">{{isFavorited ? '已收藏' : '收藏'}}</text>
+      <!-- 操作栏 -->
+      <view class="action-bar">
+        <view class="action-bar__left">
+          <view class="action-bar__btn {{isFavorited ? 'action-bar__btn--active' : ''}}" bindtap="toggleFavorite">
+            <t-icon name="{{isFavorited ? 'heart-filled' : 'heart'}}" size="32rpx" color="{{isFavorited ? '#FF6B81' : '#8EC5B9'}}"></t-icon>
+            <text class="action-bar__text">{{isFavorited ? '已收藏' : '收藏'}}</text>
           </view>
-
-          <view
-            class="action-btn"
-            bindtap="shareContent"
-          >
-            <view class="action-icon-wrapper">
-              <t-icon name="share" size="40rpx" color="#8EC5B9"></t-icon>
-            </view>
-            <text class="action-text">分享</text>
+          <view class="action-bar__btn" bindtap="shareContent">
+            <t-icon name="share" size="32rpx" color="#8EC5B9"></t-icon>
+            <text class="action-bar__text">分享</text>
           </view>
+        </view>
+        <view class="action-bar__right" bindtap="loadNextContent">
+          <t-icon name="refresh" size="28rpx" color="#8EC5B9"></t-icon>
+          <text class="action-bar__text">换一换</text>
         </view>
       </view>
 
-      <!-- 换一换按钮 -->
-      <view class="refresh-section">
-        <view class="refresh-btn-wrapper">
-          <view class="btn btn-ghost refresh-btn" bindtap="loadNextContent">
-            <t-icon name="refresh" size="32rpx" color="#8EC5B9"></t-icon>
-            <text>换一换</text>
+      <!-- 打工人小贴士 -->
+      <view class="tip-card">
+        <view class="tip-card__accent"></view>
+        <view class="tip-card__body">
+          <view class="tip-card__header">
+            <view class="tip-card__icon">
+              <t-icon name="star-filled" size="22rpx" color="#FFB347"></t-icon>
+            </view>
+            <text class="tip-card__title">打工人小贴士</text>
           </view>
+          <text class="tip-card__content">{{todayTip}}</text>
         </view>
       </view>
     </block>

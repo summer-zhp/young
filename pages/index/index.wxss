@@ -421,143 +421,92 @@
   font-weight: 600;
 }
 
-/* ===== 操作按钮 - 全新设计 ===== */
-.action-buttons-wrapper {
+/* ===== 操作栏 ===== */
+.action-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16rpx;
   margin-bottom: 32rpx;
 }
 
-.action-buttons {
+.action-bar__left {
   display: flex;
-  gap: 24rpx;
+  gap: 28rpx;
 }
 
-.action-btn {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
+.action-bar__btn, .action-bar__right {
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  padding: 40rpx 24rpx;
-  background: var(--surface-white);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-md);
-  transition: all var(--transition-base);
-  gap: 16rpx;
-  border: 1px solid rgba(142, 197, 185, 0.08);
-  position: relative;
-  overflow: hidden;
+  gap: 6rpx;
+  padding: 8rpx 0;
+  transition: opacity 0.2s ease;
 }
 
-.action-btn::before {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%) scaleX(0);
-  width: 60%;
-  height: 4rpx;
-  background: linear-gradient(90deg, var(--primary-start), var(--primary-end));
-  border-radius: var(--radius-full) var(--radius-full) 0 0;
-  transition: transform var(--transition-base);
+.action-bar__btn:active, .action-bar__right:active {
+  opacity: 0.6;
 }
 
-.action-btn:active {
-  transform: scale(0.96);
-  box-shadow: var(--shadow-sm);
-}
-
-.action-btn:active::before {
-  transform: translateX(-50%) scaleX(1);
-}
-
-.action-btn.favorited {
-  background: linear-gradient(135deg, rgba(142, 197, 185, 0.1) 0%, rgba(111, 169, 154, 0.05) 100%);
-  border-color: rgba(142, 197, 185, 0.25);
-}
-
-.action-btn.favorited::before {
-  background: linear-gradient(90deg, var(--accent-coral), var(--accent-pink));
-}
-
-.action-icon-wrapper {
-  width: 80rpx;
-  height: 80rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, rgba(142, 197, 185, 0.15) 0%, rgba(111, 169, 154, 0.08) 100%);
-  border-radius: 50%;
-  transition: all var(--transition-bounce);
-}
-
-.action-btn:active .action-icon-wrapper {
-  transform: scale(1.1);
-}
-
-.action-btn.favorited .action-icon-wrapper {
-  background: linear-gradient(135deg, rgba(255, 107, 129, 0.2) 0%, rgba(244, 67, 54, 0.1) 100%);
-}
-
-.action-text {
+.action-bar__text {
   font-size: 26rpx;
   color: #8EC5B9;
-  font-weight: 600;
-  letter-spacing: 0.5rpx;
+  font-weight: 500;
 }
 
-.action-btn.favorited .action-text {
+.action-bar__btn--active .action-bar__text {
   color: #FF6B81;
 }
 
-/* ===== 换一换区域 - 全新设计 ===== */
-.refresh-section {
+/* ===== 打工人小贴士 ===== */
+.tip-card {
   display: flex;
-  justify-content: center;
+  border-radius: 24rpx;
+  overflow: hidden;
+  background: linear-gradient(135deg, rgba(255, 248, 235, 0.95) 0%, rgba(255, 243, 224, 0.85) 100%);
+  box-shadow: 0 4rpx 24rpx rgba(255, 179, 71, 0.1), inset 0 0 0 1px rgba(255, 179, 71, 0.12);
 }
 
-.refresh-btn-wrapper {
-  position: relative;
+.tip-card__accent {
+  width: 8rpx;
+  flex-shrink: 0;
+  background: linear-gradient(180deg, #FFB347 0%, #F0C27A 40%, #8EC5B9 100%);
+  border-radius: 8rpx 0 0 8rpx;
 }
 
-.refresh-btn {
+.tip-card__body {
+  flex: 1;
+  padding: 28rpx 32rpx;
+}
+
+.tip-card__header {
   display: flex;
   align-items: center;
-  gap: 12rpx;
-  padding: 20rpx 56rpx;
-  background: var(--surface-white);
-  border-radius: var(--radius-full);
-  box-shadow: var(--shadow-md);
-  border: 1px solid rgba(142, 197, 185, 0.15);
-  transition: all var(--transition-base);
-  position: relative;
-  overflow: hidden;
+  gap: 10rpx;
+  margin-bottom: 16rpx;
 }
 
-.refresh-btn::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(142, 197, 185, 0.08) 0%, rgba(111, 169, 154, 0.04) 100%);
-  opacity: 0;
-  transition: opacity var(--transition-base);
-  border-radius: var(--radius-full);
+.tip-card__icon {
+  width: 40rpx;
+  height: 40rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(255, 179, 71, 0.2) 0%, rgba(255, 179, 71, 0.08) 100%);
+  border-radius: 50%;
 }
 
-.refresh-btn:active::before {
-  opacity: 1;
-}
-
-.refresh-btn:active {
-  transform: scale(0.95);
-  box-shadow: var(--shadow-sm);
-}
-
-.refresh-btn text {
-  font-size: 28rpx;
+.tip-card__title {
+  font-size: 24rpx;
   font-weight: 600;
-  color: var(--primary-dark);
-  position: relative;
-  z-index: 1;
+  color: #E8A04A;
+  letter-spacing: 0.5rpx;
+}
+
+.tip-card__content {
+  font-size: 26rpx;
+  color: #7A6E5D;
+  line-height: 1.8;
+  padding-left: 4rpx;
 }
 
 /* ===== 动画 ===== */

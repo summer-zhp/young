@@ -63,7 +63,7 @@
           <view class="bento-icon bg-sage">
             <t-icon name="view-image" size="40rpx" color="#fff"></t-icon>
           </view>
-          <text class="bento-name">添加水印</text>
+          <text class="bento-name">图片水印</text>
           <text class="bento-desc">版权保护</text>
         </view>
       </view>
@@ -71,7 +71,7 @@
         <view class="bento-card" bindtap="goToWatermarkRemove" style="animation-delay: 0.35s">
           <view class="card-badge">NEW</view>
           <view class="bento-icon bg-teal">
-            <t-icon name="delete" size="40rpx" color="#fff"></t-icon>
+            <t-icon name="tape" size="40rpx" color="#fff"></t-icon>
           </view>
           <text class="bento-name">去水印</text>
           <text class="bento-desc">涂抹去除水印</text>

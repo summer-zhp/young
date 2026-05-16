@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "测试历史",
+  "usingComponents": {
+    "t-icon": "tdesign-miniprogram/icon/icon"
+  }
+}

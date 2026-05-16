@@ -1,0 +1,41 @@
+<!-- packageA/soul-quiz/history.wxml -->
+<view class="history-page">
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{!loading && records.length === 0}}">
+    <text class="empty-icon">🔮</text>
+    <text class="empty-text">还没有测试记录</text>
+    <view class="empty-btn" bindtap="goQuiz">开始测试</view>
+  </view>
+
+  <!-- 历史列表 -->
+  <view class="history-list" wx:if="{{records.length > 0}}">
+    <view class="history-card" wx:for="{{records}}" wx:key="_id"
+      bindtap="viewDetail" data-index="{{index}}">
+      <image class="card-img" src="{{item.image || item.emoji}}" mode="aspectFit"></image>
+      <view class="card-info">
+        <view class="card-top">
+          <text class="card-type">{{item.mbti_type}}</text>
+          <text class="card-animal">{{item.animal}}</text>
+        </view>
+        <view class="card-tags">
+          <text class="card-tag">{{item.workplace}}</text>
+          <text class="card-sep">·</text>
+          <text class="card-tag">{{item.fantasy}}</text>
+        </view>
+        <text class="card-date">{{item.dateStr}}</text>
+      </view>
+      <t-icon name="chevron-right" size="36rpx" color="#ccc"></t-icon>
+    </view>
+  </view>
+
+  <!-- 加载更多 -->
+  <view class="load-more" wx:if="{{hasMore}}">
+    <text class="load-text" bindtap="loadMore">加载更多</text>
+  </view>
+
+  <!-- 加载中 -->
+  <view class="loading-state" wx:if="{{loading}}">
+    <text class="loading-text">加载中...</text>
+  </view>
+
+</view>

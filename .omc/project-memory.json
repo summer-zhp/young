@@ -1,0 +1,217 @@
+{
+  "version": "1.0.0",
+  "lastScanned": 1778839858891,
+  "projectRoot": "/Users/zhanghuapeng/Desktop/young",
+  "techStack": {
+    "languages": [
+      {
+        "name": "JavaScript/TypeScript",
+        "version": null,
+        "confidence": "high",
+        "markers": [
+          "package.json"
+        ]
+      }
+    ],
+    "frameworks": [],
+    "packageManager": "npm",
+    "runtime": null
+  },
+  "build": {
+    "buildCommand": null,
+    "testCommand": "npm test",
+    "lintCommand": null,
+    "devCommand": null,
+    "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1"
+    }
+  },
+  "conventions": {
+    "namingStyle": null,
+    "importStyle": null,
+    "testPattern": null,
+    "fileOrganization": null
+  },
+  "structure": {
+    "isMonorepo": false,
+    "workspaces": [],
+    "mainDirectories": [
+      "components",
+      "docs",
+      "pages",
+      "static"
+    ],
+    "gitBranches": {
+      "defaultBranch": "main",
+      "branchingStrategy": null
+    }
+  },
+  "customNotes": [],
+  "directoryMap": {
+    "cloudfunctions": {
+      "path": "cloudfunctions",
+      "purpose": null,
+      "fileCount": 2,
+      "lastAccessed": 1778839858826,
+      "keyFiles": [
+        "ENV_CONFIG.md"
+      ]
+    },
+    "components": {
+      "path": "components",
+      "purpose": "UI components",
+      "fileCount": 0,
+      "lastAccessed": 1778839858826,
+      "keyFiles": []
+    },
+    "config": {
+      "path": "config",
+      "purpose": "Configuration files",
+      "fileCount": 1,
+      "lastAccessed": 1778839858828,
+      "keyFiles": [
+        "mcporter.json"
+      ]
+    },
+    "docs": {
+      "path": "docs",
+      "purpose": "Documentation",
+      "fileCount": 0,
+      "lastAccessed": 1778839858828,
+      "keyFiles": []
+    },
+    "images": {
+      "path": "images",
+      "purpose": null,
+      "fileCount": 11,
+      "lastAccessed": 1778839858828,
+      "keyFiles": [
+        "README.md",
+        "logo.png",
+        "tab-home-active.png",
+        "tab-home.png",
+        "tab-sounds-active.png"
+      ]
+    },
+    "miniprogram_npm": {
+      "path": "miniprogram_npm",
+      "purpose": null,
+      "fileCount": 0,
+      "lastAccessed": 1778839858829,
+      "keyFiles": []
+    },
+    "packageA": {
+      "path": "packageA",
+      "purpose": null,
+      "fileCount": 0,
+      "lastAccessed": 1778839858829,
+      "keyFiles": []
+    },
+    "packageB": {
+      "path": "packageB",
+      "purpose": null,
+      "fileCount": 0,
+      "lastAccessed": 1778839858829,
+      "keyFiles": []
+    },
+    "pages": {
+      "path": "pages",
+      "purpose": "Page components",
+      "fileCount": 0,
+      "lastAccessed": 1778839858829,
+      "keyFiles": []
+    },
+    "static": {
+      "path": "static",
+      "purpose": "Static files",
+      "fileCount": 0,
+      "lastAccessed": 1778839858829,
+      "keyFiles": []
+    },
+    "styles": {
+      "path": "styles",
+      "purpose": null,
+      "fileCount": 1,
+      "lastAccessed": 1778839858829,
+      "keyFiles": [
+        "theme.wxss"
+      ]
+    },
+    "utils": {
+      "path": "utils",
+      "purpose": "Utility functions",
+      "fileCount": 7,
+      "lastAccessed": 1778839858829,
+      "keyFiles": [
+        "cloud.js",
+        "initData.js",
+        "qrcode.js",
+        "soulQuizData.js",
+        "utils.wxs"
+      ]
+    },
+    "packageA/components": {
+      "path": "packageA/components",
+      "purpose": "UI components",
+      "fileCount": 0,
+      "lastAccessed": 1778839858830,
+      "keyFiles": []
+    },
+    "packageA/pages": {
+      "path": "packageA/pages",
+      "purpose": "Page components",
+      "fileCount": 0,
+      "lastAccessed": 1778839858830,
+      "keyFiles": []
+    },
+    "packageB/pages": {
+      "path": "packageB/pages",
+      "purpose": "Page components",
+      "fileCount": 0,
+      "lastAccessed": 1778839858830,
+      "keyFiles": []
+    },
+    "packageB/utils": {
+      "path": "packageB/utils",
+      "purpose": "Utility functions",
+      "fileCount": 1,
+      "lastAccessed": 1778839858830,
+      "keyFiles": [
+        "qrcode.js"
+      ]
+    }
+  },
+  "hotPaths": [
+    {
+      "path": "pages/index/index.wxml",
+      "accessCount": 10,
+      "lastAccessed": 1778841808608,
+      "type": "file"
+    },
+    {
+      "path": "pages/index/index.wxss",
+      "accessCount": 10,
+      "lastAccessed": 1778841829846,
+      "type": "file"
+    },
+    {
+      "path": "pages/index/index.js",
+      "accessCount": 5,
+      "lastAccessed": 1778841651973,
+      "type": "file"
+    },
+    {
+      "path": "packageA/soul-quiz/result.wxml",
+      "accessCount": 3,
+      "lastAccessed": 1778840086760,
+      "type": "file"
+    },
+    {
+      "path": "packageA/soul-quiz/result.wxss",
+      "accessCount": 1,
+      "lastAccessed": 1778839968992,
+      "type": "file"
+    }
+  ],
+  "userDirectives": []
+}

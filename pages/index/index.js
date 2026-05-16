@@ -21,6 +21,30 @@ const DEFAULT_CONTENTS = [
   { content: '你值得被温柔对待，包括被自己。', category: 'warmth' }
 ]
 
+// 打工人小贴士
+const WORK_TIPS = [
+  '久坐1小时记得站起来活动5分钟，拉伸一下肩颈，预防职业病。',
+  '每天喝够8杯水，保持身体水分充足，工作效率也会更高。',
+  '午休时眯20分钟，下午精力更充沛，比喝咖啡还管用。',
+  '工作45分钟后休息10分钟，番茄工作法让效率翻倍。',
+  '盯着屏幕久了，看看远处的绿色植物，让眼睛放松一下。',
+  '遇到难题先放一放，散步5分钟回来，灵感往往就在这时候来。',
+  '下班后尽量不回工作消息，给自己留出真正的休息时间。',
+  '每周给自己做一顿好吃的，认真吃饭是对自己最基本的温柔。',
+  '睡前放下手机，读几页书，睡眠质量会好很多。',
+  '遇到压力时试试深呼吸：吸气4秒，屏住4秒，呼气6秒。',
+  '每天写3件让自己开心的小事，幸福感会慢慢累积。',
+  '键盘鼠标高度要合适，手肘保持90度，保护好你的手腕。',
+  '通勤路上听一首喜欢的歌，用音乐开启美好的一天。',
+  '周末至少出门走走，晒晒太阳，别让房间成为你的全世界。',
+  '和同事说一句"辛苦了"，小小的善意也能温暖一整天。',
+  '焦虑时列个清单，把担心的事写下来，你会发现其实没那么可怕。',
+  '桌面保持整洁，干净的环境能让心情也变好。',
+  '晚上11点前睡觉，好的睡眠是最好的护肤品和保健品。',
+  '不要久憋尿，有尿意就去洗手间，顺便走动一下。',
+  '定期清理手机和电脑里不需要的文件，数字断舍离也很解压。'
+]
+
 Page({
   data: {
     // 页面状态
@@ -37,6 +61,9 @@ Page({
     // 日期
     todayDate: '',
 
+    // 打工人小贴士
+    todayTip: '',
+
     // 倒计时
     workSchedule: null,
     countdownState: 'not_configured',
@@ -48,6 +75,7 @@ Page({
    */
   onLoad() {
     this.formatDate()
+    this.loadTodayTip()
     this.loadWorkSchedule()
     this.loadDailyContent()
   },
@@ -210,6 +238,15 @@ Page({
       return
     }
     wx.navigateTo({ url: '/packageB/pages/work-schedule/index' })
+  },
+
+  /**
+   * 加载今日小贴士（基于日期固定）
+   */
+  loadTodayTip() {
+    var today = new Date()
+    var dayIndex = (today.getFullYear() * 366 + today.getMonth() * 31 + today.getDate()) % WORK_TIPS.length
+    this.setData({ todayTip: WORK_TIPS[dayIndex] })
   },
 
   /**

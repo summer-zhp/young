@@ -18,7 +18,10 @@
         "pages/decision/edit/edit",
         "pages/emotion-trash/index",
         "pages/coloring/index",
-        "pages/werun/werun"
+        "pages/werun/werun",
+        "soul-quiz/quiz",
+        "soul-quiz/result",
+        "soul-quiz/history"
       ]
     },
     {

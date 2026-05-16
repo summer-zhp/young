@@ -45,16 +45,22 @@ Page({
       },
       {
         id: 6, name: '时光纪念墙', icon: 'image',
-        description: '记录每一个值得珍藏的时刻',
+        description: '记录珍藏时刻',
         url: '/packageB/pages/memory-wall/index',
-        cardBg: '#F5E8D0', iconBg: '#E5B87A', nameColor: '#A8884A',
-        wide: true, isNew: true
+        cardBg: '#F5E8D0', iconBg: '#E5B87A', nameColor: '#A8884A'
       },
       {
         id: 7, name: '运动足迹', icon: 'chart-bar',
         description: '查看31天运动步数',
         url: '/packageA/pages/werun/werun',
-        featured: true, isNew: true
+        featured: true, isNew: false
+      },
+      {
+        id: 8, name: '灵魂画像', icon: 'user-circle',
+        description: '探索你的灵魂动物',
+        url: '/packageA/soul-quiz/quiz',
+        cardBg: '#E0E8F5', iconBg: '#7B8EBF', nameColor: '#5A6EA0',
+        isNew: true
       }
     ]
 

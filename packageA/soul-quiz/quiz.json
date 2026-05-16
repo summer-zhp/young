@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "灵魂画像",
+  "usingComponents": {
+    "t-icon": "tdesign-miniprogram/icon/icon"
+  }
+}

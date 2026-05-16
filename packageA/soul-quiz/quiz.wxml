@@ -1,0 +1,86 @@
+<!-- packageA/soul-quiz/quiz.wxml -->
+<view class="quiz-page">
+  <!-- 装饰背景 -->
+  <view class="deco-circle deco-1"></view>
+  <view class="deco-circle deco-2"></view>
+
+  <!-- 进度区域 -->
+  <view class="progress-section">
+    <view class="progress-header">
+      <view class="progress-badge">{{currentIndex + 1}} / {{total}}</view>
+      <view class="dimension-pill">
+        <text>{{currentDimension}}</text>
+      </view>
+    </view>
+    <view class="progress-track">
+      <view class="progress-fill" style="width: {{percent}}%"></view>
+      <view class="progress-dot" style="left: {{percent}}%"></view>
+    </view>
+  </view>
+
+  <!-- 题目卡片 -->
+  <view class="question-area {{animClass}}">
+    <!-- 题号装饰 -->
+    <view class="q-number">
+      <text class="q-num-text">Q{{currentIndex + 1}}</text>
+    </view>
+
+    <text class="question-text">{{currentQuestion.text}}</text>
+
+    <view class="divider">
+      <view class="divider-dot"></view>
+    </view>
+
+    <!-- 4个选项 -->
+    <view class="option-card {{selectedOption === 0 ? 'opt-active opt-a-active' : ''}}"
+      bindtap="selectOption" data-index="{{0}}">
+      <view class="opt-badge {{selectedOption === 0 ? 'badge-active' : 'badge-a'}}">A</view>
+      <text class="opt-text">{{currentQuestion.options[0].text}}</text>
+      <view class="opt-check" wx:if="{{selectedOption === 0}}">
+        <t-icon name="check" size="24rpx" color="#fff"></t-icon>
+      </view>
+    </view>
+
+    <view class="option-card {{selectedOption === 1 ? 'opt-active opt-b-active' : ''}}"
+      bindtap="selectOption" data-index="{{1}}">
+      <view class="opt-badge {{selectedOption === 1 ? 'badge-active' : 'badge-b'}}">B</view>
+      <text class="opt-text">{{currentQuestion.options[1].text}}</text>
+      <view class="opt-check" wx:if="{{selectedOption === 1}}">
+        <t-icon name="check" size="24rpx" color="#fff"></t-icon>
+      </view>
+    </view>
+
+    <view class="option-card {{selectedOption === 2 ? 'opt-active opt-c-active' : ''}}"
+      bindtap="selectOption" data-index="{{2}}">
+      <view class="opt-badge {{selectedOption === 2 ? 'badge-active' : 'badge-c'}}">C</view>
+      <text class="opt-text">{{currentQuestion.options[2].text}}</text>
+      <view class="opt-check" wx:if="{{selectedOption === 2}}">
+        <t-icon name="check" size="24rpx" color="#fff"></t-icon>
+      </view>
+    </view>
+
+    <view class="option-card {{selectedOption === 3 ? 'opt-active opt-d-active' : ''}}"
+      bindtap="selectOption" data-index="{{3}}">
+      <view class="opt-badge {{selectedOption === 3 ? 'badge-active' : 'badge-d'}}">D</view>
+      <text class="opt-text">{{currentQuestion.options[3].text}}</text>
+      <view class="opt-check" wx:if="{{selectedOption === 3}}">
+        <t-icon name="check" size="24rpx" color="#fff"></t-icon>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部导航 -->
+  <view class="nav-bar">
+    <view class="nav-prev {{currentIndex > 0 ? '' : 'nav-disabled'}}" bindtap="prevQuestion">
+      <t-icon name="chevron-left" size="28rpx" color="{{currentIndex > 0 ? '#8EC5B9' : '#ccc'}}"></t-icon>
+      <text class="nav-text {{currentIndex > 0 ? '' : 'nav-text-disabled'}}">上一题</text>
+    </view>
+    <view class="nav-hint">
+      <text class="hint-light">✨ 选择后自动下一题</text>
+    </view>
+    <view class="nav-next {{hasNextAnswer ? '' : 'nav-hidden'}}" bindtap="nextQuestion">
+      <text class="nav-text">下一题</text>
+      <t-icon name="chevron-right" size="28rpx" color="#8EC5B9"></t-icon>
+    </view>
+  </view>
+</view>

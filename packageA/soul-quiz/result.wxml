@@ -1,0 +1,93 @@
+<!-- packageA/soul-quiz/result.wxml -->
+<view class="result-page">
+  <!-- MBTI 类型展示 -->
+  <view class="type-hero">
+    <image class="type-animal-img" src="{{result.image}}" mode="aspectFit"></image>
+    <text class="type-name">{{result.mbti_type}}</text>
+    <text class="type-animal">{{result.animal}}</text>
+  </view>
+
+  <!-- 四维雷达图 -->
+  <view class="radar-section">
+    <text class="section-title">你的性格维度</text>
+    <view class="radar-container">
+      <canvas canvas-id="radarCanvas" class="radar-canvas" hidden="{{showPoster}}"></canvas>
+    </view>
+    <view class="dimension-labels">
+      <view class="dim-pair">
+        <text class="dim-left {{result.scores.EI >= 0 ? 'dim-active' : ''}}">E 外向</text>
+        <text class="dim-right {{result.scores.EI < 0 ? 'dim-active' : ''}}">I 内向</text>
+      </view>
+      <view class="dim-pair">
+        <text class="dim-left {{result.scores.SN >= 0 ? 'dim-active' : ''}}">S 感觉</text>
+        <text class="dim-right {{result.scores.SN < 0 ? 'dim-active' : ''}}">N 直觉</text>
+      </view>
+      <view class="dim-pair">
+        <text class="dim-left {{result.scores.TF >= 0 ? 'dim-active' : ''}}">T 思维</text>
+        <text class="dim-right {{result.scores.TF < 0 ? 'dim-active' : ''}}">F 情感</text>
+      </view>
+      <view class="dim-pair">
+        <text class="dim-left {{result.scores.JP >= 0 ? 'dim-active' : ''}}">J 判断</text>
+        <text class="dim-right {{result.scores.JP < 0 ? 'dim-active' : ''}}">P 知觉</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 三重趣味标签 -->
+  <view class="triple-section">
+    <view class="triple-card triple-animal">
+      <image class="triple-animal-img" src="{{result.image}}" mode="aspectFit"></image>
+      <text class="triple-label">动物人格</text>
+      <text class="triple-name">{{result.animal}}</text>
+    </view>
+    <view class="triple-card triple-work">
+      <text class="triple-label">职场人设</text>
+      <text class="triple-name">{{result.workplace}}</text>
+      <text class="triple-desc">{{result.workplace_desc}}</text>
+    </view>
+    <view class="triple-card triple-fantasy">
+      <text class="triple-label">奇幻角色</text>
+      <text class="triple-name">{{result.fantasy}}</text>
+      <text class="triple-desc">{{result.fantasy_desc}}</text>
+    </view>
+  </view>
+
+  <!-- 性格解读 -->
+  <view class="analysis-section">
+    <text class="section-title">灵魂解读</text>
+    <view class="keywords-row">
+      <text class="keyword-tag" wx:for="{{result.keywords}}" wx:key="*this">{{item}}</text>
+    </view>
+    <text class="analysis-text">{{result.analysis}}</text>
+  </view>
+
+  <!-- 底部按钮 -->
+  <view class="action-section">
+    <view class="btn-share" bindtap="generatePoster">
+      <t-icon name="share" size="36rpx" color="#fff"></t-icon>
+      <text class="btn-text">生成分享图</text>
+    </view>
+    <view class="btn-history" bindtap="goHistory">
+      <t-icon name="time" size="36rpx" color="var(--primary-start)"></t-icon>
+      <text class="btn-text-secondary">查看历史</text>
+    </view>
+    <view class="btn-retry" bindtap="retryQuiz">
+      <t-icon name="refresh" size="36rpx" color="var(--text-secondary)"></t-icon>
+      <text class="btn-text-secondary">重新测试</text>
+    </view>
+  </view>
+
+  <!-- 分享海报 Canvas -->
+  <canvas canvas-id="posterCanvas" class="poster-canvas" style="width: 600px; height: 900px;"></canvas>
+
+  <!-- 海报预览遮罩 -->
+  <view class="poster-overlay" wx:if="{{showPoster}}" bindtap="closePoster">
+    <view class="poster-preview" catchtap="">
+      <image class="poster-image" src="{{posterImage}}" mode="widthFix"></image>
+      <view class="poster-actions">
+        <view class="poster-btn save-btn" catchtap="savePoster">保存到相册</view>
+        <view class="poster-btn close-btn" catchtap="closePoster">关闭</view>
+      </view>
+    </view>
+  </view>
+</view>
